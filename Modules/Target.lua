@@ -52,7 +52,10 @@ local function updateTargetFrame()
     TargetFrameTextureFrameLevelText:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
     TargetFrameTextureFrameLevelText:SetFont(FONT, 12, "OUTLINE")
 
-    TargetFrameTextureFrameHighLevelTexture:Hide()
+    TargetFrameTextureFrameHighLevelTexture:ClearAllPoints()
+    TargetFrameTextureFrameHighLevelTexture:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
+    TargetFrameTextureFrameHighLevelTexture:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_8")
+    TargetFrameTextureFrameHighLevelTexture:SetSize(24, 24)
 
     if UnitExists("target") then
         if UnitIsPlayer("target") then
@@ -164,7 +167,6 @@ local function updateTargetAuras()
 
     -- SETUP AURA FUNCTION
     local function setupAura(aura, row, col, isDebuff)
-        -- Position the aura
         aura:ClearAllPoints()
         aura:SetPoint("BOTTOMLEFT", TargetFrameBackdrop, "TOPLEFT", 
             horizontalStartOffset + col * (auraSize + xOffset), 
@@ -172,13 +174,11 @@ local function updateTargetAuras()
         
         aura:SetSize(auraSize, auraSize)
         
-        -- Hide default border
         local border = _G[aura:GetName().."Border"]
         if border then
             border:Hide()
         end
         
-        -- Create or update backdrop
         if not aura.backdrop then
             aura.backdrop = CreateFrame("Frame", nil, aura, "BackdropTemplate")
             aura.backdrop:SetPoint("TOPLEFT", aura, "TOPLEFT", -2, 2)
@@ -187,14 +187,12 @@ local function updateTargetAuras()
             aura.backdrop:SetFrameLevel(aura:GetFrameLevel() + 2)
         end
         
-        -- Set border color based on aura type
         if isDebuff then
             aura.backdrop:SetBackdropBorderColor(unpack(RED))
         else
             aura.backdrop:SetBackdropBorderColor(unpack(GREY))
         end
         
-        -- Fix icon texture
         local icon = _G[aura:GetName().."Icon"]
         if icon then
             icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
@@ -226,8 +224,7 @@ local function updateTargetAuras()
     
     while currentDebuff and currentDebuff:IsShown() and (buffCount + debuffCount) < maxAurasPerRow * maxRows do
         debuffCount = debuffCount + 1
-        
-        -- Calculate position based on total number of auras (buffs + debuffs)
+
         local totalIndex = buffCount + debuffCount
         local row = math.floor((totalIndex - 1) / maxAurasPerRow)
         local col = (totalIndex - 1) % maxAurasPerRow
