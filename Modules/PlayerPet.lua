@@ -73,6 +73,11 @@ local function UpdatePetResources()
     PetFrameManaBarText:SetAlpha(0)
     PetFrameManaBarTextLeft:SetAlpha(0)
     PetFrameManaBarTextRight:SetAlpha(0)
+
+    PetFrameHappiness:ClearAllPoints()
+    PetFrameHappiness:SetPoint("RIGHT", PetFrameBackdrop, "LEFT", 0, 0)
+    PetFrameHappiness:SetSize(20, 20)
+
 end
 
 local petResourceEvents = CreateFrame("Frame")
@@ -83,44 +88,5 @@ petResourceEvents:SetScript("OnEvent", function(self, event, unit)
     if event == "PLAYER_ENTERING_WORLD" or event == "UNIT_PET" or 
        (event == "UNIT_POWER_UPDATE" and unit == "pet") then
         UpdatePetResources()
-    end
-end)
-
-
--- CREATE PET HAPPINESS BACKDROP
-
-local petHappinessBackdrop = CreateFrame("Frame", nil, PetFrame, "BackdropTemplate")
-petHappinessBackdrop:SetSize(24, 24)
-petHappinessBackdrop:SetPoint("RIGHT", PetFrameBackdrop, "LEFT", 0, 0)
-petHappinessBackdrop:SetBackdrop({
-    bgFile = "Interface\\Icons\\ability_hunter_beasttraining",
-    edgeFile = BORD, edgeSize = 12,
-    insets = {left = 2, right = 2, top = 2, bottom = 2}
-})
-petHappinessBackdrop:SetBackdropBorderColor(unpack(GREY))
-petHappinessBackdrop:SetFrameLevel(PetFrame:GetFrameLevel() + 2)
-
-
--- UPDATE PET HAPPINESS
-
-local function updatePetHappiness()
-    PetFrameHappiness:Hide()
-    PetFrameHappinessTexture:Hide()
-
-    local happiness = GetPetHappiness()
-    if happiness and happiness < 3 then
-        petHappinessBackdrop:Show()
-    else
-        petHappinessBackdrop:Hide()
-    end
-end
-
-local petHappinessEvents = CreateFrame("Frame")
-petHappinessEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-petHappinessEvents:RegisterEvent("UNIT_HAPPINESS")
-petHappinessEvents:RegisterEvent("UNIT_PET")
-petHappinessEvents:SetScript("OnEvent", function(self, event, unit)
-    if unit == "pet" or event == "PLAYER_ENTERING_WORLD" then
-        updatePetHappiness()
     end
 end)
