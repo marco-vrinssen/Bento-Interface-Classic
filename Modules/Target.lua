@@ -55,7 +55,7 @@ local function updateTargetFrame()
     TargetFrameTextureFrameHighLevelTexture:ClearAllPoints()
     TargetFrameTextureFrameHighLevelTexture:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
     TargetFrameTextureFrameHighLevelTexture:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_8")
-    TargetFrameTextureFrameHighLevelTexture:SetSize(24, 24)
+    TargetFrameTextureFrameHighLevelTexture:SetSize(20, 20)
 
     if UnitExists("target") then
         if UnitIsPlayer("target") then
