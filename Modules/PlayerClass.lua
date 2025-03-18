@@ -1,51 +1,61 @@
 -- ENABLE DRUID MANA BAR
-  
+
 local _, classIdentifier = UnitClass("player")
 
 if classIdentifier == "DRUID" then
-
-    local druidManaBackdrop = CreateFrame("Frame", nil, PlayerFrame, "BackdropTemplate")
-    druidManaBackdrop:SetPoint("TOP", PlayerFrameBackdrop, "BOTTOM", 0, 0)
-    druidManaBackdrop:SetSize(PlayerFrameBackdrop:GetWidth() - 2, 16)
-    druidManaBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-    druidManaBackdrop:SetBackdropBorderColor(unpack(GREY))
+    local druidManaContainer = CreateFrame("Frame", nil, PlayerFrame)
+    druidManaContainer:SetPoint("TOP", PlayerFrameBackdrop, "BOTTOM", 0, 0)
+    druidManaContainer:SetSize(PlayerFrameBackdrop:GetWidth() - 2, 16)
     
-
-    -- SET UP DRUID MANA BAR
+    local druidManaBackground = CreateFrame("Frame", nil, druidManaContainer, "BackdropTemplate")
+    druidManaBackground:SetPoint("TOPLEFT", druidManaContainer, "TOPLEFT", 3, -3)
+    druidManaBackground:SetPoint("BOTTOMRIGHT", druidManaContainer, "BOTTOMRIGHT", -3, 3)
+    druidManaBackground:SetBackdrop({
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+    })
+    druidManaBackground:SetBackdropColor(unpack(BLACK))
+    druidManaBackground:SetFrameLevel(druidManaContainer:GetFrameLevel())
     
-    local druidManaBar = CreateFrame("StatusBar", nil, PlayerFrame, "BackdropTemplate")
-    druidManaBar:SetSize(druidManaBackdrop:GetWidth() - 4, druidManaBackdrop:GetHeight() - 4)
-    druidManaBar:SetPoint("CENTER", druidManaBackdrop, "CENTER", 0, 0)
+    local druidManaBar = CreateFrame("StatusBar", nil, druidManaContainer)
+    druidManaBar:SetSize(druidManaContainer:GetWidth() - 6, druidManaContainer:GetHeight() - 6)
+    druidManaBar:SetPoint("CENTER", druidManaContainer, "CENTER", 0, 0)
     druidManaBar:SetStatusBarTexture(BAR)
+    druidManaBar:SetStatusBarColor(unpack(BLUE))
     druidManaBar:SetMinMaxValues(0, 1)
+    druidManaBar:SetFrameLevel(druidManaBackground:GetFrameLevel() + 1)
     
-    druidManaBackdrop:SetFrameLevel(druidManaBar:GetFrameLevel() + 2)
+    local druidManaBorder = CreateFrame("Frame", nil, druidManaContainer, "BackdropTemplate")
+    druidManaBorder:SetAllPoints()
+    druidManaBorder:SetBackdrop({
+        edgeFile = BORD,
+        edgeSize = 12,
+    })
+    druidManaBorder:SetBackdropBorderColor(unpack(GREY))
+    druidManaBorder:SetFrameLevel(druidManaBar:GetFrameLevel() + 1)
     
-      
-    -- CREATE DRUID MANA TEXT
-    
-    local druidManaEvents = druidManaBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    druidManaEvents:SetPoint("CENTER", druidManaBar, "CENTER", 0, 0)
-    druidManaEvents:SetTextColor(1, 1, 1)
-    druidManaEvents:SetFont(GameFontNormal:GetFont(), 10, "OUTLINE")
-    
-      
-    -- DRUID MANA BAR UPDATE FUNCTION
-    
+    local druidManaText = druidManaBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    druidManaText:SetPoint("CENTER", druidManaBar, "CENTER", 0, 0)
+    druidManaText:SetTextColor(unpack(WHITE))
+    druidManaText:SetFont(GameFontNormal:GetFont(), 8, "OUTLINE")
+   
     local function druidManaBarUpdate()
-        local playerPowerType, powerToken = UnitPowerType("player")
+        local playerPowerType = UnitPowerType("player")
         local playerForm = GetShapeshiftFormID()
-    
-        if playerForm and powerToken ~= "MANA" then
+        
+        -- Only show mana bar when shapeshifted (not in caster form)
+        if playerForm and playerForm > 0 and playerPowerType ~= Enum.PowerType.Mana then
             local playerMana = UnitPower("player", Enum.PowerType.Mana)
             local playerMaxMana = UnitPowerMax("player", Enum.PowerType.Mana)
-            druidManaBar:SetValue(playerMana / playerMaxMana)
-            druidManaEvents:SetText(playerMana .. " / " .. playerMaxMana)
-            druidManaBar:Show()
-            druidManaBackdrop:Show()
+            
+            if playerMaxMana > 0 then
+                druidManaBar:SetValue(playerMana / playerMaxMana)
+                druidManaText:SetText(playerMana .. " / " .. playerMaxMana)
+                druidManaContainer:Show()
+            else
+                druidManaContainer:Hide()
+            end
         else
-            druidManaBar:Hide()
-            druidManaBackdrop:Hide()
+            druidManaContainer:Hide()
         end
     end
     
@@ -53,27 +63,22 @@ if classIdentifier == "DRUID" then
     druidManaBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
     druidManaBarEvents:RegisterEvent("UNIT_POWER_UPDATE")
     druidManaBarEvents:RegisterEvent("UNIT_DISPLAYPOWER")
+    druidManaBarEvents:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
     druidManaBarEvents:SetScript("OnEvent", druidManaBarUpdate)
 end
 
 
--- UPDATE ROGUE COMBO POINTS
+-- CREATE CUSTOM COMBO POINTS
   
 local _, classIdentifier = UnitClass("player")
 if classIdentifier ~= "ROGUE" and classIdentifier ~= "DRUID" then
     return
 end
 
-  
--- CONFIGURE COMBO POINT CONSTANTS
-  
 local pointSize = 24
 local pointMargin = 4
 local pointsTotalWidth = 5 * pointSize + 4 * pointMargin
 
-  
--- HIDE DEFAULT COMBO POINTS FUNCTION
-  
 local function hideDefaultComboPoints()
     for i = 1, 5 do
         local point = _G["ComboPoint" .. i]
@@ -93,9 +98,6 @@ comboPointsFrame:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
   
 local comboPoints = {}
 
-  
--- CREATE COMBO POINT FRAME FUNCTION
-  
 local function createComboPoint()
     local cp = CreateFrame("Frame", nil, comboPointsFrame, "BackdropTemplate")
     cp:SetSize(pointSize, pointSize)
@@ -109,9 +111,6 @@ local function createComboPoint()
     return cp
 end
 
-  
--- SET COMBO POINT TEXTURES FUNCTION
-  
 local function comboPointTextures(cp, active)
     if active then
         cp:SetBackdropColor(unpack(RED))
@@ -126,9 +125,6 @@ for i = 1, 5 do
     comboPoints[i]:SetPoint("LEFT", comboPointsFrame, "LEFT", pointSize * (i - 1) + pointMargin * (i - 1), 0)
 end
 
-      
--- UPDATE COMBO POINTS DISPLAY FUNCTION
-  
 local function comboPointsUpdate()
     local count = GetComboPoints("player", "target") or 0
     
