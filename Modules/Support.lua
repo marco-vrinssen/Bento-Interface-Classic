@@ -98,11 +98,11 @@ local function updateQuestieIcons()
         return
     end
 
-    Questie.db.profile.nameplateX = -24
-    Questie.db.profile.nameplateY = 8
+    Questie.db.profile.nameplateX = -28
+    Questie.db.profile.nameplateY = 10
     Questie.db.profile.nameplateScale = 1.5
 
-    Questie.db.profile.nameplateTargetFrameX = -36
+    Questie.db.profile.nameplateTargetFrameX = -156
     Questie.db.profile.nameplateTargetFrameY = 24
     Questie.db.profile.nameplateTargetFrameScale = 1.5
 end
