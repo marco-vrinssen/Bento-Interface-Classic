@@ -11,7 +11,7 @@ Modules/Buttons.lua
 Modules/CastBar.lua
 Modules/Chat.lua
 Modules/GameMetrics.lua
-Modules/Menu.lua
+Modules/MicroMenu.lua
 Modules/MiniMap.lua
 Modules/NamePlates.lua
 Modules/Player.lua

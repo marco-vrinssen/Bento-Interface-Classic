@@ -19,17 +19,12 @@ local function updateMenuButtons()
   CharacterMicroButton:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -totalMenuWidth, 16)
 end
 
-
--- DELAYED MICROMENU UPDATE
-
-local function delayUpdate()
-  C_Timer.After(0.1, updateMenuButtons)
-end
-
 local microMenuEvents = CreateFrame("Frame")
 microMenuEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 microMenuEvents:RegisterEvent("PLAYER_LOGIN")
-microMenuEvents:SetScript("OnEvent", delayUpdate)
+microMenuEvents:RegisterEvent("UI_SCALE_CHANGED")
+microMenuEvents:RegisterEvent("DISPLAY_SIZE_CHANGED")
+microMenuEvents:SetScript("OnEvent", updateMenuButtons)
 
 
 -- UPDATE LFG BUTTON
@@ -51,6 +46,9 @@ local function updateMinimapAndLFG()
       LFGMinimapFrameIcon:SetPoint("CENTER", LFGMinimapFrame, "CENTER", 0, 0)
   end
 end
+
+
+-- REGISTER EVENTS FOR MINIMAP LFG
 
 local minimapLFGEvents = CreateFrame("Frame")
 minimapLFGEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
