@@ -41,7 +41,10 @@ local function updateTargetFrame()
     TargetFrameTextureFrameTexture:Hide()
     TargetFrameTextureFramePVPIcon:SetAlpha(0)
 
-    TargetFrameTextureFrameDeadText:Hide()
+    TargetFrameTextureFrameDeadText:ClearAllPoints()
+    TargetFrameTextureFrameDeadText:SetPoint("CENTER", TargetFrameBackdrop, "CENTER", 0, -4)
+    TargetFrameTextureFrameDeadText:SetFont(FONT, 12, "OUTLINE")
+    TargetFrameTextureFrameDeadText:SetTextColor(unpack(GREY))
 
     TargetFrameNameBackground:Hide()
     TargetFrameTextureFrameName:ClearAllPoints()
