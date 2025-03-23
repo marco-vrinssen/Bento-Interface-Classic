@@ -15,7 +15,7 @@ local bagButtons = {
 local function customizeBagSlot(button)
     if not button or button.customBorder then return end
     
-    button:SetScale(0.8)
+    button:SetScale(0.95)
     
     local name = button:GetName()
     local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
