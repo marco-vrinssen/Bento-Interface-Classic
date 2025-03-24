@@ -7,7 +7,6 @@ castingBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12})
 castingBarBackdrop:SetBackdropBorderColor(unpack(GREY))
 castingBarBackdrop:SetFrameLevel(CastingBarFrame:GetFrameLevel() + 2)
 
-
 -- UPDATE CASTBAR
 
 local function updateCastBar()
@@ -26,21 +25,19 @@ local function updateCastBar()
     CastingBarFrame.Text:SetFont(FONT, 12, "OUTLINE")
 end
 
-
 -- RECOLOR CASTBAR ON EVENTS
 
-local function recolorCastBar(event)
+local function recolorCastBar(event, unit)
     if event == "UNIT_SPELLCAST_START" then
         CastingBarFrame:SetStatusBarColor(unpack(YELLOW))
     elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
         CastingBarFrame:SetStatusBarColor(unpack(GREEN))
-    elseif event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED" then
+    elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
         CastingBarFrame:SetStatusBarColor(unpack(RED))
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
         CastingBarFrame:SetStatusBarColor(unpack(GREEN))
     end
 end
-
 
 -- INITIALIZE EVENT HANDLING
 
@@ -52,10 +49,10 @@ castBarEvents:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 castBarEvents:RegisterEvent("UNIT_SPELLCAST_FAILED")
 castBarEvents:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
-castBarEvents:SetScript("OnEvent", function(self, event, ...)
+castBarEvents:SetScript("OnEvent", function(self, event, unit, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         updateCastBar()
     else
-        recolorCastBar(event)
+        recolorCastBar(event, unit)
     end
 end)
