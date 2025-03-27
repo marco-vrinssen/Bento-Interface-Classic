@@ -30,7 +30,9 @@ local function addonButtonUpdate()
                 end
             end
 
-            local angle = math.rad(angleStep * (index - 1))
+            -- CALCULATE ANGLE FOR LOWER LEFT CORNER DISTRIBUTION
+
+            local angle = math.rad(120 + angleStep * (index - 1))
             local xOffset = math.cos(angle) * radius
             local yOffset = math.sin(angle) * radius
 
