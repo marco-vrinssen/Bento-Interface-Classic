@@ -5,6 +5,8 @@
 ## Author: MIYANKO
 
 Modules/_Tokens.lua
+Modules/AddonButtons.lua
+Modules/Auctionator.lua
 Modules/Auras.lua
 Modules/Bags.lua
 Modules/Buttons.lua
@@ -17,9 +19,9 @@ Modules/NamePlates.lua
 Modules/Player.lua
 Modules/PlayerClass.lua
 Modules/PlayerPet.lua
+Modules/Questie.lua
 Modules/RaidFrames.lua
 Modules/StatusBars.lua
-Modules/Support.lua
 Modules/Target.lua
 Modules/TargetOfTarget.lua
 Modules/Tooltips.lua

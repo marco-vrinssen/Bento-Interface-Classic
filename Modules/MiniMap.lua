@@ -3,6 +3,8 @@
 local function updateMinimap()
     Minimap:SetClampedToScreen(false)
     Minimap:SetParent(UIParent)
+    Minimap:SetSize(200, 200)
+
     Minimap:ClearAllPoints()
     Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -16, -16)
     MinimapBackdrop:Hide()
@@ -34,11 +36,11 @@ zoomEvents:SetScript("OnMouseWheel", enableMinimapScroll)
 
 -- UPDATE MINIMAP TIME DISPLAY
 
-local minimapTimeBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
+local minimapTimeBackdrop = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 minimapTimeBackdrop:SetSize(48, 24)
 minimapTimeBackdrop:SetPoint("CENTER", Minimap, "BOTTOM", 0, -2)
 minimapTimeBackdrop:SetBackdrop({
-    bgFile = BG, -- Updated background
+    bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}

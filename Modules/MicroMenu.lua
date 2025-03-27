@@ -45,7 +45,7 @@ local function updateMinimapAndLFG()
   end
 
   if LFGMinimapFrame then
-      LFGMinimapFrame:SetParent(Minimap)
+      LFGMinimapFrame:SetParent(UIParent)
       LFGMinimapFrame:ClearAllPoints()
       LFGMinimapFrame:SetSize(36, 36)
       LFGMinimapFrame:SetPoint("RIGHT", CharacterMicroButton, "LEFT", -4, -12)
