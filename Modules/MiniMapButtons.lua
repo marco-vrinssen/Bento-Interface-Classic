@@ -17,7 +17,10 @@ local function addonButtonUpdate()
 
     -- UPDATE BUTTONS
 
-    for _, data in ipairs(buttons) do
+    local angleStep = 120 / #buttons
+    local radius = 100  -- Adjust radius as needed
+
+    for index, data in ipairs(buttons) do
         local addonButton = data.button
         if addonButton:IsShown() then
             for i = 1, addonButton:GetNumRegions() do
@@ -27,9 +30,15 @@ local function addonButtonUpdate()
                 end
             end
 
+            local angle = math.rad(angleStep * (index - 1))
+            local xOffset = math.cos(angle) * radius
+            local yOffset = math.sin(angle) * radius
+
+            addonButton:SetParent(Minimap)
             addonButton:SetSize(16, 16)
-            addonButton:SetParent(UIParent)
             addonButton:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+            addonButton:ClearAllPoints()
+            addonButton:SetPoint("CENTER", Minimap, "CENTER", xOffset, yOffset)
             addonButton.icon:ClearAllPoints()
             addonButton.icon:SetPoint("CENTER", addonButton, "CENTER", 0, 0)
             addonButton.icon:SetSize(12, 12)
@@ -63,6 +72,6 @@ addonButtonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 addonButtonFrame:RegisterEvent("ADDON_LOADED")
 addonButtonFrame:SetScript("OnEvent", function(self, event)
     if event == "ADDON_LOADED" or event == "PLAYER_ENTERING_WORLD" then
-        C_Timer.After(0, addonButtonUpdate)
+        C_Timer.After(0.5, addonButtonUpdate)
     end
 end)
