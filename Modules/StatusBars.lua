@@ -43,7 +43,7 @@ local function updateXPBar()
     MainMenuExpBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 16, -16)
     MainMenuExpBar:SetStatusBarTexture(BAR)
 
-    if GetXPExhaustion() then
+    if GetXPExhaustion() and GetXPExhaustion() > 0 then
         MainMenuExpBar:SetStatusBarColor(unpack(BLUE))
     else
         MainMenuExpBar:SetStatusBarColor(unpack(VIOLET))
