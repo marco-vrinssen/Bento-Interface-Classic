@@ -1,5 +1,12 @@
 -- UPDATE MINIMAP
 
+local minimapTimeBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
+minimapTimeBackdrop:SetSize(194, 194)
+minimapTimeBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
+minimapTimeBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
+minimapTimeBackdrop:SetBackdropColor(unpack(GREY))
+minimapTimeBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1)
+
 local function updateMinimap()
     Minimap:SetClampedToScreen(false)
     Minimap:SetParent(UIParent)
@@ -45,7 +52,7 @@ minimapTimeBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTimeBackdrop:SetBackdropColor(unpack(BLACK)) -- Commented out custom coloring
+minimapTimeBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
 minimapTimeBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapTimeBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -79,7 +86,7 @@ minimapMailBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapMailBackdrop:SetBackdropColor(unpack(BLACK)) -- Commented out custom coloring
+minimapMailBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
 minimapMailBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapMailBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -110,7 +117,7 @@ minimapBFBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapBFBackdrop:SetBackdropColor(unpack(BLACK)) -- Commented out custom coloring
+minimapBFBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
 minimapBFBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapBFBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -145,7 +152,7 @@ minimapTrackingBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK)) -- Commented out custom coloring
+minimapTrackingBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
 minimapTrackingBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapTrackingBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 

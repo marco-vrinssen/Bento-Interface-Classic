@@ -42,8 +42,13 @@ local function updateXPBar()
     MainMenuExpBar:ClearAllPoints()
     MainMenuExpBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 16, -16)
     MainMenuExpBar:SetStatusBarTexture(BAR)
-    MainMenuExpBar:SetStatusBarColor(unpack(VIOLET))
-    
+
+    if GetXPExhaustion() then
+        MainMenuExpBar:SetStatusBarColor(unpack(BLUE))
+    else
+        MainMenuExpBar:SetStatusBarColor(unpack(VIOLET))
+    end
+
     MainMenuExpBar:EnableMouse(true)
 end
 
@@ -65,7 +70,14 @@ local function xpTooltip()
     local restedPercent = math.floor((restedExperience / maxExperience) * 100)
     
     GameTooltip:SetOwner(MainMenuExpBar, "ANCHOR_BOTTOMRIGHT", 4, -4)
-    GameTooltip:AddLine("Experience", unpack(VIOLET))
+
+    -- UPDATE XP TOOLTIP HEADING COLOR
+    if GetXPExhaustion() then
+        GameTooltip:AddLine("Experience", unpack(BLUE))
+    else
+        GameTooltip:AddLine("Experience", unpack(VIOLET))
+    end
+
     GameTooltip:AddDoubleLine("Progress:", progressPercent.."%")
     GameTooltip:AddDoubleLine("Rested:", restedPercent.."%")
     GameTooltip:AddDoubleLine("Current:", currentExperience)
@@ -115,8 +127,10 @@ local function updateRepBar()
     ReputationWatchBar.StatusBar:ClearAllPoints()
     ReputationWatchBar.StatusBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 16, -32)
     ReputationWatchBar.StatusBar:SetStatusBarTexture(BAR)
-    ReputationWatchBar.StatusBar:SetStatusBarColor(unpack(BLUE))
-    
+
+    -- SET REPUTATION BAR COLOR TO ORANGE
+    ReputationWatchBar.StatusBar:SetStatusBarColor(unpack(ORANGE))
+
     ReputationWatchBar.StatusBar:EnableMouse(true)
     ReputationWatchBar.StatusBar:Show()
 end
@@ -137,7 +151,10 @@ local function repTooltip()
         local progressPercent = math.floor((progress / total) * 100)
 
         GameTooltip:SetOwner(ReputationWatchBar.StatusBar, "ANCHOR_BOTTOMRIGHT", 4, -4)
-        GameTooltip:AddLine("Reputation", unpack(BLUE))
+
+        -- UPDATE REPUTATION TOOLTIP HEADING COLOR
+        GameTooltip:AddLine("Reputation", unpack(ORANGE))
+
         GameTooltip:AddDoubleLine("Faction:", name)
         GameTooltip:AddDoubleLine("Standing:", _G["FACTION_STANDING_LABEL"..standing])
         GameTooltip:AddDoubleLine("Progress:", progressPercent.."%")
