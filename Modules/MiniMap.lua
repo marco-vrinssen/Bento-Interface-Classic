@@ -1,10 +1,10 @@
 -- UPDATE MINIMAP
 
 local minimapFirstBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
-minimapFirstBackdrop:SetSize(198, 198)
+minimapFirstBackdrop:SetSize(199, 199)
 minimapFirstBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
 minimapFirstBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
-minimapFirstBackdrop:SetBackdropColor(unpack(GREY))
+minimapFirstBackdrop:SetBackdropColor(0, 0, 0, 0.5)
 minimapFirstBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1) 
 
 local function updateMinimap()
