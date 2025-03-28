@@ -1,11 +1,11 @@
 -- UPDATE MINIMAP
 
-local minimapTimeBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
-minimapTimeBackdrop:SetSize(194, 194)
-minimapTimeBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
-minimapTimeBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
-minimapTimeBackdrop:SetBackdropColor(unpack(GREY))
-minimapTimeBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1)
+local minimapFirstBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
+minimapFirstBackdrop:SetSize(196, 196)
+minimapFirstBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
+minimapFirstBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
+minimapFirstBackdrop:SetBackdropColor(unpack(GREY))
+minimapFirstBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1) 
 
 local function updateMinimap()
     Minimap:SetClampedToScreen(false)
@@ -45,14 +45,14 @@ zoomEvents:SetScript("OnMouseWheel", enableMinimapScroll)
 
 local minimapTimeBackdrop = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 minimapTimeBackdrop:SetSize(48, 24)
-minimapTimeBackdrop:SetPoint("CENTER", Minimap, "BOTTOM", 0, -2)
+minimapTimeBackdrop:SetPoint("CENTER", Minimap, "BOTTOM", 0, 0)
 minimapTimeBackdrop:SetBackdrop({
     bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTimeBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
+minimapTimeBackdrop:SetBackdropColor(unpack(BLACK))
 minimapTimeBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapTimeBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -86,7 +86,7 @@ minimapMailBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapMailBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
+minimapMailBackdrop:SetBackdropColor(unpack(BLACK))
 minimapMailBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapMailBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -117,7 +117,7 @@ minimapBFBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapBFBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
+minimapBFBackdrop:SetBackdropColor(unpack(BLACK)) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
 minimapBFBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapBFBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -152,7 +152,7 @@ minimapTrackingBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTrackingBackdrop:SetBackdropColor(0, 0, 0, 0.5) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
+minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK)) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
 minimapTrackingBackdrop:SetBackdropBorderColor(unpack(GREY))
 minimapTrackingBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
