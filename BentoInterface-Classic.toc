@@ -25,4 +25,3 @@ Modules/StatusBars.lua
 Modules/Target.lua
 Modules/TargetOfTarget.lua
 Modules/Tooltips.lua
-Modules/WorldMap.lua
