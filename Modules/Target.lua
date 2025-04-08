@@ -252,6 +252,10 @@ targetAuraEvents:SetScript("OnEvent", function(self, event, unit)
 end)
 
 
+
+
+
+
 -- GENERATE AND UPDATE TARGET CLASSIFICATION TEXT
 
 local targetTypeText = TargetFrame:CreateFontString(nil, "OVERLAY")
@@ -301,28 +305,43 @@ targetTypeEvents:SetScript("OnEvent", function(self, event, unit)
 end)
 
 
--- CREATE AGGRO TEXT
+-- CREATE AGGRO BACKDROP
 
-local targetThreatText = TargetFrame:CreateFontString(nil, "OVERLAY")
-targetThreatText:SetFont(FONT, 12, "OUTLINE")
-targetThreatText:SetPoint("BOTTOM", targetTypeText, "TOP", 0, 8)
-targetThreatText:Hide()
+local targetThreatBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
+targetThreatBackdrop:SetPoint("BOTTOM", targetTypeText, "TOP", 0, 8)
+targetThreatBackdrop:SetSize(28, 28) -- Adjusted size to enclose the icon
+targetThreatBackdrop:SetBackdrop({
+    bgFile = BG,
+    edgeFile = BORD,
+    edgeSize = 12,
+    insets = {left = 2, right = 2, top = 2, bottom = 2}
+})
+targetThreatBackdrop:SetBackdropColor(unpack(BLACK))
+targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
+targetThreatBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 2)
+targetThreatBackdrop:Hide()
+
+local targetThreatIcon = targetThreatBackdrop:CreateTexture(nil, "ARTWORK") -- Changed layer to fit inside the backdrop
+targetThreatIcon:SetPoint("CENTER", targetThreatBackdrop, "CENTER", 0, 0) -- Centered within the backdrop
+targetThreatIcon:SetSize(20, 20) -- Adjusted size to fit inside the backdrop
 
 
--- UPDATE AGGRO STATUS
+-- UPDATE AGGRO BACKDROP AND ICON
 
 local function updateAggroStatus()
     local isTanking, status, threatPct = UnitDetailedThreatSituation("player", "target")
-    if status and threatPct then
-        targetThreatText:SetText(string.format("%d%%", threatPct))
-        if threatPct == 100 then
-            targetThreatText:SetTextColor(unpack(RED))
+    
+    if status then
+        if isTanking then
+            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionangry") -- 237553
+            targetThreatBackdrop:SetBackdropBorderColor(unpack(RED))
         else
-            targetThreatText:SetTextColor(unpack(YELLOW))
+            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionsad") -- 237555
+            targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
         end
-        targetThreatText:Show()
+        targetThreatBackdrop:Show()
     else
-        targetThreatText:Hide()
+        targetThreatBackdrop:Hide()
     end
 end
 
