@@ -154,7 +154,7 @@ local function updateAggroStatus()
         if isTanking then
             targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionangry")
             targetThreatBackdrop:SetBackdropBorderColor(unpack(RED))
-        elseif threatPct and threatPct >= 90 then
+        elseif threatPct and threatPct >= 80 then
             targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionsad")
             targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
         else
@@ -399,8 +399,8 @@ local function updateTargetCastbar()
     TargetFrameSpellBar.Spark:SetTexture(nil)
     TargetFrameSpellBar.Icon:SetSize(targetSpellBarBackdrop:GetHeight() - 4, targetSpellBarBackdrop:GetHeight() - 4)
     TargetFrameSpellBar.Text:ClearAllPoints()
-    TargetFrameSpellBar.Text:SetPoint("TOPLEFT", targetSpellBarBackdrop, "TOPLEFT", 2, -2)
-    TargetFrameSpellBar.Text:SetPoint("BOTTOMRIGHT", targetSpellBarBackdrop, "BOTTOMRIGHT", -2, 2)
+    TargetFrameSpellBar.Text:SetPoint("TOPLEFT", TargetFrameSpellBar, "TOPLEFT", 2, -2)
+    TargetFrameSpellBar.Text:SetPoint("BOTTOMRIGHT", TargetFrameSpellBar, "BOTTOMRIGHT", -2, 2)
     TargetFrameSpellBar.Text:SetFont(FONT, 10, "OUTLINE")
 end
 
