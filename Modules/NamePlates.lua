@@ -1,13 +1,25 @@
--- SETUP NAMEPLATE APPEARANCE
+-- CREATE BACKDROP FOR HEALTHBAR
 
-local function createBackdrop(parent)
-    local backdrop = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    backdrop:SetPoint("TOPLEFT", parent, "TOPLEFT", -3, 3)
-    backdrop:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 3, -3)
-    backdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-    backdrop:SetBackdropBorderColor(unpack(GREY))
-    backdrop:SetFrameStrata("HIGH")
-    return backdrop
+local function createHealthbarBackdrop(parent)
+    local healthbarBackdrop = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    healthbarBackdrop:SetPoint("TOPLEFT", parent, "TOPLEFT", -3, 3)
+    healthbarBackdrop:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 3, -3)
+    healthbarBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
+    healthbarBackdrop:SetBackdropBorderColor(unpack(GREY))
+    healthbarBackdrop:SetFrameStrata("HIGH")
+    return healthbarBackdrop
+end
+
+-- CREATE BACKDROP FOR CASTBAR
+
+local function createCastbarBackdrop(parent)
+    local castbarBackdrop = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    castbarBackdrop:SetPoint("TOPLEFT", parent, "TOPLEFT", -3, 3)
+    castbarBackdrop:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 3, -3)
+    castbarBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
+    castbarBackdrop:SetBackdropBorderColor(unpack(GREY))
+    castbarBackdrop:SetFrameStrata("HIGH")
+    return castbarBackdrop
 end
 
 
@@ -37,13 +49,12 @@ local function nameplateCastbarSetup(nameplate)
     namePlateCastBar:SetStatusBarTexture(BAR)
     namePlateCastBar:SetStatusBarColor(unpack(YELLOW))
     namePlateCastBar:SetSize(healthbarReference:GetWidth(), 10)
-    -- Change this line to create 4px margin between healthbar and castbar
     namePlateCastBar:SetPoint("TOP", healthbarReference, "BOTTOM", 0, -4)
     namePlateCastBar:SetMinMaxValues(0, 1)
     namePlateCastBar:SetValue(0)
 
-    -- Use the same backdrop style as the healthbar
-    namePlateCastBar.backdrop = createBackdrop(namePlateCastBar)
+    -- Use a separate backdrop style for the castbar
+    namePlateCastBar.backdrop = createCastbarBackdrop(namePlateCastBar)
 
     local castBarText = namePlateCastBar:CreateFontString(nil, "OVERLAY")
     castBarText:SetFont(FONT, 8, "OUTLINE")
@@ -133,7 +144,7 @@ local function nameplateUpdate(nameplate, unitID)
     unitNameplate.LevelFrame:Hide()
 
     if not nameplateHealthbar.backdrop then
-        nameplateHealthbar.backdrop = createBackdrop(nameplateHealthbar)
+        nameplateHealthbar.backdrop = createHealthbarBackdrop(nameplateHealthbar)
     end
 
     nameplateHealthbar:ClearAllPoints()

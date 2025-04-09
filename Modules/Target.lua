@@ -16,7 +16,7 @@ TargetPortraitBackdrop:SetPoint("LEFT", TargetFrameBackdrop, "RIGHT", 0, 0)
 TargetPortraitBackdrop:SetSize(48, 48)
 TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
 TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
-TargetPortraitBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 2)
+TargetPortraitBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 4)
 TargetPortraitBackdrop:SetAttribute("unit", "target")
 TargetPortraitBackdrop:RegisterForClicks("AnyUp")
 TargetPortraitBackdrop:SetAttribute("type1", "target")
@@ -134,36 +134,25 @@ hooksecurefunc("UnitFramePortrait_Update", portraitTextureUpdate)
 
 -- CREATE THREAT INDICATOR
 
-local targetThreatBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
-targetThreatBackdrop:SetPoint("BOTTOM", TargetPortraitBackdrop, "TOP", 0, 4)
-targetThreatBackdrop:SetSize(32, 32)
-targetThreatBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-targetThreatBackdrop:SetBackdropColor(unpack(BLACK))
-targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
-
-local targetThreatIcon = targetThreatBackdrop:CreateTexture(nil, "ARTWORK")
-targetThreatIcon:SetPoint("CENTER", targetThreatBackdrop, "CENTER", 0, 0)
-targetThreatIcon:SetSize(26, 26)
+local targetThreatIcon = TargetPortraitBackdrop:CreateTexture(nil, "OVERLAY")
+targetThreatIcon:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", 3, -3)
+targetThreatIcon:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", -3, 3)
+targetThreatIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
 local function updateAggroStatus()
     local isTanking, status, threatPct = UnitDetailedThreatSituation("player", "target")
     
     if status then
-        targetThreatBackdrop:Show()
         targetThreatIcon:Show()
         if isTanking then
             targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionangry")
-            targetThreatBackdrop:SetBackdropBorderColor(unpack(RED))
         elseif threatPct and threatPct >= 80 then
             targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionsad")
-            targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
         else
-            targetThreatBackdrop:Hide()
-            targetThreatIcon:Hide() 
+            targetThreatIcon:Hide()
             return
         end
     else
-        targetThreatBackdrop:Hide()
         targetThreatIcon:Hide()
     end
 end
@@ -350,9 +339,6 @@ local function updateTargetRaidIcon()
         TargetFrameTextureFrameRaidTargetIcon:ClearAllPoints()
         TargetFrameTextureFrameRaidTargetIcon:SetPoint("CENTER", targetRaidIconBackdrop, "CENTER", 0, 0)
         TargetFrameTextureFrameRaidTargetIcon:SetSize(16, 16)
-        if TargetFrameTextureFrameRaidTargetIcon and TargetFrameTextureFrameRaidTargetIcon.SetFrameLevel then
-            TargetFrameTextureFrameRaidTargetIcon:SetFrameLevel(targetRaidIconBackdrop:GetFrameLevel() + 2)
-        end
     else
         targetRaidIconBackdrop:Hide()
     end
