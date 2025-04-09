@@ -1,4 +1,4 @@
--- CREATE TARGET BACKDROPS
+-- CREATE TARGET FRAME COMPONENTS
 
 TargetFrameBackdrop = CreateFrame("Button", nil, TargetFrame, "SecureUnitButtonTemplate, BackdropTemplate")
 TargetFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", 190, 240)
@@ -23,7 +23,7 @@ TargetPortraitBackdrop:SetAttribute("type1", "target")
 TargetPortraitBackdrop:SetAttribute("type2", "togglemenu")
 
 
--- UPDATE TARGET FRAME
+-- CONFIGURE TARGET FRAME LAYOUT
 
 local function updateTargetFrame()
     TargetFrame:ClearAllPoints()
@@ -93,30 +93,7 @@ targetEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
 targetEvents:SetScript("OnEvent", updateTargetFrame)
 
 
--- UPDATE TARGET RESOURCES
-
-local function updateTargetResources()
-    TargetFrameHealthBar:SetStatusBarTexture(BAR)
-    TargetFrameManaBar:SetStatusBarTexture(BAR)
-end
-
-local targetResourceEvents = CreateFrame("Frame")
-targetResourceEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-targetResourceEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
-targetResourceEvents:RegisterEvent("UNIT_HEALTH")
-targetResourceEvents:RegisterEvent("UNIT_HEALTH_FREQUENT")
-targetResourceEvents:RegisterEvent("UNIT_MAXHEALTH")
-targetResourceEvents:RegisterEvent("UNIT_POWER_UPDATE")
-targetResourceEvents:RegisterEvent("UNIT_POWER_FREQUENT")
-targetResourceEvents:RegisterEvent("UNIT_MAXPOWER")
-targetResourceEvents:SetScript("OnEvent", function(_, event, unit)
-    if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or unit == "target" then
-        updateTargetResources()
-    end
-end)
-
-
--- UPDATE TARGET PORTRAIT
+-- SETUP TARGET PORTRAIT
 
 local function targetPortraitUpdate()
     TargetFramePortrait:ClearAllPoints()
@@ -155,11 +132,120 @@ end
 hooksecurefunc("UnitFramePortrait_Update", portraitTextureUpdate)
 
 
--- UPDATE TARGET AURAS
+-- CREATE THREAT INDICATOR
+
+local targetThreatBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
+targetThreatBackdrop:SetPoint("BOTTOM", TargetPortraitBackdrop, "TOP", 0, 4)
+targetThreatBackdrop:SetSize(32, 32)
+targetThreatBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
+targetThreatBackdrop:SetBackdropColor(unpack(BLACK))
+targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
+
+local targetThreatIcon = targetThreatBackdrop:CreateTexture(nil, "ARTWORK")
+targetThreatIcon:SetPoint("CENTER", targetThreatBackdrop, "CENTER", 0, 0)
+targetThreatIcon:SetSize(26, 26)
+
+local function updateAggroStatus()
+    local isTanking, status, threatPct = UnitDetailedThreatSituation("player", "target")
+    
+    if status then
+        targetThreatBackdrop:Show()
+        targetThreatIcon:Show()
+        if isTanking then
+            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionangry")
+            targetThreatBackdrop:SetBackdropBorderColor(unpack(RED))
+        elseif threatPct and threatPct >= 90 then
+            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionsad")
+            targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
+        else
+            targetThreatBackdrop:Hide()
+            targetThreatIcon:Hide() 
+            return
+        end
+    else
+        targetThreatBackdrop:Hide()
+        targetThreatIcon:Hide()
+    end
+end
+
+local targetThreatEvents = CreateFrame("Frame")
+targetThreatEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
+targetThreatEvents:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
+targetThreatEvents:SetScript("OnEvent", updateAggroStatus)
+
+hooksecurefunc("TargetFrame_Update", updateAggroStatus)
+
+
+-- HANDLE TARGET CLASSIFICATION BORDERS
+
+local function updateBackdropBorderColor(color, size)
+    TargetFrameBackdrop:SetBackdrop({
+        edgeFile = BORD,
+        edgeSize = size
+    })
+    TargetFrameBackdrop:SetBackdropBorderColor(unpack(color))
+    TargetPortraitBackdrop:SetBackdrop({
+        edgeFile = BORD,
+        edgeSize = size
+    })
+    TargetPortraitBackdrop:SetBackdropBorderColor(unpack(color))
+end
+
+local function updateTargetType()
+    if not UnitExists("target") then
+        updateBackdropBorderColor(GREY, 12)
+        return
+    end
+
+    local targetClassification = UnitClassification("target")
+    if targetClassification == "worldboss" then
+        updateBackdropBorderColor(ORANGE, 16)
+    elseif targetClassification == "elite" then
+        updateBackdropBorderColor(YELLOW, 16)
+    elseif targetClassification == "rare" or targetClassification == "rareelite" then
+        updateBackdropBorderColor(WHITE, 16)
+    else
+        updateBackdropBorderColor(GREY, 12)
+    end
+end
+
+local targetTypeEvents = CreateFrame("Frame")
+targetTypeEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+targetTypeEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
+targetTypeEvents:RegisterEvent("UNIT_CLASSIFICATION_CHANGED")
+targetTypeEvents:SetScript("OnEvent", function(self, event, unit)
+    if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or (event == "UNIT_CLASSIFICATION_CHANGED" and unit == "target") then
+        updateTargetType()
+    end
+end)
+
+
+-- SETUP TARGET RESOURCE BARS
+
+local function updateTargetResources()
+    TargetFrameHealthBar:SetStatusBarTexture(BAR)
+    TargetFrameManaBar:SetStatusBarTexture(BAR)
+end
+
+local targetResourceEvents = CreateFrame("Frame")
+targetResourceEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+targetResourceEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
+targetResourceEvents:RegisterEvent("UNIT_HEALTH")
+targetResourceEvents:RegisterEvent("UNIT_HEALTH_FREQUENT")
+targetResourceEvents:RegisterEvent("UNIT_MAXHEALTH")
+targetResourceEvents:RegisterEvent("UNIT_POWER_UPDATE")
+targetResourceEvents:RegisterEvent("UNIT_POWER_FREQUENT")
+targetResourceEvents:RegisterEvent("UNIT_MAXPOWER")
+targetResourceEvents:SetScript("OnEvent", function(_, event, unit)
+    if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or unit == "target" then
+        updateTargetResources()
+    end
+end)
+
+
+-- CONFIGURE TARGET AURAS
 
 local function updateTargetAuras()
-
-    -- INITIALIZE VARIABLES
     local maxAurasPerRow = 5
     local maxRows = 10
     local auraSize = 20
@@ -167,8 +253,6 @@ local function updateTargetAuras()
     local horizontalStartOffset = 4
     local verticalStartOffset = 4
 
-
-    -- SETUP AURA FUNCTION
     local function setupAura(aura, row, col, isDebuff)
         aura:ClearAllPoints()
         aura:SetPoint("BOTTOMLEFT", TargetFrameBackdrop, "TOPLEFT", 
@@ -202,8 +286,6 @@ local function updateTargetAuras()
         end
     end
 
-
-    -- COUNT VISIBLE BUFFS
     local buffCount = 0
     local currentBuff = _G["TargetFrameBuff1"]
     while currentBuff and currentBuff:IsShown() and buffCount < maxAurasPerRow * maxRows do
@@ -211,8 +293,6 @@ local function updateTargetAuras()
         currentBuff = _G["TargetFrameBuff"..(buffCount + 1)]
     end
 
-
-    -- UPDATE BUFFS
     for i = 1, buffCount do
         local currentBuff = _G["TargetFrameBuff"..i]
         local row = math.floor((i - 1) / maxAurasPerRow)
@@ -220,8 +300,6 @@ local function updateTargetAuras()
         setupAura(currentBuff, row, col, false)
     end
 
-
-    -- PROCESS DEBUFFS - CONTINUE FROM WHERE BUFFS LEFT OFF
     local debuffCount = 0
     local currentDebuff = _G["TargetFrameDebuff1"]
     
@@ -252,132 +330,31 @@ targetAuraEvents:SetScript("OnEvent", function(self, event, unit)
 end)
 
 
+-- CREATE RAID TARGET ICON
 
-
-
-
--- GENERATE AND UPDATE TARGET CLASSIFICATION TEXT
-
-local targetTypeText = TargetFrame:CreateFontString(nil, "OVERLAY")
-targetTypeText:SetFont(FONT, 12, "OUTLINE")
-targetTypeText:SetPoint("BOTTOM", TargetPortraitBackdrop, "TOP", 0, 4)
-
-local function updateTargetType()
-    if not UnitExists("target") then
-        targetTypeText:SetText("")
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
-        return
-    end
-
-    local targetClassification = UnitClassification("target")
-    
-    if targetClassification == "worldboss" then
-        targetTypeText:SetText("Boss")
-        targetTypeText:SetTextColor(unpack(ORANGE))
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE))
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE))
-    elseif targetClassification == "elite" then
-        targetTypeText:SetText("Elite")
-        targetTypeText:SetTextColor(unpack(YELLOW))
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW))
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW))
-    elseif targetClassification == "rare" or targetClassification == "rareelite" then
-        targetTypeText:SetText("Rare")
-        targetTypeText:SetTextColor(unpack(WHITE))
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
-    else
-        targetTypeText:SetText("")
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
-    end
-end
-
-local targetTypeEvents = CreateFrame("Frame")
-targetTypeEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-targetTypeEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
-targetTypeEvents:RegisterEvent("UNIT_CLASSIFICATION_CHANGED")
-targetTypeEvents:SetScript("OnEvent", function(self, event, unit)
-    if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or (event == "UNIT_CLASSIFICATION_CHANGED" and unit == "target") then
-        updateTargetType()
-    end
-end)
-
-
--- CREATE AGGRO BACKDROP
-
-local targetThreatBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
-targetThreatBackdrop:SetPoint("BOTTOM", targetTypeText, "TOP", 0, 8)
-targetThreatBackdrop:SetSize(28, 28) -- Adjusted size to enclose the icon
-targetThreatBackdrop:SetBackdrop({
-    bgFile = BG,
-    edgeFile = BORD,
-    edgeSize = 12,
-    insets = {left = 2, right = 2, top = 2, bottom = 2}
-})
-targetThreatBackdrop:SetBackdropColor(unpack(BLACK))
-targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
-targetThreatBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 2)
-targetThreatBackdrop:Hide()
-
-local targetThreatIcon = targetThreatBackdrop:CreateTexture(nil, "ARTWORK") -- Changed layer to fit inside the backdrop
-targetThreatIcon:SetPoint("CENTER", targetThreatBackdrop, "CENTER", 0, 0) -- Centered within the backdrop
-targetThreatIcon:SetSize(20, 20) -- Adjusted size to fit inside the backdrop
-
-
--- UPDATE AGGRO BACKDROP AND ICON
-
-local function updateAggroStatus()
-    local isTanking, status, threatPct = UnitDetailedThreatSituation("player", "target")
-    
-    if status then
-        if isTanking then
-            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionangry") -- 237553
-            targetThreatBackdrop:SetBackdropBorderColor(unpack(RED))
-        else
-            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionsad") -- 237555
-            targetThreatBackdrop:SetBackdropBorderColor(unpack(GREY))
-        end
-        targetThreatBackdrop:Show()
-    else
-        targetThreatBackdrop:Hide()
-    end
-end
-
-local targetThreatEvents = CreateFrame("Frame")
-targetThreatEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
-targetThreatEvents:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
-targetThreatEvents:SetScript("OnEvent", updateAggroStatus)
-
-hooksecurefunc("TargetFrame_Update", updateAggroStatus)
-
-
--- UPDATE TARGET RAID ICON
-
-local tragetRaidIconBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
-tragetRaidIconBackdrop:SetPoint("BOTTOMLEFT", TargetPortraitBackdrop, "TOPRIGHT", -2, -2)
-tragetRaidIconBackdrop:SetSize(28, 28)
-tragetRaidIconBackdrop:SetBackdrop({
+local targetRaidIconBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
+targetRaidIconBackdrop:SetPoint("BOTTOMLEFT", TargetPortraitBackdrop, "TOPRIGHT", -2, -2)
+targetRaidIconBackdrop:SetSize(28, 28)
+targetRaidIconBackdrop:SetBackdrop({
     bgFile = BG,
     edgeFile = BORD, edgeSize = 12,
     insets = {left = 3, right = 3, top = 3, bottom = 3}
 })
-tragetRaidIconBackdrop:SetBackdropColor(unpack(BLACK))
-tragetRaidIconBackdrop:SetBackdropBorderColor(unpack(GREY))
-tragetRaidIconBackdrop:Hide()
+targetRaidIconBackdrop:SetBackdropColor(unpack(BLACK))
+targetRaidIconBackdrop:SetBackdropBorderColor(unpack(GREY))
+targetRaidIconBackdrop:Hide()
 
 local function updateTargetRaidIcon()
     if GetRaidTargetIndex("target") then
-        tragetRaidIconBackdrop:Show()
+        targetRaidIconBackdrop:Show()
         TargetFrameTextureFrameRaidTargetIcon:ClearAllPoints()
-        TargetFrameTextureFrameRaidTargetIcon:SetPoint("CENTER", tragetRaidIconBackdrop, "CENTER", 0, 0)
+        TargetFrameTextureFrameRaidTargetIcon:SetPoint("CENTER", targetRaidIconBackdrop, "CENTER", 0, 0)
         TargetFrameTextureFrameRaidTargetIcon:SetSize(16, 16)
         if TargetFrameTextureFrameRaidTargetIcon and TargetFrameTextureFrameRaidTargetIcon.SetFrameLevel then
-            TargetFrameTextureFrameRaidTargetIcon:SetFrameLevel(tragetRaidIconBackdrop:GetFrameLevel() + 2)
+            TargetFrameTextureFrameRaidTargetIcon:SetFrameLevel(targetRaidIconBackdrop:GetFrameLevel() + 2)
         end
     else
-        tragetRaidIconBackdrop:Hide()
+        targetRaidIconBackdrop:Hide()
     end
 end
 
@@ -387,7 +364,7 @@ targetRaidIconEvents:RegisterEvent("RAID_TARGET_UPDATE")
 targetRaidIconEvents:SetScript("OnEvent", updateTargetRaidIcon)
 
 
--- UPDATE TARGET GROUP INDICATORS
+-- POSITION TARGET GROUP INDICATORS
 
 local function targetGroupUpdate()
     TargetFrameTextureFrameLeaderIcon:ClearAllPoints()
@@ -402,7 +379,7 @@ targetGroupFrame:SetScript("OnEvent", targetGroupUpdate)
 hooksecurefunc("TargetFrame_Update", targetGroupUpdate)
 
 
--- UPDATE TARGET CASTBAR
+-- SETUP TARGET CASTBAR
 
 local targetSpellBarBackdrop = CreateFrame("Frame", nil, TargetFrameSpellBar, "BackdropTemplate")
 targetSpellBarBackdrop:SetPoint("TOP", TargetFrameBackdrop, "BOTTOM", 0, 0)
@@ -422,7 +399,8 @@ local function updateTargetCastbar()
     TargetFrameSpellBar.Spark:SetTexture(nil)
     TargetFrameSpellBar.Icon:SetSize(targetSpellBarBackdrop:GetHeight() - 4, targetSpellBarBackdrop:GetHeight() - 4)
     TargetFrameSpellBar.Text:ClearAllPoints()
-    TargetFrameSpellBar.Text:SetAllPoints(targetSpellBarBackdrop)
+    TargetFrameSpellBar.Text:SetPoint("TOPLEFT", targetSpellBarBackdrop, "TOPLEFT", 2, -2)
+    TargetFrameSpellBar.Text:SetPoint("BOTTOMRIGHT", targetSpellBarBackdrop, "BOTTOMRIGHT", -2, 2)
     TargetFrameSpellBar.Text:SetFont(FONT, 10, "OUTLINE")
 end
 
@@ -434,7 +412,7 @@ targetCastBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 targetCastBarEvents:SetScript("OnEvent", updateTargetCastbar)
 
 
--- UPDATE TARGET CONFIGURATION
+-- CONFIGURE TARGET SETTINGS
 
 local function targetConfigUpdate()
     SetCVar("showTargetCastbar", 1)
