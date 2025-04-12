@@ -12,7 +12,6 @@ local function updateAuctionator()
     scanButton:SetPoint("RIGHT", AuctionFrameCloseButton, "LEFT", -20, 0)
 end
 
-
 -- CREATE FRAME FOR AUCTIONATOR UPDATE
 
 local auctionatorFrame = CreateFrame("Frame")
