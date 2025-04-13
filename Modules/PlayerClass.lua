@@ -28,7 +28,7 @@ if classIdentifier == "DRUID" then
     druidManaBorder:SetAllPoints()
     druidManaBorder:SetBackdrop({
         edgeFile = BORD,
-        edgeSize = 12,
+        edgeSize = 8,
     })
     druidManaBorder:SetBackdropBorderColor(unpack(GREY))
     druidManaBorder:SetFrameLevel(druidManaBar:GetFrameLevel() + 1)

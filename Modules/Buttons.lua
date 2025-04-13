@@ -182,11 +182,13 @@ local function addCustomBorderToClassButton(button)
     end
 end
 
+-- ALIGN CLASS BUTTONS BASED ON MULTIBARBOTTOMLEFT VISIBILITY
+
 local function updateClassButtons()
     if InCombatLockdown() then return end
-    
+
     local previousClassButton
-    local anchorButton = MultiBarBottomLeftButton1:IsShown() and MultiBarBottomLeftButton1 or ActionButton1
+    local anchorButton = MultiBarBottomLeft:IsShown() and MultiBarBottomLeftButton1 or ActionButton1
 
     for numStances = 1, NUM_STANCE_SLOTS do
         local classButton = _G["StanceButton" .. numStances]
