@@ -35,18 +35,24 @@ local function updatePlayerFrame()
     PlayerFrameBackground:SetPoint("BOTTOMRIGHT", PlayerFrameBackdrop, "BOTTOMRIGHT", -3, 3)
 
     PlayerFrameTexture:SetTexture(nil)
-    PlayerStatusGlow:SetAlpha(0)
+
     PlayerStatusTexture:Hide()
     PlayerStatusTexture:SetTexture(nil)
+    PlayerStatusGlow:SetAlpha(0)
+    PlayerStatusGlow:Hide()
 
     PlayerAttackBackground:SetTexture(nil)
     PlayerAttackGlow:SetTexture(nil)
     PlayerAttackIcon:SetTexture(nil)
-    PlayerStatusGlow:Hide()
+
     PlayerRestGlow:SetTexture(nil)
-    PlayerRestIcon:SetTexture(nil)
+
+    PlayerRestIcon:ClearAllPoints()
+    PlayerRestIcon:SetPoint("BOTTOMRIGHT", PlayerPortraitBackdrop, "TOPLEFT", 12, 0)
+    PlayerRestIcon:SetScale(0.75)
+
     PlayerPVPIconHitArea:Hide()
-    
+
     PlayerPVPTimerText:Hide()
     PlayerPVPTimerText:SetAlpha(0)
 
