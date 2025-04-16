@@ -55,10 +55,7 @@ local function updateTargetFrame()
     TargetFrameTextureFrameLevelText:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
     TargetFrameTextureFrameLevelText:SetFont(FONT, 12, "OUTLINE")
 
-    TargetFrameTextureFrameHighLevelTexture:ClearAllPoints()
-    TargetFrameTextureFrameHighLevelTexture:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
-    TargetFrameTextureFrameHighLevelTexture:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_8")
-    TargetFrameTextureFrameHighLevelTexture:SetSize(16, 16)
+    TargetFrameTextureFrameHighLevelTexture:Hide()
 
     if UnitExists("target") then
         if UnitIsPlayer("target") then
@@ -135,13 +132,13 @@ hooksecurefunc("UnitFramePortrait_Update", portraitTextureUpdate)
 -- CREATE THREAT INDICATOR
 
 local targetThreatIcon = TargetPortraitBackdrop:CreateTexture(nil, "OVERLAY")
-targetThreatIcon:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", 3, -3)
-targetThreatIcon:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", -3, 3)
-targetThreatIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+targetThreatIcon:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", 4, -4)
+targetThreatIcon:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", -4, 4)
+targetThreatIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 
 local function updateAggroStatus()
     local isTanking, status, threatPct = UnitDetailedThreatSituation("player", "target")
-    
+
     if status then
         targetThreatIcon:Show()
         if isTanking then
@@ -165,36 +162,52 @@ targetThreatEvents:SetScript("OnEvent", updateAggroStatus)
 hooksecurefunc("TargetFrame_Update", updateAggroStatus)
 
 
--- HANDLE TARGET CLASSIFICATION BORDERS
+-- CREATE SECONDARY PORTRAIT BORDER FOR CLASSIFICATION
 
-local function updateBackdropBorderColor(color, size)
-    TargetFrameBackdrop:SetBackdrop({
-        edgeFile = BORD,
-        edgeSize = size
-    })
-    TargetFrameBackdrop:SetBackdropBorderColor(unpack(color))
-    TargetPortraitBackdrop:SetBackdrop({
-        edgeFile = BORD,
-        edgeSize = size
-    })
-    TargetPortraitBackdrop:SetBackdropBorderColor(unpack(color))
-end
+local TargetPortraitClassificationBorder = CreateFrame("Frame", nil, TargetPortraitBackdrop, "BackdropTemplate")
+TargetPortraitClassificationBorder:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", -3, 3)
+TargetPortraitClassificationBorder:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", 3, -3)
+TargetPortraitClassificationBorder:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
+TargetPortraitClassificationBorder:SetFrameLevel(TargetPortraitBackdrop:GetFrameLevel() + 1)
+TargetPortraitClassificationBorder:Hide()
+
+-- RECOLOR TARGET BACKDROPS AND SHOW/RECOLOR CLASSIFICATION BORDER BASED ON TARGET TYPE
 
 local function updateTargetType()
+
+    -- HANDLE NO TARGET CASE
     if not UnitExists("target") then
-        updateBackdropBorderColor(GREY, 12)
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitClassificationBorder:Hide()
         return
     end
 
-    local targetClassification = UnitClassification("target")
-    if targetClassification == "worldboss" then
-        updateBackdropBorderColor(ORANGE, 16)
-    elseif targetClassification == "elite" then
-        updateBackdropBorderColor(YELLOW, 16)
-    elseif targetClassification == "rare" or targetClassification == "rareelite" then
-        updateBackdropBorderColor(WHITE, 16)
+    -- HANDLE CLASSIFICATION LOGIC DIRECTLY
+    local classification = UnitClassification("target")
+    if classification == "worldboss" then
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE))
+        TargetPortraitClassificationBorder:SetBackdropBorderColor(unpack(ORANGE))
+        TargetPortraitClassificationBorder:Show()
+    elseif classification == "elite" then
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW))
+        TargetPortraitClassificationBorder:SetBackdropBorderColor(unpack(YELLOW))
+        TargetPortraitClassificationBorder:Show()
+    elseif classification == "rareelite" then
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitClassificationBorder:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitClassificationBorder:Show()
+    elseif classification == "rare" then
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitClassificationBorder:Hide()
     else
-        updateBackdropBorderColor(GREY, 12)
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitClassificationBorder:Hide()
     end
 end
 
