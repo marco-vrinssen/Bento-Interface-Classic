@@ -17,7 +17,7 @@ local function addonButtonUpdate()
 
     -- UPDATE BUTTONS
 
-    local angleStep = 90 / #buttons
+    local angleStep = 120 / #buttons
     local radius = 100
 
     for index, data in ipairs(buttons) do
