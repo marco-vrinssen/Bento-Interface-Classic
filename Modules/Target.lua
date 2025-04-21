@@ -38,15 +38,28 @@ local function updateTargetFrame()
     TargetFrameBackground:SetPoint("TOPLEFT", TargetFrameBackdrop, "TOPLEFT", 3, -3)
     TargetFrameBackground:SetPoint("BOTTOMRIGHT", TargetFrameBackdrop, "BOTTOMRIGHT", -3, 3)
 
-    TargetFrameTextureFrameTexture:Hide()
-    TargetFrameTextureFramePVPIcon:SetAlpha(0)
+    -- HIDE AND HOOK UNWANTED TARGET FRAME ELEMENTS
+
+    local alwaysHiddenTargetElements = {
+        TargetFrameTextureFrameTexture,
+        TargetFrameTextureFramePVPIcon,
+        TargetFrameNameBackground,
+        TargetFrameTextureFrameHighLevelTexture,
+    }
+
+    for _, alwaysHiddenTargetElement in ipairs(alwaysHiddenTargetElements) do
+        if alwaysHiddenTargetElement and not alwaysHiddenTargetElement._bentoOnShowHooked then
+            alwaysHiddenTargetElement:Hide()
+            alwaysHiddenTargetElement:HookScript("OnShow", alwaysHiddenTargetElement.Hide)
+            alwaysHiddenTargetElement._bentoOnShowHooked = true
+        end
+    end
 
     TargetFrameTextureFrameDeadText:ClearAllPoints()
     TargetFrameTextureFrameDeadText:SetPoint("CENTER", TargetFrameBackdrop, "CENTER", 0, -4)
     TargetFrameTextureFrameDeadText:SetFont(FONT, 12, "OUTLINE")
     TargetFrameTextureFrameDeadText:SetTextColor(unpack(GREY))
 
-    TargetFrameNameBackground:Hide()
     TargetFrameTextureFrameName:ClearAllPoints()
     TargetFrameTextureFrameName:SetPoint("TOP", TargetFrameBackdrop, "TOP", 0, -7)
     TargetFrameTextureFrameName:SetFont(FONT, 12, "OUTLINE")
@@ -55,22 +68,20 @@ local function updateTargetFrame()
     TargetFrameTextureFrameLevelText:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
     TargetFrameTextureFrameLevelText:SetFont(FONT, 12, "OUTLINE")
 
-    TargetFrameTextureFrameHighLevelTexture:Hide()
-
     if UnitExists("target") then
         if UnitIsPlayer("target") then
             if UnitIsEnemy("player", "target") and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(RED)) -- Red for enemy players that can be attacked
+                TargetFrameTextureFrameName:SetTextColor(unpack(RED))
             else
-                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE)) -- White for neutral or friendly players
+                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE))
             end
         else
             if UnitIsEnemy("player", "target") and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(RED)) -- Red for hostile NPCs
+                TargetFrameTextureFrameName:SetTextColor(unpack(RED))
             elseif UnitReaction("player", "target") == 4 and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(YELLOW)) -- Yellow for neutral but attackable NPCs
+                TargetFrameTextureFrameName:SetTextColor(unpack(YELLOW))
             else
-                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE)) -- White for neutral non-attackable or friendly NPCs
+                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE))
             end
         end
     end

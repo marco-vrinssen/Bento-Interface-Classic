@@ -25,7 +25,7 @@ PlayerPortraitBackdrop:SetAttribute("type2", "togglemenu")
 
 -- UPDATE PLAYER FRAME
   
-local function updatePlayerFrame()
+local function updatePlayerElements()
     PlayerFrame:ClearAllPoints()
     PlayerFrame:SetPoint("TOPLEFT", PlayerPortraitBackdrop, "TOPLEFT", 0, 0)
     PlayerFrame:SetPoint("BOTTOMRIGHT", PlayerFrameBackdrop, "BOTTOMRIGHT", 0, 0)
@@ -34,43 +34,32 @@ local function updatePlayerFrame()
     PlayerFrameBackground:SetPoint("TOPLEFT", PlayerFrameBackdrop, "TOPLEFT", 3, -3)
     PlayerFrameBackground:SetPoint("BOTTOMRIGHT", PlayerFrameBackdrop, "BOTTOMRIGHT", -3, 3)
 
-    PlayerFrameTexture:SetTexture(nil)
-
-    PlayerStatusTexture:Hide()
-    PlayerStatusTexture:SetTexture(nil)
-    PlayerStatusGlow:SetAlpha(0)
-    PlayerStatusGlow:Hide()
-
-    PlayerAttackBackground:SetTexture(nil)
-    PlayerAttackGlow:SetTexture(nil)
-    PlayerAttackIcon:SetTexture(nil)
-
-    PlayerRestGlow:SetTexture(nil)
-
-    PlayerRestIcon:SetTexture(nil)
-
-    PlayerPVPIconHitArea:Hide()
-
-    PlayerPVPTimerText:Hide()
-    PlayerPVPTimerText:SetAlpha(0)
-
-    PlayerPVPIcon:SetAlpha(0)
-
     PlayerName:ClearAllPoints()
     PlayerName:SetPoint("TOP", PlayerFrameBackdrop, "TOP", 0, -6)
     PlayerName:SetFont(FONT, 12, "OUTLINE")
     PlayerName:SetTextColor(unpack(WHITE))
 
-    if UnitLevel("player") == MAX_PLAYER_LEVEL then
-        PlayerLevelText:Hide()
-    else
-        PlayerLevelText:Show()
+    local alwaysHiddenElements = {
+        PlayerFrameTexture,
+        PlayerStatusTexture,
+        PlayerStatusGlow,
+        PlayerAttackBackground,
+        PlayerAttackGlow,
+        PlayerAttackIcon,
+        PlayerRestGlow,
+        PlayerRestIcon,
+        PlayerPVPIconHitArea,
+        PlayerPVPTimerText,
+        PlayerPVPIcon,
+    }
+    
+    for _, alwaysHiddenElement in ipairs(alwaysHiddenElements) do
+        if alwaysHiddenElement and not alwaysHiddenElement._bentoOnShowHooked then
+            alwaysHiddenElement:Hide()
+            alwaysHiddenElement:HookScript("OnShow", alwaysHiddenElement.Hide)
+            alwaysHiddenElement._bentoOnShowHooked = true
+        end
     end
-
-    PlayerLevelText:ClearAllPoints()
-    PlayerLevelText:SetPoint("TOP", PlayerPortraitBackdrop, "BOTTOM", 0, -4)
-    PlayerLevelText:SetFont(FONT, 12, "OUTLINE")
-    PlayerLevelText:SetTextColor(unpack(WHITE))
 
     PlayerFrameHealthBar:ClearAllPoints()
     PlayerFrameHealthBar:SetSize(PlayerFrameBackground:GetWidth(), 16)
@@ -95,9 +84,33 @@ local function updatePlayerFrame()
     PlayerFrameManaBarTextRight:SetFont(FONT, 8, "OUTLINE")
 end
 
-local playerFrameEvents = CreateFrame("Frame")
-playerFrameEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-playerFrameEvents:SetScript("OnEvent", updatePlayerFrame)
+local playerElementEvents = CreateFrame("Frame")
+playerElementEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+playerElementEvents:SetScript("OnEvent", updatePlayerElements)
+
+
+-- UPDATE PLAYER LEVEL TEXT
+
+local function updatePlayerLevel()
+    local currentPlayerLevel = UnitLevel("player")
+    if currentPlayerLevel == MAX_PLAYER_LEVEL then
+        PlayerLevelText:Hide()
+    else
+        PlayerLevelText:Show()
+    end
+
+    PlayerLevelText:ClearAllPoints()
+    PlayerLevelText:SetPoint("TOP", PlayerPortraitBackdrop, "BOTTOM", 0, -4)
+    PlayerLevelText:SetFont(FONT, 12, "OUTLINE")
+    PlayerLevelText:SetTextColor(unpack(WHITE))
+end
+
+local playerLevelEvents = CreateFrame("Frame")
+playerLevelEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+playerLevelEvents:RegisterEvent("PLAYER_LEVEL_UP")
+playerLevelEvents:SetScript("OnEvent", function()
+    updatePlayerLevel()
+end)
 
 
 -- UPDATE PLAYER RESOURCE TEXTURES
