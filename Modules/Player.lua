@@ -89,28 +89,27 @@ playerElementEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 playerElementEvents:SetScript("OnEvent", updatePlayerElements)
 
 
--- UPDATE PLAYER LEVEL TEXT
+-- ADD DELAYED PLAYER LEVEL TEXT UPDATE
 
-local function updatePlayerLevel()
-    local currentPlayerLevel = UnitLevel("player")
-    if currentPlayerLevel == MAX_PLAYER_LEVEL then
-        PlayerLevelText:Hide()
-    else
-        PlayerLevelText:Show()
-    end
-
-    PlayerLevelText:ClearAllPoints()
-    PlayerLevelText:SetPoint("TOP", PlayerPortraitBackdrop, "BOTTOM", 0, -4)
-    PlayerLevelText:SetFont(FONT, 12, "OUTLINE")
-    PlayerLevelText:SetTextColor(unpack(WHITE))
+local function delayedUpdatePlayerLevel()
+    C_Timer.After(0.2, function()
+        local currentPlayerLevel = UnitLevel("player")
+        if currentPlayerLevel == MAX_PLAYER_LEVEL then
+            PlayerLevelText:Hide()
+        else
+            PlayerLevelText:Show()
+        end
+        PlayerLevelText:ClearAllPoints()
+        PlayerLevelText:SetPoint("TOP", PlayerPortraitBackdrop, "BOTTOM", 0, -4)
+        PlayerLevelText:SetFont(FONT, 12, "OUTLINE")
+        PlayerLevelText:SetTextColor(unpack(WHITE))
+    end)
 end
 
 local playerLevelEvents = CreateFrame("Frame")
 playerLevelEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 playerLevelEvents:RegisterEvent("PLAYER_LEVEL_UP")
-playerLevelEvents:SetScript("OnEvent", function()
-    updatePlayerLevel()
-end)
+playerLevelEvents:SetScript("OnEvent", delayedUpdatePlayerLevel)
 
 
 -- UPDATE PLAYER RESOURCE TEXTURES
