@@ -161,7 +161,7 @@ playerPortraitEvents:SetScript("OnEvent", updatePlayerPortrait)
 
 local playerStatusBackdrop = CreateFrame("Frame", nil, PlayerPortraitBackdrop, "BackdropTemplate")
 playerStatusBackdrop:SetPoint("BOTTOMRIGHT", PlayerPortraitBackdrop, "TOPLEFT", 2, -2)
-playerStatusBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 10})
+playerStatusBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
 playerStatusBackdrop:SetBackdropBorderColor(unpack(GREY))
 playerStatusBackdrop:SetSize(28, 28)
 playerStatusBackdrop:Hide()
