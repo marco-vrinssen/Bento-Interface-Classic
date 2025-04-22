@@ -157,49 +157,6 @@ playerPortraitEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 playerPortraitEvents:SetScript("OnEvent", updatePlayerPortrait)
 
 
--- CREATE PLAYER STATUS BACKDROP AND ICON
-
-local playerStatusBackdrop = CreateFrame("Frame", nil, PlayerPortraitBackdrop, "BackdropTemplate")
-playerStatusBackdrop:SetPoint("BOTTOMRIGHT", PlayerPortraitBackdrop, "TOPLEFT", 2, -2)
-playerStatusBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-playerStatusBackdrop:SetBackdropBorderColor(unpack(GREY))
-playerStatusBackdrop:SetSize(28, 28)
-playerStatusBackdrop:Hide()
-
-local playerStatusIcon = playerStatusBackdrop:CreateTexture(nil, "BACKGROUND")
-playerStatusIcon:SetPoint("TOPLEFT", playerStatusBackdrop, "TOPLEFT", 3, -3)
-playerStatusIcon:SetPoint("BOTTOMRIGHT", playerStatusBackdrop, "BOTTOMRIGHT", -3, 3)
-playerStatusIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-playerStatusBackdrop:SetFrameLevel(PlayerPortraitBackdrop:GetFrameLevel() + 2)
-
-
--- UPDATE PLAYER STATUS ICON FOR COMBAT AND RESTING
-
-local function updatePlayerStatusIcon()
-    
-    if InCombatLockdown() then
-        playerStatusIcon:SetTexture("Interface\\Icons\\Ability_DualWield")
-        playerStatusBackdrop:Show()
-        return
-    end
-
-    if IsResting() then
-        playerStatusIcon:SetTexture("Interface\\Icons\\Spell_Nature_Sleep")
-        playerStatusBackdrop:Show()
-        return
-    end
-
-    playerStatusBackdrop:Hide()
-end
-
-local playerStatusEvents = CreateFrame("Frame")
-playerStatusEvents:RegisterEvent("PLAYER_REGEN_ENABLED")
-playerStatusEvents:RegisterEvent("PLAYER_REGEN_DISABLED")
-playerStatusEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-playerStatusEvents:RegisterEvent("PLAYER_UPDATE_RESTING")
-playerStatusEvents:SetScript("OnEvent", updatePlayerStatusIcon)
-
-
 -- UPDATE PLAYER GROUP ELEMENTS
   
 local function updatePlayerGroup()
