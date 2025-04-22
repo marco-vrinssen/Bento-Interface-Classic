@@ -176,9 +176,9 @@ hooksecurefunc("TargetFrame_Update", updateAggroStatus)
 -- CREATE SECONDARY PORTRAIT BORDER FOR CLASSIFICATION
 
 local TargetPortraitClassificationBorder = CreateFrame("Frame", nil, TargetPortraitBackdrop, "BackdropTemplate")
-TargetPortraitClassificationBorder:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", -3, 3)
-TargetPortraitClassificationBorder:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", 3, -3)
-TargetPortraitClassificationBorder:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
+TargetPortraitClassificationBorder:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", -2, 2)
+TargetPortraitClassificationBorder:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", 2, -2)
+TargetPortraitClassificationBorder:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
 TargetPortraitClassificationBorder:SetFrameLevel(TargetPortraitBackdrop:GetFrameLevel() + 1)
 TargetPortraitClassificationBorder:Hide()
 
