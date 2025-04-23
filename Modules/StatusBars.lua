@@ -52,14 +52,12 @@ local function updateXPBar()
     MainMenuExpBar:EnableMouse(true)
 end
 
-
 local xpBarEvents = CreateFrame("Frame")
 xpBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 xpBarEvents:RegisterEvent("PLAYER_LEVEL_UP")
 xpBarEvents:RegisterEvent("PLAYER_XP_UPDATE")
 xpBarEvents:RegisterEvent("UPDATE_EXHAUSTION")
 xpBarEvents:SetScript("OnEvent", updateXPBar)
-
 
 -- EXPERIENCE TOOLTIP FUNCTIONALITY
 
@@ -71,7 +69,6 @@ local function xpTooltip()
     
     GameTooltip:SetOwner(MainMenuExpBar, "ANCHOR_BOTTOMRIGHT", 4, -4)
 
-    -- UPDATE XP TOOLTIP HEADING COLOR
     if GetXPExhaustion() then
         GameTooltip:AddLine("Experience", unpack(BLUE))
     else
@@ -88,7 +85,6 @@ end
 
 MainMenuExpBar:HookScript("OnEnter", xpTooltip)
 MainMenuExpBar:HookScript("OnLeave", function() GameTooltip:Hide() end)
-
 
 -- REPUTATION BAR
 
@@ -113,7 +109,6 @@ local function hideRepTextures()
     end
 end
 
-
 local function updateRepBar()
     if not GetWatchedFactionInfo() then
         ReputationWatchBar.StatusBar:Hide()
@@ -128,7 +123,6 @@ local function updateRepBar()
     ReputationWatchBar.StatusBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 16, -32)
     ReputationWatchBar.StatusBar:SetStatusBarTexture(BAR)
 
-    -- SET REPUTATION BAR COLOR TO ORANGE
     ReputationWatchBar.StatusBar:SetStatusBarColor(unpack(ORANGE))
 
     ReputationWatchBar.StatusBar:EnableMouse(true)
@@ -139,7 +133,6 @@ local repBarEvents = CreateFrame("Frame")
 repBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 repBarEvents:RegisterEvent("UPDATE_FACTION")
 repBarEvents:SetScript("OnEvent", updateRepBar)
-
 
 -- REPUTATION TOOLTIP
 
@@ -152,7 +145,6 @@ local function repTooltip()
 
         GameTooltip:SetOwner(ReputationWatchBar.StatusBar, "ANCHOR_BOTTOMRIGHT", 4, -4)
 
-        -- UPDATE REPUTATION TOOLTIP HEADING COLOR
         GameTooltip:AddLine("Reputation", unpack(ORANGE))
 
         GameTooltip:AddDoubleLine("Faction:", name)
@@ -167,11 +159,9 @@ end
 ReputationWatchBar.StatusBar:HookScript("OnEnter", repTooltip)
 ReputationWatchBar.StatusBar:HookScript("OnLeave", function() GameTooltip:Hide() end)
 
-
 -- CREATE EXHAUSTION TIMER BACKDROP
 
 local function exhTimerBackdrop(exhaustionTimer)
-    
     if not _G[exhaustionTimer.."CustomBackdrop"] then
         local exhTimerBackdrop = CreateFrame("Frame", exhaustionTimer.."CustomBackdrop", _G[exhaustionTimer.."StatusBar"], "BackdropTemplate")
         exhTimerBackdrop:SetPoint("TOPLEFT", _G[exhaustionTimer.."StatusBar"], "TOPLEFT", -3, 3)
@@ -182,23 +172,18 @@ local function exhTimerBackdrop(exhaustionTimer)
     end
 end
 
-
 -- UPDATE EXHAUSTION TIMERS
 
 local function updateExhTimer()
-    
     for i = 1, MIRRORTIMER_NUMTIMERS do
         local exhaustionTimer = "MirrorTimer"..i
-        
         _G[exhaustionTimer.."Border"]:Hide()
         _G[exhaustionTimer.."StatusBar"]:SetStatusBarTexture(BAR)
         _G[exhaustionTimer.."Text"]:ClearAllPoints()
         _G[exhaustionTimer.."Text"]:SetPoint("CENTER", _G[exhaustionTimer.."StatusBar"], "CENTER", 0, 0)
-
         exhTimerBackdrop(exhaustionTimer)
     end
 end
-
 
 local exhTimerEvents = CreateFrame("Frame")
 exhTimerEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
