@@ -11,13 +11,19 @@ ToTFrameBackdrop:RegisterForClicks("AnyUp")
 ToTFrameBackdrop:SetAttribute("type1", "target")
 ToTFrameBackdrop:SetAttribute("type2", "togglemenu")
 
-
 -- UPDATE TARGET TARGET FRAME
 
 local function UpdateToT()
 
 	TargetFrameToT:ClearAllPoints()
 	TargetFrameToT:SetPoint("CENTER", ToTFrameBackdrop, "CENTER", 0, 0)
+
+	TargetFrameToTTextureFrameTexture:Hide()
+	TargetFrameToTPortrait:Hide()
+
+	TargetFrameToTBackground:ClearAllPoints()
+	TargetFrameToTBackground:SetPoint("TOPLEFT", ToTFrameBackdrop, "TOPLEFT", 2, -2)
+	TargetFrameToTBackground:SetPoint("BOTTOMRIGHT", ToTFrameBackdrop, "BOTTOMRIGHT", -2, 2)
 
 	TargetFrameToTTextureFrame:Hide()
 	TargetFrameToTTextureFrameName:SetParent(TargetFrameToT)
@@ -39,10 +45,6 @@ local function UpdateToT()
 	TargetFrameToTManaBar:SetWidth(ToTFrameBackdrop:GetWidth() - 6)
 	TargetFrameToTManaBar:SetStatusBarTexture(BAR)
 
-	TargetFrameToTBackground:Hide()
-	TargetFrameToTTextureFrameTexture:Hide()
-	TargetFrameToTPortrait:Hide()
-
 	for i = 1, MAX_TARGET_BUFFS do
 		local ToTBuff = _G["TargetFrameToTBuff" .. i]
 		if ToTBuff then
@@ -58,17 +60,20 @@ local function UpdateToT()
 	end
 end
 
+-- REGISTER TARGET TARGET FRAME EVENTS
+
 local ToTEvents = CreateFrame("Frame")
 ToTEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 ToTEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
 ToTEvents:SetScript("OnEvent", UpdateToT)
 
-
--- UPDATE TARGET OF TARGET CONFIGURATIOn
+-- UPDATE TARGET OF TARGET CONFIGURATION
 
 local function UpdateToTConfig()
 	SetCVar("ShowTargetOfTarget", 1)
 end
+
+-- REGISTER TARGET OF TARGET CONFIGURATION EVENTS
 
 local ToTConfigEvents = CreateFrame("Frame")
 ToTConfigEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
