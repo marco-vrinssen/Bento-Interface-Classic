@@ -22,18 +22,26 @@ local function hideFrameTextures(frame)
     end
 end
 
-
 -- CHAT FRAME CUSTOMIZATION
 
 local function customizeChatTab(chatFrame)
     local chatTab = _G[chatFrame:GetName() .. "Tab"]
     local chatTabText = _G[chatFrame:GetName() .. "TabText"]
-    
+    local chatTabFlash = _G[chatFrame:GetName() .. "TabFlash"]
+
     hideFrameTextures(chatTab)
     if chatTabText then
         chatTabText:SetFont(FONT, 14)
         chatTabText:ClearAllPoints()
         chatTabText:SetPoint("LEFT", chatTab, "LEFT", 4, 0)
+    end
+
+    if chatTabFlash and chatTabText then
+        chatTabFlash:ClearAllPoints()
+        chatTabFlash:SetAllPoints(chatTabText)
+        chatTabFlash:SetPoint("CENTER", chatTabText, "CENTER", 0, 0)
+        chatTabFlash:SetWidth(chatTabText:GetWidth())
+        chatTabFlash:SetHeight(chatTabText:GetHeight())
     end
 end
 
@@ -51,23 +59,23 @@ local function addCustomBackdropToEditBox(editBox)
         editBoxBackdrop:SetBackdropColor(unpack(BLACK))
         editBoxBackdrop:SetBackdropBorderColor(unpack(GREY))
         editBox.customBackdrop = editBoxBackdrop
-        
+
         editBoxBackdrop:SetFrameLevel(editBox:GetFrameLevel() - 1)
     end
 end
 
 local function customizeChatFrame(chatFrame)
     hideFrameTextures(chatFrame)
-    
+
     local elementsToHide = {
         "ButtonFrame", "EditBoxLeft", "EditBoxMid", "EditBoxRight",
         "EditBoxHeaderSuffix", "TabUpButton", "TabDownButton",
         "TabBottomButton", "TabMinimizeButton"
     }
-    
+
     hideChildUIElements(chatFrame, elementsToHide)
     customizeChatTab(chatFrame)
-    
+
     local editBox = _G[chatFrame:GetName() .. "EditBox"]
     if editBox then
         addCustomBackdropToEditBox(editBox)
@@ -85,7 +93,6 @@ local function alignEditBoxHeaders()
     end
 end
 
-
 -- CHAT SCROLL BEHAVIOR
 
 local function hookChatTabScroll(chatFrameID)
@@ -102,30 +109,29 @@ local function updateChatScrollBehavior()
     end
 end
 
-
 -- CHAT COLORS CONFIGURATION
 
 local function setClassColorsForChatTypes()
     SetCVar("chatClassColorOverride", "0")
-    
+
     for k, _ in pairs(ChatTypeGroup) do
         SetChatColorNameByClass(k, true)
     end
-    
+
     local additionalTypes = {
         "SAY", "EMOTE", "YELL", "GREEN_CHAT", "OFFICER", "PINK_CHAT",
         "PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "RAID_WARNING",
         "INSTANCE_CHAT", "INSTANCE_CHAT_LEADER", "VOICE_TEXT"
     }
-    
+
     for _, v in ipairs(additionalTypes) do
         SetChatColorNameByClass(v, true)
     end
-    
+
     for i = 1, 50 do
         SetChatColorNameByClass("CORAL_CHAT" .. i, true)
     end
-    
+
     local channels = { GetChannelList() }
     for i = 1, #channels, 3 do
         SetChatColorNameByClass("CHANNEL" .. channels[i], true)
@@ -145,7 +151,7 @@ local function setCustomChatColors()
     ChangeChatColor("WHISPER", unpack(PINK_CHAT))
     ChangeChatColor("BN_WHISPER", unpack(PINK_CHAT))
     ChangeChatColor("RAID", unpack(BLUE_CHAT))
-    ChangeChatColor("RAID_LEADER", unpack(BLUE_CHAT)) 
+    ChangeChatColor("RAID_LEADER", unpack(BLUE_CHAT))
     ChangeChatColor("RAID_WARNING", unpack(BLUE_CHAT))
     ChangeChatColor("PARTY", unpack(BLUE_CHAT))
     ChangeChatColor("PARTY_LEADER", unpack(BLUE_CHAT))
@@ -160,7 +166,7 @@ local function setCustomChatColors()
     end
 
     ChangeChatColor("COMBAT_XP_GAIN", unpack(WHITE_CHAT))
-    ChangeChatColor("COMBAT_HONOR_GAIN", unpack(WHITE_CHAT)) 
+    ChangeChatColor("COMBAT_HONOR_GAIN", unpack(WHITE_CHAT))
     ChangeChatColor("COMBAT_FACTION_CHANGE", unpack(WHITE_CHAT))
     ChangeChatColor("SKILL", unpack(WHITE_CHAT))
     ChangeChatColor("LOOT", unpack(WHITE_CHAT))
@@ -179,7 +185,7 @@ local function setCustomChatColors()
     ChangeChatColor("BG_SYSTEM_ALLIANCE", unpack(ORANGE_CHAT))
     ChangeChatColor("BG_SYSTEM_HORDE", unpack(ORANGE_CHAT))
     ChangeChatColor("BG_SYSTEM_NEUTRAL", unpack(ORANGE_CHAT))
-    
+
     ChangeChatColor("MONSTER_SAY", unpack(ORANGE_CHAT))
     ChangeChatColor("MONSTER_EMOTE", unpack(ORANGE_CHAT))
     ChangeChatColor("MONSTER_YELL", unpack(ORANGE_CHAT))
@@ -199,7 +205,6 @@ local function recolorWhisperMessages(self, event, message, sender, ...)
     end
 end
 
-
 -- REPOSITION AND UPDATE CHAT FRAME
 
 local function resetChatFrameCustomizations(chatFrame)
@@ -214,33 +219,32 @@ local function resetChatFrameCustomizations(chatFrame)
     chatFrame:SetMaxResize(800, 600)
 end
 
-
 -- MAIN FUNCTIONS
 
 local function updateAllChatFrames()
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame" .. i]
         customizeChatFrame(chatFrame)
-        
+
         local editBox = _G["ChatFrame" .. i .. "EditBox"]
         if editBox then
             addCustomBackdropToEditBox(editBox)
         end
     end
-    
+
     hideUIElement(ChatFrameMenuButton)
     hideUIElement(ChatFrameChannelButton)
     if CombatLogQUIckButtonFrame_Custom then
         CombatLogQUIckButtonFrame_Custom:SetAlpha(0)
     end
-    
+
     alignEditBoxHeaders()
 end
 
 local function onChatFrameEvent(self, event, ...)
     updateAllChatFrames()
     updateChatScrollBehavior()
-    
+
     if event == "PLAYER_ENTERING_WORLD" then
         C_Timer.After(1, updateChatColors)
         C_Timer.After(15, updateChatColors)
@@ -249,8 +253,8 @@ local function onChatFrameEvent(self, event, ...)
     end
 end
 
-
 -- EVENT
+
 local chatFrameEvents = CreateFrame("Frame")
 chatFrameEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 chatFrameEvents:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS")
@@ -268,7 +272,7 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
         customizeChatFrame(currentChatFrame)
         hookChatTabScroll(currentChatFrame:GetID())
         alignEditBoxHeaders()
-        
+
         local editBox = _G[currentChatFrame:GetName() .. "EditBox"]
         if editBox then
             addCustomBackdropToEditBox(editBox)
