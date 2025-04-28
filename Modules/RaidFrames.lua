@@ -7,7 +7,6 @@ end
 
 hooksecurefunc("CompactUnitFrame_UpdateAuras", hideAllAuras)
 
-
 -- UPDATE GROUP FRAME CONFIG
 
 local function updateGroupConfig()
@@ -17,6 +16,6 @@ local function updateGroupConfig()
 end
 
 local groupConfigEvents = CreateFrame("Frame")
-groupConfigEvents:RegisterEvent("PLAYER_LOGIN")
+groupConfigEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 groupConfigEvents:RegisterEvent("GROUP_ROSTER_UPDATE")
 groupConfigEvents:SetScript("OnEvent", updateGroupConfig)
