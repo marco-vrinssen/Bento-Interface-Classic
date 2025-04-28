@@ -22,6 +22,14 @@ TargetPortraitBackdrop:RegisterForClicks("AnyUp")
 TargetPortraitBackdrop:SetAttribute("type1", "target")
 TargetPortraitBackdrop:SetAttribute("type2", "togglemenu")
 
+-- CREATE OUTER BORDER AROUND TARGET FRAME AND PORTRAIT
+
+local TargetOuterClassificationBorder = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
+TargetOuterClassificationBorder:SetPoint("TOPLEFT", TargetFrameBackdrop, "TOPLEFT", -4, 4)
+TargetOuterClassificationBorder:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", 4, -4)
+TargetOuterClassificationBorder:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
+TargetOuterClassificationBorder:SetFrameLevel(TargetFrameBackdrop:GetFrameLevel() + 10)
+TargetOuterClassificationBorder:Hide()
 
 -- CONFIGURE TARGET FRAME LAYOUT
 
@@ -100,7 +108,6 @@ targetEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 targetEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
 targetEvents:SetScript("OnEvent", updateTargetFrame)
 
-
 -- SETUP TARGET PORTRAIT
 
 local function targetPortraitUpdate()
@@ -139,7 +146,6 @@ end
 
 hooksecurefunc("UnitFramePortrait_Update", portraitTextureUpdate)
 
-
 -- CREATE THREAT INDICATOR
 
 local targetThreatIcon = TargetPortraitBackdrop:CreateTexture(nil, "OVERLAY")
@@ -172,53 +178,42 @@ targetThreatEvents:SetScript("OnEvent", updateAggroStatus)
 
 hooksecurefunc("TargetFrame_Update", updateAggroStatus)
 
-
--- CREATE SECONDARY PORTRAIT BORDER FOR CLASSIFICATION
-
-local TargetPortraitClassificationBorder = CreateFrame("Frame", nil, TargetPortraitBackdrop, "BackdropTemplate")
-TargetPortraitClassificationBorder:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", -2, 2)
-TargetPortraitClassificationBorder:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", 2, -2)
-TargetPortraitClassificationBorder:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-TargetPortraitClassificationBorder:SetFrameLevel(TargetPortraitBackdrop:GetFrameLevel() + 1)
-TargetPortraitClassificationBorder:Hide()
-
 -- RECOLOR TARGET BACKDROPS AND SHOW/RECOLOR CLASSIFICATION BORDER BASED ON TARGET TYPE
 
 local function updateTargetType()
-
-    -- HANDLE NO TARGET CASE
     if not UnitExists("target") then
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetOuterClassificationBorder:Hide()
         TargetPortraitClassificationBorder:Hide()
         return
     end
 
-    -- HANDLE CLASSIFICATION LOGIC DIRECTLY
     local classification = UnitClassification("target")
     if classification == "worldboss" then
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE))
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE))
-        TargetPortraitClassificationBorder:SetBackdropBorderColor(unpack(ORANGE))
-        TargetPortraitClassificationBorder:Show()
+        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(ORANGE))
+        TargetOuterClassificationBorder:Show()
     elseif classification == "elite" then
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW))
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW))
-        TargetPortraitClassificationBorder:SetBackdropBorderColor(unpack(YELLOW))
-        TargetPortraitClassificationBorder:Show()
+        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(YELLOW))
+        TargetOuterClassificationBorder:Show()
     elseif classification == "rareelite" then
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetPortraitClassificationBorder:SetBackdropBorderColor(unpack(WHITE))
-        TargetPortraitClassificationBorder:Show()
+        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(WHITE))
+        TargetOuterClassificationBorder:Show()
     elseif classification == "rare" then
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetPortraitClassificationBorder:Hide()
+        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(WHITE))
+        TargetOuterClassificationBorder:Show()
     else
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
-        TargetPortraitClassificationBorder:Hide()
+        TargetOuterClassificationBorder:Hide()
     end
 end
 
@@ -231,7 +226,6 @@ targetTypeEvents:SetScript("OnEvent", function(self, event, unit)
         updateTargetType()
     end
 end)
-
 
 -- SETUP TARGET RESOURCE BARS
 
@@ -254,7 +248,6 @@ targetResourceEvents:SetScript("OnEvent", function(_, event, unit)
         updateTargetResources()
     end
 end)
-
 
 -- CONFIGURE TARGET AURAS
 
@@ -342,7 +335,6 @@ targetAuraEvents:SetScript("OnEvent", function(self, event, unit)
     end
 end)
 
-
 -- CREATE RAID TARGET ICON
 
 local targetRaidIconBackdrop = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
@@ -373,7 +365,6 @@ targetRaidIconEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
 targetRaidIconEvents:RegisterEvent("RAID_TARGET_UPDATE")
 targetRaidIconEvents:SetScript("OnEvent", updateTargetRaidIcon)
 
-
 -- POSITION TARGET GROUP INDICATORS
 
 local function targetGroupUpdate()
@@ -387,7 +378,6 @@ targetGroupFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 targetGroupFrame:SetScript("OnEvent", targetGroupUpdate)
 
 hooksecurefunc("TargetFrame_Update", targetGroupUpdate)
-
 
 -- SETUP TARGET CASTBAR
 
@@ -420,7 +410,6 @@ TargetFrameSpellBar:HookScript("OnUpdate", updateTargetCastbar)
 local targetCastBarEvents = CreateFrame("Frame")
 targetCastBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 targetCastBarEvents:SetScript("OnEvent", updateTargetCastbar)
-
 
 -- CONFIGURE TARGET SETTINGS
 
