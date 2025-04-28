@@ -22,7 +22,7 @@ Modules/PlayerDruidMana.lua
 Modules/PlayerPet.lua
 Modules/Questie.lua
 Modules/RaidFrames.lua
-Modules/StatusBars.lua
+Modules/StatusElements.lua
 Modules/Target.lua
 Modules/TargetOfTarget.lua
 Modules/Tooltips.lua

@@ -189,3 +189,23 @@ local exhTimerEvents = CreateFrame("Frame")
 exhTimerEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 exhTimerEvents:RegisterEvent("MIRROR_TIMER_START")
 exhTimerEvents:SetScript("OnEvent", updateExhTimer)
+
+-- DELAY DURABILITY FRAME POSITIONING BY 200MS
+
+local function delayedPositionDuraFrame()
+    if C_Timer and C_Timer.After then
+        C_Timer.After(0.2, function()
+            DurabilityFrame:ClearAllPoints()
+            DurabilityFrame:SetPoint("TOP", UIParent, "TOP", 0, -16)
+            DurabilityFrame:SetScale(0.8)
+        end)
+    else
+        DurabilityFrame:ClearAllPoints()
+        DurabilityFrame:SetPoint("TOP", UIParent, "TOP", 0, -16)
+        DurabilityFrame:SetScale(0.8)
+    end
+end
+
+DurabilityFrame:HookScript("OnUpdate", delayedPositionDuraFrame)
+hooksecurefunc(DurabilityFrame, "Show", delayedPositionDuraFrame)
+if DurabilityFrame:IsShown() then delayedPositionDuraFrame() end
