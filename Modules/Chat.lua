@@ -140,8 +140,8 @@ end
 
 local function setCustomChatColors()
     ChangeChatColor("SAY", unpack(WHITE_RGB))
-    ChangeChatColor("EMOTE", unpack(GREY_RGB))
-    ChangeChatColor("YELL", unpack(GREY_RGB))
+    ChangeChatColor("EMOTE", unpack(WHITE_RGB))
+    ChangeChatColor("YELL", unpack(WHITE_RGB))
     ChangeChatColor("GUILD", unpack(GREEN_LIGHT_RGB))
     ChangeChatColor("OFFICER", unpack(GREEN_LIGHT_RGB))
     ChangeChatColor("PINK_RGB", unpack(PINK_RGB))
