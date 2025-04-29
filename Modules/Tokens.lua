@@ -11,7 +11,6 @@ VIOLET = {0.643, 0.231, 0.918}       -- #A43BEA
 BLUE = {0.157, 0.443, 0.851}         -- #2871D9
 GREEN = {0.188, 0.996, 0.192}        -- #30FE31
 
-
 -- CHAT COLORS
 
 WHITE_CHAT = {1.0, 1.0, 1.0}            -- #FFFFFF
@@ -43,7 +42,6 @@ BLUE_CHAT_LUA = "|cFFAAAAFF"            -- #AAAAFF
 
 GREEN_CHAT = {0.25, 1.0, 0.25}          -- #40FF40
 GREEN_CHAT_LUA = "|cFF40FF40"           -- #40FF40
-
 
 -- ELEMENTS
 
