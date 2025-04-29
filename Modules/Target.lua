@@ -186,27 +186,31 @@ local function updateTargetType()
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE_RGB))
-
+        TargetPortraitBackdrop:SetSize(50, 50)
     elseif classification == "elite" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW_RGB))
+        TargetPortraitBackdrop:SetSize(50, 50)
     elseif classification == "rareelite" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
+        TargetPortraitBackdrop:SetSize(50, 50)
     elseif classification == "rare" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
+        TargetPortraitBackdrop:SetSize(50, 50)
     else
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+        TargetPortraitBackdrop:SetSize(48, 48)
     end
 end
 
