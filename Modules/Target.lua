@@ -22,15 +22,6 @@ TargetPortraitBackdrop:RegisterForClicks("AnyUp")
 TargetPortraitBackdrop:SetAttribute("type1", "target")
 TargetPortraitBackdrop:SetAttribute("type2", "togglemenu")
 
--- CREATE OUTER BORDER AROUND TARGET FRAME AND PORTRAIT
-
-local TargetOuterClassificationBorder = CreateFrame("Frame", nil, TargetFrame, "BackdropTemplate")
-TargetOuterClassificationBorder:SetPoint("TOPLEFT", TargetFrameBackdrop, "TOPLEFT", -4, 4)
-TargetOuterClassificationBorder:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", 4, -4)
-TargetOuterClassificationBorder:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-TargetOuterClassificationBorder:SetFrameLevel(TargetFrameBackdrop:GetFrameLevel() + 10)
-TargetOuterClassificationBorder:Hide()
-
 -- CONFIGURE TARGET FRAME LAYOUT
 
 local function updateTargetFrame()
@@ -182,38 +173,40 @@ hooksecurefunc("TargetFrame_Update", updateAggroStatus)
 
 local function updateTargetType()
     if not UnitExists("target") then
+        TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
-        TargetOuterClassificationBorder:Hide()
-        TargetPortraitClassificationBorder:Hide()
         return
     end
 
     local classification = UnitClassification("target")
     if classification == "worldboss" then
+        TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE))
-        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(ORANGE))
-        TargetOuterClassificationBorder:Show()
+
     elseif classification == "elite" then
+        TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW))
-        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(YELLOW))
-        TargetOuterClassificationBorder:Show()
     elseif classification == "rareelite" then
+        TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(WHITE))
-        TargetOuterClassificationBorder:Show()
     elseif classification == "rare" then
+        TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetOuterClassificationBorder:SetBackdropBorderColor(unpack(WHITE))
-        TargetOuterClassificationBorder:Show()
     else
+        TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
         TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
         TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
-        TargetOuterClassificationBorder:Hide()
     end
 end
 
