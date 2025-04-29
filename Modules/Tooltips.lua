@@ -7,15 +7,24 @@ local function positionTooltip(self)
     end
 end
 
--- HIDE GAME TOOLTIP STATUS BAR
-
-GameTooltipStatusBar:SetScript("OnShow", function()
-    GameTooltipStatusBar:ClearAllPoints()
-    GameTooltipStatusBar:SetParent(GameTooltip) 
-    GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 3, 3)
-    GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -3, 3)
-    GameTooltipStatusBar:SetHeight(4)
-    GameTooltipStatusBar:SetStatusBarTexture(BAR)
-end)
-
 hooksecurefunc("GameTooltip_SetDefaultAnchor", positionTooltip)
+
+-- CREATE GAMETOOLTIPSTATUSBAR BACKDROP
+
+local tooltipStatusBarBackdrop = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
+tooltipStatusBarBackdrop:ClearAllPoints()
+tooltipStatusBarBackdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, "TOPLEFT", -2, 2)
+tooltipStatusBarBackdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, "BOTTOMRIGHT", 2, -2)
+tooltipStatusBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
+tooltipStatusBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+
+local function positionTooltipStatusBarAndBackdrop()
+    GameTooltipStatusBar:ClearAllPoints()
+    GameTooltipStatusBar:SetPoint("TOPLEFT", GameTooltip, "BOTTOMLEFT", 3, -2)
+    GameTooltipStatusBar:SetPoint("TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -3, -2)
+    GameTooltipStatusBar:SetHeight(12)
+    GameTooltipStatusBar:SetStatusBarTexture(BAR)
+end
+
+GameTooltip:HookScript("OnShow", positionTooltipStatusBarAndBackdrop)
+GameTooltip:HookScript("OnSizeChanged", positionTooltipStatusBarAndBackdrop)
