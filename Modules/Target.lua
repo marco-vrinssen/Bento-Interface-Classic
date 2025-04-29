@@ -4,7 +4,7 @@ TargetFrameBackdrop = CreateFrame("Button", nil, TargetFrame, "SecureUnitButtonT
 TargetFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", 190, 240)
 TargetFrameBackdrop:SetSize(124, 48)
 TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 TargetFrameBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 2)
 TargetFrameBackdrop:SetAttribute("unit", "target")
 TargetFrameBackdrop:RegisterForClicks("AnyUp")
@@ -15,7 +15,7 @@ TargetPortraitBackdrop = CreateFrame("Button", nil, TargetFrame, "SecureUnitButt
 TargetPortraitBackdrop:SetPoint("LEFT", TargetFrameBackdrop, "RIGHT", 0, 0)
 TargetPortraitBackdrop:SetSize(48, 48)
 TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 TargetPortraitBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 4)
 TargetPortraitBackdrop:SetAttribute("unit", "target")
 TargetPortraitBackdrop:RegisterForClicks("AnyUp")
@@ -57,7 +57,7 @@ local function updateTargetFrame()
     TargetFrameTextureFrameDeadText:ClearAllPoints()
     TargetFrameTextureFrameDeadText:SetPoint("CENTER", TargetFrameBackdrop, "CENTER", 0, -4)
     TargetFrameTextureFrameDeadText:SetFont(FONT, 12, "OUTLINE")
-    TargetFrameTextureFrameDeadText:SetTextColor(unpack(GREY))
+    TargetFrameTextureFrameDeadText:SetTextColor(unpack(GREY_RGB))
 
     TargetFrameTextureFrameName:ClearAllPoints()
     TargetFrameTextureFrameName:SetPoint("TOP", TargetFrameBackdrop, "TOP", 0, -7)
@@ -70,17 +70,17 @@ local function updateTargetFrame()
     if UnitExists("target") then
         if UnitIsPlayer("target") then
             if UnitIsEnemy("player", "target") and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(RED))
+                TargetFrameTextureFrameName:SetTextColor(unpack(RED_RGB))
             else
-                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE))
+                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE_RGB))
             end
         else
             if UnitIsEnemy("player", "target") and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(RED))
+                TargetFrameTextureFrameName:SetTextColor(unpack(RED_RGB))
             elseif UnitReaction("player", "target") == 4 and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(YELLOW))
+                TargetFrameTextureFrameName:SetTextColor(unpack(YELLOW_RGB))
             else
-                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE))
+                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE_RGB))
             end
         end
     end
@@ -174,39 +174,39 @@ hooksecurefunc("TargetFrame_Update", updateAggroStatus)
 local function updateTargetType()
     if not UnitExists("target") then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         return
     end
 
     local classification = UnitClassification("target")
     if classification == "worldboss" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE))
-        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE))
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(ORANGE_RGB))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(ORANGE_RGB))
 
     elseif classification == "elite" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW))
-        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW))
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(YELLOW_RGB))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(YELLOW_RGB))
     elseif classification == "rareelite" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
     elseif classification == "rare" then
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE))
-        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 16 })
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE))
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
+        TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 18 })
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(WHITE_RGB))
     else
         TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         TargetPortraitBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+        TargetPortraitBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
     end
 end
 
@@ -274,9 +274,9 @@ local function updateTargetAuras()
         end
         
         if isDebuff then
-            aura.backdrop:SetBackdropBorderColor(unpack(RED))
+            aura.backdrop:SetBackdropBorderColor(unpack(RED_RGB))
         else
-            aura.backdrop:SetBackdropBorderColor(unpack(GREY))
+            aura.backdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         end
         
         local icon = _G[aura:GetName().."Icon"]
@@ -338,8 +338,8 @@ targetRaidIconBackdrop:SetBackdrop({
     edgeFile = BORD, edgeSize = 12,
     insets = {left = 3, right = 3, top = 3, bottom = 3}
 })
-targetRaidIconBackdrop:SetBackdropColor(unpack(BLACK))
-targetRaidIconBackdrop:SetBackdropBorderColor(unpack(GREY))
+targetRaidIconBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+targetRaidIconBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 targetRaidIconBackdrop:Hide()
 
 local function updateTargetRaidIcon()
@@ -378,7 +378,7 @@ local targetSpellBarBackdrop = CreateFrame("Frame", nil, TargetFrameSpellBar, "B
 targetSpellBarBackdrop:SetPoint("TOP", TargetFrameBackdrop, "BOTTOM", 0, 0)
 targetSpellBarBackdrop:SetSize(TargetFrameBackdrop:GetWidth(), 24)
 targetSpellBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-targetSpellBarBackdrop:SetBackdropBorderColor(unpack(GREY))
+targetSpellBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 targetSpellBarBackdrop:SetFrameLevel(TargetFrameSpellBar:GetFrameLevel() + 2)
 
 local function updateTargetCastbar()
@@ -386,7 +386,7 @@ local function updateTargetCastbar()
     TargetFrameSpellBar:SetPoint("TOPLEFT", targetSpellBarBackdrop, "TOPLEFT", 3, -2)
     TargetFrameSpellBar:SetPoint("BOTTOMRIGHT", targetSpellBarBackdrop, "BOTTOMRIGHT", -3, 2)
     TargetFrameSpellBar:SetStatusBarTexture(BAR)
-    TargetFrameSpellBar:SetStatusBarColor(unpack(YELLOW))
+    TargetFrameSpellBar:SetStatusBarColor(unpack(YELLOW_RGB))
     TargetFrameSpellBar.Border:SetTexture(nil)
     TargetFrameSpellBar.Flash:SetTexture(nil)
     TargetFrameSpellBar.Spark:SetTexture(nil)

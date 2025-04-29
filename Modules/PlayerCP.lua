@@ -26,7 +26,7 @@ local function CreateComboPointFrame()
         edgeSize = 12,
         insets = { left = 2, right = 2, top = 2, bottom = 2 }
     })
-    singleComboPointFrame:SetBackdropBorderColor(unpack(GREY))
+    singleComboPointFrame:SetBackdropBorderColor(unpack(GREY_RGB))
     return singleComboPointFrame
 end
 
@@ -39,7 +39,7 @@ for comboPointIndex = 1, 5 do
         (comboPointFrameSize + comboPointFrameMargin) * (comboPointIndex - 1),
         0
     )
-    comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(GREY))
+    comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(GREY_RGB))
 end
 
 -- HIDE DEFAULT UI COMBO POINTS
@@ -65,9 +65,9 @@ local function UpdateCustomComboPointDisplay()
         comboPointsFrame:Show()
         for comboPointIndex = 1, 5 do
             if comboPointIndex <= currentComboPointsOnTarget then
-                comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(RED))
+                comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(RED_RGB))
             else
-                comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(GREY))
+                comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(GREY_RGB))
             end
         end
     else

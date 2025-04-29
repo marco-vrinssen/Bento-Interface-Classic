@@ -4,7 +4,7 @@ PlayerFrameBackdrop = CreateFrame("Button", nil, PlayerFrame, "SecureUnitButtonT
 PlayerFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", -190, 240)
 PlayerFrameBackdrop:SetSize(124, 48)
 PlayerFrameBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-PlayerFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+PlayerFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 PlayerFrameBackdrop:SetFrameLevel(PlayerFrame:GetFrameLevel() + 2)
 PlayerFrameBackdrop:SetAttribute("unit", "player")
 PlayerFrameBackdrop:RegisterForClicks("AnyUp")
@@ -15,7 +15,7 @@ PlayerPortraitBackdrop = CreateFrame("Button", nil, PlayerFrame, "SecureUnitButt
 PlayerPortraitBackdrop:SetPoint("RIGHT", PlayerFrameBackdrop, "LEFT", 0, 0)
 PlayerPortraitBackdrop:SetSize(48, 48)
 PlayerPortraitBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-PlayerPortraitBackdrop:SetBackdropBorderColor(unpack(GREY))
+PlayerPortraitBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 PlayerPortraitBackdrop:SetFrameLevel(PlayerFrame:GetFrameLevel() + 2)
 PlayerPortraitBackdrop:SetAttribute("unit", "player")
 PlayerPortraitBackdrop:RegisterForClicks("AnyUp")
@@ -37,7 +37,7 @@ local function updatePlayerElements()
     PlayerName:ClearAllPoints()
     PlayerName:SetPoint("TOP", PlayerFrameBackdrop, "TOP", 0, -6)
     PlayerName:SetFont(FONT, 12, "OUTLINE")
-    PlayerName:SetTextColor(unpack(WHITE))
+    PlayerName:SetTextColor(unpack(WHITE_RGB))
 
     local alwaysHiddenElements = {
         PlayerFrameTexture,
@@ -102,7 +102,7 @@ local function delayedUpdatePlayerLevel()
         PlayerLevelText:ClearAllPoints()
         PlayerLevelText:SetPoint("TOP", PlayerPortraitBackdrop, "BOTTOM", 0, -4)
         PlayerLevelText:SetFont(FONT, 12, "OUTLINE")
-        PlayerLevelText:SetTextColor(unpack(WHITE))
+        PlayerLevelText:SetTextColor(unpack(WHITE_RGB))
     end)
 end
 

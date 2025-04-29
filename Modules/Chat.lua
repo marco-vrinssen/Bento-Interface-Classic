@@ -56,8 +56,8 @@ local function addCustomBackdropToEditBox(editBox)
             edgeSize = 12,
             insets = {left = 2, right = 2, top = 2, bottom = 2}
         })
-        editBoxBackdrop:SetBackdropColor(unpack(BLACK))
-        editBoxBackdrop:SetBackdropBorderColor(unpack(GREY))
+        editBoxBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+        editBoxBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         editBox.customBackdrop = editBoxBackdrop
 
         editBoxBackdrop:SetFrameLevel(editBox:GetFrameLevel() - 1)
@@ -119,7 +119,7 @@ local function setClassColorsForChatTypes()
     end
 
     local additionalTypes = {
-        "SAY", "EMOTE", "YELL", "GREEN_CHAT", "OFFICER", "PINK_CHAT",
+        "SAY", "EMOTE", "YELL", "GREEN_LIGHT_RGB", "OFFICER", "PINK_RGB",
         "PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "RAID_WARNING",
         "INSTANCE_CHAT", "INSTANCE_CHAT_LEADER", "VOICE_TEXT"
     }
@@ -129,7 +129,7 @@ local function setClassColorsForChatTypes()
     end
 
     for i = 1, 50 do
-        SetChatColorNameByClass("CORAL_CHAT" .. i, true)
+        SetChatColorNameByClass("WHITE_RGB" .. i, true)
     end
 
     local channels = { GetChannelList() }
@@ -139,59 +139,59 @@ local function setClassColorsForChatTypes()
 end
 
 local function setCustomChatColors()
-    ChangeChatColor("SAY", unpack(CORAL_CHAT))
-    ChangeChatColor("EMOTE", unpack(CORAL_CHAT))
-    ChangeChatColor("YELL", unpack(CORAL_CHAT))
-    ChangeChatColor("GREEN_CHAT", unpack(GREEN_CHAT))
-    ChangeChatColor("OFFICER", unpack(GREEN_CHAT))
-    ChangeChatColor("PINK_CHAT", unpack(PINK_CHAT))
-    ChangeChatColor("WHISPER_INFORM", unpack(PINK_CHAT))
-    ChangeChatColor("BN_WHISPER", unpack(PINK_CHAT))
-    ChangeChatColor("BN_WHISPER_INFORM", unpack(PINK_CHAT))
-    ChangeChatColor("WHISPER", unpack(PINK_CHAT))
-    ChangeChatColor("BN_WHISPER", unpack(PINK_CHAT))
-    ChangeChatColor("RAID", unpack(BLUE_CHAT))
-    ChangeChatColor("RAID_LEADER", unpack(BLUE_CHAT))
-    ChangeChatColor("RAID_WARNING", unpack(BLUE_CHAT))
-    ChangeChatColor("PARTY", unpack(BLUE_CHAT))
-    ChangeChatColor("PARTY_LEADER", unpack(BLUE_CHAT))
-    ChangeChatColor("INSTANCE_CHAT", unpack(BLUE_CHAT))
-    ChangeChatColor("INSTANCE_CHAT_LEADER", unpack(BLUE_CHAT))
+    ChangeChatColor("SAY", unpack(WHITE_RGB))
+    ChangeChatColor("EMOTE", unpack(GREY_RGB))
+    ChangeChatColor("YELL", unpack(GREY_RGB))
+    ChangeChatColor("GUILD", unpack(GREEN_LIGHT_RGB))
+    ChangeChatColor("OFFICER", unpack(GREEN_LIGHT_RGB))
+    ChangeChatColor("PINK_RGB", unpack(PINK_RGB))
+    ChangeChatColor("WHISPER_INFORM", unpack(PINK_RGB))
+    ChangeChatColor("BN_WHISPER", unpack(PINK_RGB))
+    ChangeChatColor("BN_WHISPER_INFORM", unpack(PINK_RGB))
+    ChangeChatColor("WHISPER", unpack(PINK_RGB))
+    ChangeChatColor("BN_WHISPER", unpack(PINK_RGB))
+    ChangeChatColor("RAID", unpack(ORANGE_LIGHT_RGB))
+    ChangeChatColor("RAID_LEADER", unpack(ORANGE_LIGHT_RGB))
+    ChangeChatColor("RAID_WARNING", unpack(RED_LIGHT_RGB))
+    ChangeChatColor("PARTY", unpack(BLUE_LIGHT_RGB))
+    ChangeChatColor("PARTY_LEADER", unpack(BLUE_LIGHT_RGB))
+    ChangeChatColor("INSTANCE_CHAT", unpack(ORANGE_LIGHT_RGB))
+    ChangeChatColor("INSTANCE_CHAT_LEADER", unpack(ORANGE_LIGHT_RGB))
 
     for i = 1, GetNumDisplayChannels() do
         local _, _, _, channelID = GetChannelDisplayInfo(i)
         if channelID then
-            ChangeChatColor("CHANNEL"..channelID, unpack(YELLOW_CHAT))
+            ChangeChatColor("CHANNEL"..channelID, unpack(YELLOW_LIGHT_RGB))
         end
     end
 
-    ChangeChatColor("COMBAT_XP_GAIN", unpack(WHITE_CHAT))
-    ChangeChatColor("COMBAT_HONOR_GAIN", unpack(WHITE_CHAT))
-    ChangeChatColor("COMBAT_FACTION_CHANGE", unpack(WHITE_CHAT))
-    ChangeChatColor("SKILL", unpack(WHITE_CHAT))
-    ChangeChatColor("LOOT", unpack(WHITE_CHAT))
-    ChangeChatColor("MONEY", unpack(WHITE_CHAT))
-    ChangeChatColor("TRADESKILLS", unpack(WHITE_CHAT))
-    ChangeChatColor("OPENING", unpack(WHITE_CHAT))
-    ChangeChatColor("PET_INFO", unpack(WHITE_CHAT))
-    ChangeChatColor("COMBAT_MISC_INFO", unpack(WHITE_CHAT))
+    ChangeChatColor("COMBAT_XP_GAIN", unpack(WHITE_RGB))
+    ChangeChatColor("COMBAT_HONOR_GAIN", unpack(WHITE_RGB))
+    ChangeChatColor("COMBAT_FACTION_CHANGE", unpack(WHITE_RGB))
+    ChangeChatColor("SKILL", unpack(WHITE_RGB))
+    ChangeChatColor("LOOT", unpack(WHITE_RGB))
+    ChangeChatColor("MONEY", unpack(WHITE_RGB))
+    ChangeChatColor("TRADESKILLS", unpack(WHITE_RGB))
+    ChangeChatColor("OPENING", unpack(WHITE_RGB))
+    ChangeChatColor("PET_INFO", unpack(WHITE_RGB))
+    ChangeChatColor("COMBAT_MISC_INFO", unpack(WHITE_RGB))
 
-    ChangeChatColor("SYSTEM", unpack(WHITE_CHAT))
-    ChangeChatColor("ERROR", unpack(RED_CHAT))
-    ChangeChatColor("IGNORED", unpack(RED_CHAT))
-    ChangeChatColor("TARGETICONS", unpack(WHITE_CHAT))
-    ChangeChatColor("BN_INLINE_TOAST_ALERT", unpack(BLUE_CHAT))
+    ChangeChatColor("SYSTEM", unpack(WHITE_RGB))
+    ChangeChatColor("ERROR", unpack(RED_LIGHT_RGB))
+    ChangeChatColor("IGNORED", unpack(RED_LIGHT_RGB))
+    ChangeChatColor("TARGETICONS", unpack(WHITE_RGB))
+    ChangeChatColor("BN_INLINE_TOAST_ALERT", unpack(VIOLET_LIGHT_RGB))
 
-    ChangeChatColor("BG_SYSTEM_ALLIANCE", unpack(ORANGE_CHAT))
-    ChangeChatColor("BG_SYSTEM_HORDE", unpack(ORANGE_CHAT))
-    ChangeChatColor("BG_SYSTEM_NEUTRAL", unpack(ORANGE_CHAT))
+    ChangeChatColor("BG_SYSTEM_ALLIANCE", unpack(ORANGE_LIGHT_RGB))
+    ChangeChatColor("BG_SYSTEM_HORDE", unpack(ORANGE_LIGHT_RGB))
+    ChangeChatColor("BG_SYSTEM_NEUTRAL", unpack(ORANGE_LIGHT_RGB))
 
-    ChangeChatColor("MONSTER_SAY", unpack(ORANGE_CHAT))
-    ChangeChatColor("MONSTER_EMOTE", unpack(ORANGE_CHAT))
-    ChangeChatColor("MONSTER_YELL", unpack(ORANGE_CHAT))
-    ChangeChatColor("MONSTER_WHISPER", unpack(ORANGE_CHAT))
-    ChangeChatColor("MONSTER_BOSS_EMOTE", unpack(ORANGE_CHAT))
-    ChangeChatColor("MONSTER_BOSS_WHISPER", unpack(ORANGE_CHAT))
+    ChangeChatColor("MONSTER_SAY", unpack(GREY_RGB))
+    ChangeChatColor("MONSTER_EMOTE", unpack(GREY_RGB))
+    ChangeChatColor("MONSTER_YELL", unpack(GREY_RGB))
+    ChangeChatColor("MONSTER_WHISPER", unpack(GREY_RGB))
+    ChangeChatColor("MONSTER_BOSS_EMOTE", unpack(GREY_RGB))
+    ChangeChatColor("MONSTER_BOSS_WHISPER", unpack(GREY_RGB))
 end
 
 local function updateChatColors()
@@ -201,7 +201,7 @@ end
 
 local function recolorWhisperMessages(self, event, message, sender, ...)
     if event == "CHAT_MSG_WHISPER" then
-        return false, PINK_LIGHT_CHAT_LUA .. message .. "|r", sender, ...
+        return false, PINK_LIGHT_LUA .. message .. "|r", sender, ...
     end
 end
 

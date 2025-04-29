@@ -4,7 +4,7 @@ local petContainer = CreateFrame("Button", nil, PetFrame, "SecureUnitButtonTempl
 petContainer:SetPoint("BOTTOMRIGHT", PlayerPortraitBackdrop, "BOTTOMLEFT", 0, 0)
 petContainer:SetSize(64, 24)
 petContainer:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-petContainer:SetBackdropBorderColor(unpack(GREY))
+petContainer:SetBackdropBorderColor(unpack(GREY_RGB))
 petContainer:SetFrameLevel(PetFrame:GetFrameLevel() + 2)
 petContainer:SetAttribute("unit", "pet")
 petContainer:RegisterForClicks("AnyUp")
@@ -17,7 +17,7 @@ local petContainerBackground = CreateFrame("Frame", nil, petContainer, "Backdrop
 petContainerBackground:SetPoint("TOPLEFT", petContainer, "TOPLEFT", 2, -2)
 petContainerBackground:SetPoint("BOTTOMRIGHT", petContainer, "BOTTOMRIGHT", -2, 2)
 petContainerBackground:SetBackdrop({ bgFile = BG })
-petContainerBackground:SetBackdropColor(unpack(BLACK))
+petContainerBackground:SetBackdropColor(unpack(BLACK_RGB))
 petContainerBackground:SetFrameLevel(petContainer:GetFrameLevel() - 1)
 
 -- UPDATE PET FRAME
@@ -35,7 +35,7 @@ local function updatePetFrame()
     PetName:SetPoint("BOTTOMRIGHT", petContainer, "TOPRIGHT", -2, 2)
     PetName:SetWidth(petContainer:GetWidth() - 4)
     PetName:SetFont(FONT, 10, "OUTLINE")
-    PetName:SetTextColor(unpack(WHITE))
+    PetName:SetTextColor(unpack(WHITE_RGB))
 
 	for i = 1, MAX_TARGET_BUFFS do
 		local PetBuff = _G["PetFrameBuff" .. i]

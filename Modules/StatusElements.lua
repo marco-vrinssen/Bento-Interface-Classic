@@ -4,7 +4,7 @@ local xpBarBackdrop = CreateFrame("Frame", nil, MainMenuExpBar, "BackdropTemplat
 xpBarBackdrop:SetPoint("TOPLEFT", MainMenuExpBar, "TOPLEFT", -3, 3)
 xpBarBackdrop:SetPoint("BOTTOMRIGHT", MainMenuExpBar, "BOTTOMRIGHT", 3, -3)
 xpBarBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-xpBarBackdrop:SetBackdropBorderColor(unpack(GREY))
+xpBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 xpBarBackdrop:SetFrameLevel(MainMenuExpBar:GetFrameLevel() + 2)
 
 local function hideXPTextures()
@@ -44,9 +44,9 @@ local function updateXPBar()
     MainMenuExpBar:SetStatusBarTexture(BAR)
 
     if GetXPExhaustion() and GetXPExhaustion() > 0 then
-        MainMenuExpBar:SetStatusBarColor(unpack(BLUE))
+        MainMenuExpBar:SetStatusBarColor(unpack(BLUE_RGB))
     else
-        MainMenuExpBar:SetStatusBarColor(unpack(VIOLET))
+        MainMenuExpBar:SetStatusBarColor(unpack(VIOLET_RGB))
     end
 
     MainMenuExpBar:EnableMouse(true)
@@ -70,9 +70,9 @@ local function xpTooltip()
     GameTooltip:SetOwner(MainMenuExpBar, "ANCHOR_BOTTOMRIGHT", 4, -4)
 
     if GetXPExhaustion() then
-        GameTooltip:AddLine("Experience", unpack(BLUE))
+        GameTooltip:AddLine("Experience", unpack(BLUE_RGB))
     else
-        GameTooltip:AddLine("Experience", unpack(VIOLET))
+        GameTooltip:AddLine("Experience", unpack(VIOLET_RGB))
     end
 
     GameTooltip:AddDoubleLine("Progress:", progressPercent.."%")
@@ -92,7 +92,7 @@ local repBackdrop = CreateFrame("Frame", nil, ReputationWatchBar.StatusBar, "Bac
 repBackdrop:SetPoint("TOPLEFT", ReputationWatchBar.StatusBar, "TOPLEFT", -3, 3)
 repBackdrop:SetPoint("BOTTOMRIGHT", ReputationWatchBar.StatusBar, "BOTTOMRIGHT", 3, -3)
 repBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-repBackdrop:SetBackdropBorderColor(unpack(GREY))
+repBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 repBackdrop:SetFrameLevel(ReputationWatchBar.StatusBar:GetFrameLevel() + 2)
 
 local function hideRepTextures()
@@ -123,7 +123,7 @@ local function updateRepBar()
     ReputationWatchBar.StatusBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 16, -32)
     ReputationWatchBar.StatusBar:SetStatusBarTexture(BAR)
 
-    ReputationWatchBar.StatusBar:SetStatusBarColor(unpack(ORANGE))
+    ReputationWatchBar.StatusBar:SetStatusBarColor(unpack(ORANGE_RGB))
 
     ReputationWatchBar.StatusBar:EnableMouse(true)
     ReputationWatchBar.StatusBar:Show()
@@ -145,7 +145,7 @@ local function repTooltip()
 
         GameTooltip:SetOwner(ReputationWatchBar.StatusBar, "ANCHOR_BOTTOMRIGHT", 4, -4)
 
-        GameTooltip:AddLine("Reputation", unpack(ORANGE))
+        GameTooltip:AddLine("Reputation", unpack(ORANGE_RGB))
 
         GameTooltip:AddDoubleLine("Faction:", name)
         GameTooltip:AddDoubleLine("Standing:", _G["FACTION_STANDING_LABEL"..standing])
@@ -167,7 +167,7 @@ local function exhTimerBackdrop(exhaustionTimer)
         exhTimerBackdrop:SetPoint("TOPLEFT", _G[exhaustionTimer.."StatusBar"], "TOPLEFT", -3, 3)
         exhTimerBackdrop:SetPoint("BOTTOMRIGHT", _G[exhaustionTimer.."StatusBar"], "BOTTOMRIGHT", 3, -3)
         exhTimerBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12})
-        exhTimerBackdrop:SetBackdropBorderColor(unpack(GREY))
+        exhTimerBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         exhTimerBackdrop:SetFrameLevel(_G[exhaustionTimer.."StatusBar"]:GetFrameLevel() + 2)
     end
 end

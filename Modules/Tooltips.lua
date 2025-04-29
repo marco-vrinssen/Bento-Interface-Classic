@@ -1,4 +1,6 @@
--- UPDATE TOOLTIP POSITION
+-- UPDATE TOOLTIP SCALE AND POSITION
+
+GameTooltip:SetScale(0.9)
 
 local function updateTooltipPos(self)
     if self:GetAnchorType() ~= "ANCHOR_CURSOR" then
@@ -12,5 +14,5 @@ end
 GameTooltipStatusBar:SetScript("OnShow", function()
     GameTooltipStatusBar:Hide()
 end)
- 
+
 hooksecurefunc("GameTooltip_SetDefaultAnchor", updateTooltipPos)

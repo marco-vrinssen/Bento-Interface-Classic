@@ -52,8 +52,8 @@ minimapTimeBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTimeBackdrop:SetBackdropColor(unpack(BLACK))
-minimapTimeBackdrop:SetBackdropBorderColor(unpack(GREY))
+minimapTimeBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+minimapTimeBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 minimapTimeBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
 local function updateMinimapTimer()
@@ -86,8 +86,8 @@ minimapMailBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapMailBackdrop:SetBackdropColor(unpack(BLACK))
-minimapMailBackdrop:SetBackdropBorderColor(unpack(GREY))
+minimapMailBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+minimapMailBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 minimapMailBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
 local function updateMinimapMail()
@@ -117,8 +117,8 @@ minimapBFBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapBFBackdrop:SetBackdropColor(unpack(BLACK)) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
-minimapBFBackdrop:SetBackdropBorderColor(unpack(GREY))
+minimapBFBackdrop:SetBackdropColor(unpack(BLACK_RGB)) -- SET BACKDROP COLOR TO BLACK_RGB WITH 50% OPACITY
+minimapBFBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 minimapBFBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
 local function minimapBFUpdate()
@@ -152,8 +152,8 @@ minimapTrackingBackdrop:SetBackdrop({
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK)) -- SET BACKDROP COLOR TO BLACK WITH 50% OPACITY
-minimapTrackingBackdrop:SetBackdropBorderColor(unpack(GREY))
+minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK_RGB)) -- SET BACKDROP COLOR TO BLACK_RGB WITH 50% OPACITY
+minimapTrackingBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 minimapTrackingBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
 local function updateTracking()

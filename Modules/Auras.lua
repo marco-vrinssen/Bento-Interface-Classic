@@ -7,7 +7,7 @@ local function UpdateAuraTimer(aura)
         auraDuration:SetTextColor(1, 1, 1)
         auraDuration:ClearAllPoints()
         auraDuration:SetPoint("BOTTOM", aura, "BOTTOM", 2, -14)
-        auraDuration:SetTextColor(unpack(WHITE))
+        auraDuration:SetTextColor(unpack(WHITE_RGB))
     end
 end
 
@@ -26,11 +26,11 @@ local function StyleAuraButton(button, borderColor)
         backdrop:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
         backdrop:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 3, -3)
         backdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-        backdrop:SetBackdropBorderColor(unpack(borderColor or GREY))
+        backdrop:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
         backdrop:SetFrameLevel(button:GetFrameLevel() + 2)
         button.customBorder = backdrop
     else
-        button.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY))
+        button.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
     end
 
     local icon = _G[button:GetName().."Icon"]
@@ -46,15 +46,15 @@ local function StyleAuraButton(button, borderColor)
 end
 
 local function StyleBuffButton(button)
-    StyleAuraButton(button, GREY)
+    StyleAuraButton(button, GREY_RGB)
 end
 
 local function StyleDebuffButton(button)
-    StyleAuraButton(button, RED)
+    StyleAuraButton(button, RED_RGB)
 end
 
 local function StyleTempEnchant(button)
-    StyleAuraButton(button, VIOLET)
+    StyleAuraButton(button, VIOLET_RGB)
     
     local border = _G[button:GetName().."Border"]
     if border then

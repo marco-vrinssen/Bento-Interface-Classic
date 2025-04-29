@@ -4,7 +4,7 @@ local druidManaBorder = CreateFrame("Frame", nil, PlayerFrame, "BackdropTemplate
 druidManaBorder:SetPoint("TOP", PlayerFrameBackdrop, "BOTTOM", 0, 0)
 druidManaBorder:SetSize(PlayerFrameBackdrop:GetWidth(), 18)
 druidManaBorder:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-druidManaBorder:SetBackdropBorderColor(unpack(GREY))
+druidManaBorder:SetBackdropBorderColor(unpack(GREY_RGB))
 druidManaBorder:SetFrameLevel(PlayerFrameBackdrop:GetFrameLevel() + 4)
 
 -- CREATE MANA BAR INSIDE EDGE FRAME, CROPPED BY EDGE
@@ -13,7 +13,7 @@ local druidManaBar = CreateFrame("StatusBar", nil, druidManaBorder, "BackdropTem
 druidManaBar:SetPoint("TOPLEFT", druidManaBorder, "TOPLEFT", 2, -2)
 druidManaBar:SetPoint("BOTTOMRIGHT", druidManaBorder, "BOTTOMRIGHT", -2, 2)
 druidManaBar:SetStatusBarTexture(BAR)
-druidManaBar:SetStatusBarColor(unpack(BLUE))
+druidManaBar:SetStatusBarColor(unpack(BLUE_RGB))
 druidManaBar:SetMinMaxValues(0, 1)
 druidManaBar:SetFrameLevel(druidManaBorder:GetFrameLevel() - 1)
 
@@ -23,14 +23,14 @@ local druidManaBackground = CreateFrame("Frame", nil, druidManaBorder, "Backdrop
 druidManaBackground:SetPoint("TOPLEFT", druidManaBorder, "TOPLEFT", 2, -2)
 druidManaBackground:SetPoint("BOTTOMRIGHT", druidManaBorder, "BOTTOMRIGHT", -2, 2)
 druidManaBackground:SetBackdrop({ bgFile = BG })
-druidManaBackground:SetBackdropColor(unpack(BLACK))
+druidManaBackground:SetBackdropColor(unpack(BLACK_RGB))
 druidManaBackground:SetFrameLevel(druidManaBar:GetFrameLevel() - 1)
 
 -- CREATE MANA TEXT INSIDE MANA BAR
 
 local druidManaText = druidManaBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 druidManaText:SetPoint("CENTER", druidManaBar, "CENTER", 0, 0)
-druidManaText:SetTextColor(unpack(WHITE))
+druidManaText:SetTextColor(unpack(WHITE_RGB))
 druidManaText:SetFont(GameFontNormal:GetFont(), 8, "OUTLINE")
 
 -- ONLY ENABLE FOR DRUIDS

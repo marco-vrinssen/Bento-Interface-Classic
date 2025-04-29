@@ -4,7 +4,7 @@ local ToTFrameBackdrop = CreateFrame("Button", nil, TargetFrameToT, "SecureUnitB
 ToTFrameBackdrop:SetPoint("BOTTOMLEFT", TargetPortraitBackdrop, "BOTTOMRIGHT", 0, 0)
 ToTFrameBackdrop:SetSize(64, 24)
 ToTFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-ToTFrameBackdrop:SetBackdropBorderColor(unpack(GREY))
+ToTFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 ToTFrameBackdrop:SetFrameLevel(TargetFrameToT:GetFrameLevel() + 2)
 ToTFrameBackdrop:SetAttribute("unit", "targettarget")
 ToTFrameBackdrop:RegisterForClicks("AnyUp")

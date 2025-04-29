@@ -1,53 +1,65 @@
--- UI COLORS
+-- COLORS
 
-WHITE = {1, 1, 1}                    -- #FFFFFF
-BLACK = {0, 0, 0}                    -- #000000
-GREY = {0.5, 0.5, 0.5}               -- #808080
-YELLOW = {0.984, 0.820, 0.204}       -- #FBD134
-ORANGE = {0.984, 0.506, 0.157}       -- #FB8128
-RED = {0.918, 0.125, 0.161}          -- #EA2029
-PINK = {0.984, 0.094, 0.698}         -- #FB18B2
-VIOLET = {0.643, 0.231, 0.918}       -- #A43BEA
-BLUE = {0.157, 0.443, 0.851}         -- #2871D9
-GREEN = {0.188, 0.996, 0.192}        -- #30FE31
+WHITE_RGB = {1.0, 1.0, 1.0}                 -- #FFFFFF
+WHITE_LUA = "|cFFFFFFFF"                    -- #FFFFFF
 
+BLACK_RGB = {0, 0, 0}                       -- #000000
+BLACK_LUA = "|cFF000000"                    -- #000000
 
--- CHAT COLORS
+GREY_RGB = {0.5, 0.5, 0.5}                  -- #808080
+GREY_LUA = "|cFF808080"                     -- #808080
 
-WHITE_CHAT = {1.0, 1.0, 1.0}            -- #FFFFFF
-WHITE_CHAT_LUA = "|cFFFFFFFF"           -- #FFFFFF
+GREY_LIGHT_RGB = {0.75, 0.75, 0.75}         -- #BFBFBF
+GREY_LIGHT_LUA = "|cFFBFBFBF"               -- #BFBFBF
 
-GREY_CHAT = {0.5, 0.5, 0.5}             -- #808080
-GREY_CHAT_LUA = "|cFF808080"            -- #808080
+YELLOW_RGB = {0.984, 0.820, 0.204}          -- #FBD134
+YELLOW_LUA = "|cFFFBD134"                   -- #FBD134
 
-CORAL_CHAT = {1.0, 0.898, 0.898}        -- #FFE5E5
-CORAL_CHAT_LUA = "|cFFFFE5E5"           -- #FFE5E5
+YELLOW_LIGHT_RGB = {0.992, 0.910, 0.608}    -- #FDE89B
+YELLOW_LIGHT_LUA = "|cFFFDE89B"             -- #FDE89B
 
-RED_CHAT = {1.0, 0.3, 0.3}              -- #FF4D4D
-RED_CHAT_LUA = "|cFFFF4D4D"             -- #FF4D4D
+ORANGE_RGB = {0.984, 0.506, 0.157}          -- #FB8128
+ORANGE_LUA = "|cFFFB8128"                   -- #FB8128    
 
-ORANGE_CHAT = {1.0, 0.6, 0.0}           -- #FF9900
-ORANGE_CHAT_LUA = "|cFFFF9900"          -- #FF9900
+ORANGE_LIGHT_RGB = {0.992, 0.769, 0.608}    -- #FDC49B
+ORANGE_LIGHT_LUA = "|cFFFDC49B"             -- #FDC49B
 
-YELLOW_CHAT = {0.99, 0.95, 0.45}        -- #FCF374
-YELLOW_CHAT_LUA = "|cFFFCF374"          -- #FCF374
+RED_RGB = {0.980, 0.153, 0.184}             -- #FA272F
+RED_LUA = "|cFFFA272F"                      -- #FA272F
 
-PINK_CHAT = {1.0, 0.5, 1.0}             -- #FF80FF
-PINK_CHAT_LUA = "|cFFFF80FF"            -- #FF80FF
+RED_LIGHT_RGB = {0.992, 0.608, 0.624}       -- #FD9B9F
+RED_LIGHT_LUA = "|cFFFD9B9F"                -- #FD9B9F
 
-PINK_LIGHT_CHAT = {1.0, 0.8, 1.0}       -- #FFCCFF
-PINK_LIGHT_CHAT_LUA = "|cFFFFCCFF"      -- #FFCCFF
+VIOLET_RGB = {0.643, 0.231, 0.918}          -- #A43BEA
+VIOLET_LUA = "|cFFA43BEA"                   -- #A43BEA
 
-BLUE_CHAT = {0.67, 0.67, 1.0}           -- #AAAAFF
-BLUE_CHAT_LUA = "|cFFAAAAFF"            -- #AAAAFF
+VIOLET_LIGHT_RGB = {0.831, 0.639, 0.961}    -- #D4A3F5
+VIOLET_LIGHT_LUA = "|cFFD4A3F5"             -- #D4A3F5
 
-GREEN_CHAT = {0.25, 1.0, 0.25}          -- #40FF40
-GREEN_CHAT_LUA = "|cFF40FF40"           -- #40FF40
+PINK_RGB = {1.0, 0.5, 1.0}                  -- #FF80FF
+PINK_LUA = "|cFFFF80FF"                     -- #FF80FF
 
+PINK_LIGHT_RGB = {1.0, 0.8, 1.0}            -- #FFCCFF
+PINK_LIGHT_LUA = "|cFFFFCCFF"               -- #FFCCFF
 
--- ELEMENTS
+BLUE_RGB = {0.157, 0.443, 0.851}            -- #2871D9
+BLUE_LUA = "|cFF2871D9"                     -- #2871D9
+
+BLUE_LIGHT_RGB = {0.659, 0.776, 0.941}      -- #A8C6F0
+BLUE_LIGHT_LUA = "|cFFA8C6F0"               -- #A8C6F0
+
+GREEN_RGB = {0.188, 0.996, 0.192}           -- #30FE31
+GREEN_LUA = "|cFF30FE31"                    -- #30FE31
+
+GREEN_LIGHT_RGB = {0.6, 1.0, 0.603}         -- #99FF9A
+GREEN_LIGHT_LUA = "|cFF99FF9A"              -- #99FF9A
+
+-- FONT
 
 FONT = STANDARD_TEXT_FONT
+
+-- TEXTURES
+
 BAR = "Interface/RaidFrame/Raid-Bar-Hp-Fill.blp"
 BG = "Interface/Tooltips/UI-Tooltip-Background.blp"
 BORD = "Interface/Tooltips/UI-Tooltip-Border.blp"

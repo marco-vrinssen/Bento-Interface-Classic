@@ -58,8 +58,8 @@ local function addonButtonUpdate()
                     edgeSize = 12,
                     insets = {left = 2, right = 2, top = 2, bottom = 2}
                 })
-                addonButton.background:SetBackdropColor(unpack(BLACK))
-                addonButton.background:SetBackdropBorderColor(unpack(GREY))
+                addonButton.background:SetBackdropColor(unpack(BLACK_RGB))
+                addonButton.background:SetBackdropBorderColor(unpack(GREY_RGB))
                 addonButton.background:SetFrameLevel(addonButton:GetFrameLevel() - 1)
             end
         end
