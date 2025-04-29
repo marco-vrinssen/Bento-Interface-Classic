@@ -4,7 +4,7 @@
 ## Version: 1.0
 ## Author: MIYANKO
 
-Modules/_Tokens.lua
+Modules/Tokens.lua
 Modules/Auctionator.lua
 Modules/Auras.lua
 Modules/Bags.lua
