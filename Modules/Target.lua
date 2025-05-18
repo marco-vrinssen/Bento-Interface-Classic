@@ -67,21 +67,22 @@ local function updateTargetFrame()
     TargetFrameTextureFrameLevelText:SetPoint("TOP", TargetPortraitBackdrop, "BOTTOM", 0, -4)
     TargetFrameTextureFrameLevelText:SetFont(FONT, 12, "OUTLINE")
 
+    -- CUSTOM TARGET NAME COLORING LOGIC
+
     if UnitExists("target") then
-        if UnitIsPlayer("target") then
-            if UnitIsEnemy("player", "target") and UnitCanAttack("player", "target") then
+        local isAttackable = UnitCanAttack("player", "target")
+        local isHostile = UnitIsEnemy("player", "target")
+        local reaction = UnitReaction("player", "target")
+        if isAttackable then
+            if isHostile then
                 TargetFrameTextureFrameName:SetTextColor(unpack(RED_RGB))
-            else
-                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE_RGB))
-            end
-        else
-            if UnitIsEnemy("player", "target") and UnitCanAttack("player", "target") then
-                TargetFrameTextureFrameName:SetTextColor(unpack(RED_RGB))
-            elseif UnitReaction("player", "target") == 4 and UnitCanAttack("player", "target") then
+            elseif reaction == 4 then
                 TargetFrameTextureFrameName:SetTextColor(unpack(YELLOW_RGB))
             else
-                TargetFrameTextureFrameName:SetTextColor(unpack(WHITE_RGB))
+                TargetFrameTextureFrameName:SetTextColor(unpack(YELLOW_RGB))
             end
+        else
+            TargetFrameTextureFrameName:SetTextColor(unpack(WHITE_RGB))
         end
     end
 
@@ -144,22 +145,16 @@ targetThreatIcon:SetPoint("TOPLEFT", TargetPortraitBackdrop, "TOPLEFT", 4, -4)
 targetThreatIcon:SetPoint("BOTTOMRIGHT", TargetPortraitBackdrop, "BOTTOMRIGHT", -4, 4)
 targetThreatIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 
-local function updateAggroStatus()
-    local isTanking, status, threatPct = UnitDetailedThreatSituation("player", "target")
+-- AGGRO STATUS HANDLING: TINT PORTRAIT TEXTURE RED, NO OTHER AGGRO CUSTOMIZATION
 
-    if status then
-        targetThreatIcon:Show()
-        if isTanking then
-            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionangry")
-        elseif threatPct and threatPct >= 80 then
-            targetThreatIcon:SetTexture("interface/icons/spell_misc_emotionsad")
-        else
-            targetThreatIcon:Hide()
-            return
-        end
-    else
-        targetThreatIcon:Hide()
+local function updateAggroStatus()
+    local isTanking, threatStatus = UnitDetailedThreatSituation("player", "target")
+    if threatStatus and isTanking and TargetFramePortrait then
+        TargetFramePortrait:SetVertexColor(unpack(RED_RGB))
+    elseif TargetFramePortrait then
+        TargetFramePortrait:SetVertexColor(1, 1, 1)
     end
+    targetThreatIcon:Hide()
 end
 
 local targetThreatEvents = CreateFrame("Frame")
