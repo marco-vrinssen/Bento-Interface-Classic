@@ -59,7 +59,7 @@ GREEN_LIGHT_LUA = "|cFF99FF9A"              -- #99FF9A
 FONT = STANDARD_TEXT_FONT
 
 -- TEXTURES
-
-BAR = "Interface/RaidFrame/Raid-Bar-Hp-Fill.blp"
 BG = "Interface/Tooltips/UI-Tooltip-Background.blp"
+BG_SOLID = "Interface/Buttons/WHITE8x8"
 BORD = "Interface/Tooltips/UI-Tooltip-Border.blp"
+BAR = "Interface/RaidFrame/Raid-Bar-Hp-Fill.blp"

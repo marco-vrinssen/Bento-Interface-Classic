@@ -17,6 +17,7 @@ comboPointsFrame:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
 
 local comboPointFrames = {}
 
+-- CREATE COMBO POINT FRAME WITH DEFAULT BGFILE (INACTIVE)
 local function CreateComboPointFrame()
     local singleComboPointFrame = CreateFrame("Frame", nil, comboPointsFrame, "BackdropTemplate")
     singleComboPointFrame:SetSize(comboPointFrameSize, comboPointFrameSize)
@@ -27,6 +28,7 @@ local function CreateComboPointFrame()
         insets = { left = 2, right = 2, top = 2, bottom = 2 }
     })
     singleComboPointFrame:SetBackdropBorderColor(unpack(GREY_RGB))
+    singleComboPointFrame:SetBackdropColor(0, 0, 0, 1)
     return singleComboPointFrame
 end
 
@@ -56,19 +58,33 @@ local function HideDefaultComboPoints()
     end
 end
 
--- UPDATE CUSTOM COMBO POINT DISPLAY
-
+-- CONDITIONAL BGFILE AND COLOR UPDATE BASED ON ACTIVE STATE
 local function UpdateCustomComboPointDisplay()
     local currentComboPointsOnTarget = GetComboPoints("player", "target") or 0
 
     if currentComboPointsOnTarget > 0 then
         comboPointsFrame:Show()
         for comboPointIndex = 1, 5 do
-            if comboPointIndex <= currentComboPointsOnTarget then
-                comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(RED_RGB))
+            local isActive = comboPointIndex <= currentComboPointsOnTarget
+            local frame = comboPointFrames[comboPointIndex]
+            if isActive then
+                frame:SetBackdrop({
+                    bgFile = BG_SOLID,
+                    edgeFile = BORD,
+                    edgeSize = 12,
+                    insets = { left = 3, right = 3, top = 3, bottom = 3 }
+                })
+                frame:SetBackdropColor(unpack(RED_RGB))
             else
-                comboPointFrames[comboPointIndex]:SetBackdropColor(unpack(GREY_RGB))
+                frame:SetBackdrop({
+                    bgFile = BG,
+                    edgeFile = BORD,
+                    edgeSize = 12,
+                    insets = { left = 3, right = 3, top = 3, bottom = 3 }
+                })
+                frame:SetBackdropColor(unpack(GREY_RGB))
             end
+            frame:SetBackdropBorderColor(unpack(GREY_RGB))
         end
     else
         comboPointsFrame:Hide()

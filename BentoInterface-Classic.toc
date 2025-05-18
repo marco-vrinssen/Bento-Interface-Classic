@@ -17,7 +17,7 @@ Modules/MiniMap.lua
 Modules/MiniMapButtons.lua
 Modules/NamePlates.lua
 Modules/Player.lua
-Modules/PlayerCP.lua
+Modules/PlayerComboPoints.lua
 Modules/PlayerDruidMana.lua
 Modules/PlayerPet.lua
 Modules/Questie.lua
