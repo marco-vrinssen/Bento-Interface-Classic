@@ -14,6 +14,7 @@ local function updateWorldMap()
 end
 
 -- HANDLE MAP TRANSPARENCY WHILE PLAYER IS MOVING
+
 local function fadeMap()
     if WorldMapFrame:IsShown() then
         local mapAlpha = IsPlayerMoving() and 0.5 or 1
@@ -22,12 +23,14 @@ local function fadeMap()
 end
 
 -- REGISTER MOVEMENT EVENTS FOR MAP FADING
+
 local fadeMapEvents = CreateFrame("Frame")
 fadeMapEvents:RegisterEvent("PLAYER_STARTED_MOVING")
 fadeMapEvents:RegisterEvent("PLAYER_STOPPED_MOVING")
 fadeMapEvents:SetScript("OnEvent", fadeMap)
 
 -- HOOK MAP SCRIPTS FOR UPDATING AND INITIAL DISPLAY
+
 WorldMapFrame:HookScript("OnUpdate", updateWorldMap)
 WorldMapFrame:HookScript("OnShow", function()
     local initialAlpha = IsPlayerMoving() and 0.5 or 1
