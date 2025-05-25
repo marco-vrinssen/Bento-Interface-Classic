@@ -12,7 +12,7 @@ Modules/Bags.lua
 Modules/Buttons.lua
 Modules/CastBar.lua
 Modules/Chat.lua
-Modules/FrameRateDisplay.lua
+Modules/Metrics.lua
 Modules/MicroMenu.lua
 Modules/MiniMap.lua
 Modules/MiniMapButtons.lua
