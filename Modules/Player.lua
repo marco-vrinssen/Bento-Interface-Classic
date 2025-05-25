@@ -1,8 +1,8 @@
 -- CREATE PLAYER FRAME BACKDROPS
 
 PlayerFrameBackdrop = CreateFrame("Button", nil, PlayerFrame, "SecureUnitButtonTemplate, BackdropTemplate")
-PlayerFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", -190, 240)
-PlayerFrameBackdrop:SetSize(124, 48)
+PlayerFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", -190, 232)
+PlayerFrameBackdrop:SetSize(128, 48)
 PlayerFrameBackdrop:SetBackdrop({edgeFile = BORD, edgeSize = 12})
 PlayerFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 PlayerFrameBackdrop:SetFrameLevel(PlayerFrame:GetFrameLevel() + 2)
@@ -21,7 +21,6 @@ PlayerPortraitBackdrop:SetAttribute("unit", "player")
 PlayerPortraitBackdrop:RegisterForClicks("AnyUp")
 PlayerPortraitBackdrop:SetAttribute("type1", "target")
 PlayerPortraitBackdrop:SetAttribute("type2", "togglemenu")
-
 
 -- UPDATE PLAYER FRAME
   
@@ -62,7 +61,7 @@ local function updatePlayerElements()
     end
 
     PlayerFrameHealthBar:ClearAllPoints()
-    PlayerFrameHealthBar:SetSize(PlayerFrameBackground:GetWidth(), 16)
+    PlayerFrameHealthBar:SetSize(PlayerFrameBackground:GetWidth(), 14)
     PlayerFrameHealthBar:SetPoint("BOTTOM", PlayerFrameManaBar, "TOP", 0, 0)
 
     PlayerFrameManaBar:ClearAllPoints()
@@ -116,7 +115,18 @@ playerLevelEvents:SetScript("OnEvent", delayedUpdatePlayerLevel)
 
 local function updatePlayerResources()
     PlayerFrameHealthBar:SetStatusBarTexture(BAR)
+    PlayerFrameHealthBar:SetStatusBarColor(unpack(GREEN_RGB))
     PlayerFrameManaBar:SetStatusBarTexture(BAR)
+    local playerPowerType = UnitPowerType("player")
+    if playerPowerType == 0 then -- MANA
+        PlayerFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
+    elseif playerPowerType == 1 then -- RAGE
+        PlayerFrameManaBar:SetStatusBarColor(unpack(RED_RGB))
+    elseif playerPowerType == 3 then -- ENERGY
+        PlayerFrameManaBar:SetStatusBarColor(unpack(YELLOW_RGB))
+    else
+        PlayerFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
+    end
 end
 
 local playerResourceEvents = CreateFrame("Frame")

@@ -3,13 +3,13 @@
 local function updateActionButtons()
     MainMenuBar:SetWidth(512)
     MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, "BOTTOM", -2, 88)
+    MainMenuBar:SetPoint("BOTTOM", UIParent, "BOTTOM", -2, 72)
     MainMenuBar:SetMovable(true)
     MainMenuBar:SetUserPlaced(true)
 
     MultiBarBottomLeft:Show()
     MultiBarBottomLeft:ClearAllPoints()
-    MultiBarBottomLeft:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 134)
+    MultiBarBottomLeft:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 120)
     MultiBarBottomLeft:SetMovable(true)
     MultiBarBottomLeft:SetUserPlaced(true)
 

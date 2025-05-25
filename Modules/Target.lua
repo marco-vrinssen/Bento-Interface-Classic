@@ -1,8 +1,8 @@
 -- CREATE TARGET FRAME COMPONENTS
 
 TargetFrameBackdrop = CreateFrame("Button", nil, TargetFrame, "SecureUnitButtonTemplate, BackdropTemplate")
-TargetFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", 190, 240)
-TargetFrameBackdrop:SetSize(124, 48)
+TargetFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", 190, 232)
+TargetFrameBackdrop:SetSize(128, 48)
 TargetFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
 TargetFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 TargetFrameBackdrop:SetFrameLevel(TargetFrame:GetFrameLevel() + 2)
@@ -87,7 +87,7 @@ local function updateTargetFrame()
     end
 
     TargetFrameHealthBar:ClearAllPoints()
-    TargetFrameHealthBar:SetSize(TargetFrameBackground:GetWidth(), 16)
+    TargetFrameHealthBar:SetSize(TargetFrameBackground:GetWidth(), 14)
     TargetFrameHealthBar:SetPoint("BOTTOM", TargetFrameManaBar, "TOP", 0, 0)
 
     TargetFrameManaBar:ClearAllPoints()
@@ -223,7 +223,18 @@ end)
 
 local function updateTargetResources()
     TargetFrameHealthBar:SetStatusBarTexture(BAR)
+    TargetFrameHealthBar:SetStatusBarColor(unpack(GREEN_RGB))
     TargetFrameManaBar:SetStatusBarTexture(BAR)
+    local targetPowerType = UnitPowerType("target")
+    if targetPowerType == 0 then -- MANA
+        TargetFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
+    elseif targetPowerType == 1 then -- RAGE
+        TargetFrameManaBar:SetStatusBarColor(unpack(RED_RGB))
+    elseif targetPowerType == 3 then -- ENERGY
+        TargetFrameManaBar:SetStatusBarColor(unpack(YELLOW_RGB))
+    else
+        TargetFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
+    end
 end
 
 local targetResourceEvents = CreateFrame("Frame")

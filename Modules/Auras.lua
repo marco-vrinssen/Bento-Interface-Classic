@@ -17,7 +17,6 @@ hooksecurefunc("AuraButton_UpdateDuration", function(aura)
     end
 end)
 
-
 -- UPDATE AURA DESIGN
 
 local function StyleAuraButton(button, borderColor)
@@ -37,8 +36,7 @@ local function StyleAuraButton(button, borderColor)
     if icon then
         icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
     end
-    
-    -- Hide the original border if it exists
+
     local border = _G[button:GetName().."Border"]
     if border then
         border:Hide()
@@ -55,7 +53,7 @@ end
 
 local function StyleTempEnchant(button)
     StyleAuraButton(button, VIOLET_RGB)
-    
+
     local border = _G[button:GetName().."Border"]
     if border then
         border:Hide()
@@ -73,19 +71,18 @@ hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
     end
 end)
 
-
 -- REPOSITION AURAS
 
 local function UpdateAuraPosition()
     BuffFrame:ClearAllPoints()
-    
+
     local firstAnchor = Minimap
     local xOffset = -40
     local yOffset = 0
     local padding = 8
-    
+
     local firstAuraSet = false
-    
+
     for i = 1, 5 do
         local tempEnchant = _G["TempEnchant"..i]
         if tempEnchant and tempEnchant:IsShown() then
@@ -101,7 +98,7 @@ local function UpdateAuraPosition()
             end
         end
     end
-    
+
     for i = 1, BUFF_MAX_DISPLAY do
         local buff = _G["BuffButton"..i]
         if buff and buff:IsShown() then
@@ -117,10 +114,10 @@ local function UpdateAuraPosition()
             end
         end
     end
-    
+
     local debuffAnchor = Minimap
     local firstBuffFound = false
-    
+
     for i = 1, 5 do
         local tempEnchant = _G["TempEnchant"..i]
         if tempEnchant and tempEnchant:IsShown() and not firstBuffFound then
@@ -129,7 +126,7 @@ local function UpdateAuraPosition()
             break
         end
     end
-    
+
     if not firstBuffFound then
         for i = 1, BUFF_MAX_DISPLAY do
             local buff = _G["BuffButton"..i]
@@ -140,11 +137,11 @@ local function UpdateAuraPosition()
             end
         end
     end
-    
+
     local firstDebuffSet = false
     local debuffAnchorPoint = firstBuffFound and debuffAnchor or Minimap
     local debuffXOffset = firstBuffFound and 0 or xOffset
-    
+
     for i = 1, DEBUFF_MAX_DISPLAY do
         local debuff = _G["DebuffButton"..i]
         if debuff and debuff:IsShown() then
@@ -161,7 +158,6 @@ local function UpdateAuraPosition()
         end
     end
 end
-
 
 -- INITIALIZE AURA UPDATE
 
@@ -181,7 +177,7 @@ local function UpdatePlayerAuras()
             StyleDebuffButton(debuff)
         end
     end
-    
+
     for i = 1, 5 do
         local tempEnchant = _G["TempEnchant"..i]
         if tempEnchant then
@@ -189,10 +185,9 @@ local function UpdatePlayerAuras()
             StyleTempEnchant(tempEnchant)
         end
     end
-    
+
     UpdateAuraPosition()
 end
-
 
 -- REGISTER EVENTS
 
@@ -200,8 +195,8 @@ local auraEvents = CreateFrame("Frame")
 auraEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 auraEvents:RegisterEvent("UNIT_AURA")
 auraEvents:SetScript("OnEvent", function(self, event, unit)
-    if event == "UNIT_AURA" and unit ~= "player" then 
-        return 
+    if event == "UNIT_AURA" and unit ~= "player" then
+        return
     end
     UpdatePlayerAuras()
 end)

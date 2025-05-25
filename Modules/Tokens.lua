@@ -1,4 +1,4 @@
--- COLORS
+-- DEFINE COLORS
 
 WHITE_RGB = {1.0, 1.0, 1.0}                 -- #FFFFFF
 WHITE_LUA = "|cFFFFFFFF"                    -- #FFFFFF
@@ -54,12 +54,13 @@ GREEN_LUA = "|cFF30FE31"                    -- #30FE31
 GREEN_LIGHT_RGB = {0.6, 1.0, 0.603}         -- #99FF9A
 GREEN_LIGHT_LUA = "|cFF99FF9A"              -- #99FF9A
 
--- FONT
+-- DEFINE TYPEFACE
 
 FONT = STANDARD_TEXT_FONT
 
--- TEXTURES
+-- DEFINE TEXTURES
+
 BG = "Interface/Tooltips/UI-Tooltip-Background.blp"
 BG_SOLID = "Interface/Buttons/WHITE8x8"
 BORD = "Interface/Tooltips/UI-Tooltip-Border.blp"
-BAR = "Interface/RaidFrame/Raid-Bar-Hp-Fill.blp"
+BAR = "Interface/AddOns/BentoInterface-Classic/Textures/Statusbar.blp"
