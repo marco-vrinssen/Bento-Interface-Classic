@@ -237,6 +237,29 @@ local function updateTargetResources()
     end
 end
 
+-- HOOK TARGET FRAME UPDATES TO MAINTAIN CUSTOM TEXTURES
+
+local function enforceTargetBarTextures()
+    if TargetFrameHealthBar then
+        TargetFrameHealthBar:SetStatusBarTexture(BAR)
+    end
+    if TargetFrameManaBar then
+        TargetFrameManaBar:SetStatusBarTexture(BAR)
+    end
+end
+
+hooksecurefunc("TargetFrame_Update", enforceTargetBarTextures)
+hooksecurefunc("UnitFrameHealthBar_Update", function(statusbar, unit)
+    if unit == "target" and statusbar then
+        statusbar:SetStatusBarTexture(BAR)
+    end
+end)
+hooksecurefunc("UnitFrameManaBar_Update", function(statusbar, unit)
+    if unit == "target" and statusbar then
+        statusbar:SetStatusBarTexture(BAR)
+    end
+end)
+
 local targetResourceEvents = CreateFrame("Frame")
 targetResourceEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 targetResourceEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -246,9 +269,13 @@ targetResourceEvents:RegisterEvent("UNIT_MAXHEALTH")
 targetResourceEvents:RegisterEvent("UNIT_POWER_UPDATE")
 targetResourceEvents:RegisterEvent("UNIT_POWER_FREQUENT")
 targetResourceEvents:RegisterEvent("UNIT_MAXPOWER")
+targetResourceEvents:RegisterEvent("PLAYER_REGEN_ENABLED")
+targetResourceEvents:RegisterEvent("PLAYER_REGEN_DISABLED")
+targetResourceEvents:RegisterEvent("UNIT_AURA")
 targetResourceEvents:SetScript("OnEvent", function(_, event, unit)
-    if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or unit == "target" then
+    if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" or unit == "target" or not unit then
         updateTargetResources()
+        enforceTargetBarTextures()
     end
 end)
 
