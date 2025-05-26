@@ -5,28 +5,7 @@ minimapFirstBackdrop:SetSize(199, 199)
 minimapFirstBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
 minimapFirstBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
 minimapFirstBackdrop:SetBackdropColor(0, 0, 0, 0.5)
-minimapFirstBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1)
-
--- TOGGLE MINIMAP POSITION
-
-local isGatheringMode = false
-
-local function toggleMinimapPosition()
-    if isGatheringMode then
-        Minimap:ClearAllPoints()
-        Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -16, -16)
-        isGatheringMode = false
-        print("Minimap: Default position")
-    else
-        Minimap:ClearAllPoints()
-        Minimap:SetPoint("CENTER", UIParent, "CENTER", -GetScreenWidth()/4, 0)
-        isGatheringMode = true
-        print("Minimap: Gathering position")
-    end
-end
-
-SLASH_GATHERING1 = "/gathering"
-SlashCmdList["GATHERING"] = toggleMinimapPosition
+minimapFirstBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1) 
 
 local function updateMinimap()
     Minimap:SetClampedToScreen(false)
