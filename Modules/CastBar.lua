@@ -17,6 +17,11 @@ local function updateCastBar()
     CastingBarFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 234)
     CastingBarFrame:SetStatusBarTexture(BAR)
     CastingBarFrame.Border:Hide()
+    CastingBarFrame.Spark:ClearAllPoints()
+    CastingBarFrame.Spark:SetHeight(CastingBarFrame:GetHeight() * 2)
+    CastingBarFrame.Spark:SetPoint("CENTER", CastingBarFrame, "RIGHT", 0, -2)
+
+
     CastingBarFrame.Flash:SetTexture(nil)
     CastingBarFrame.Text:ClearAllPoints()
     CastingBarFrame.Text:SetPoint("TOPLEFT", CastingBarFrame, "TOPLEFT", 2, -2)
