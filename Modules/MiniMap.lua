@@ -141,12 +141,12 @@ local minimapTrackingBackdrop = CreateFrame("Frame", nil, MiniMapTracking, "Back
 minimapTrackingBackdrop:SetPoint("TOPLEFT", MiniMapTracking, "TOPLEFT", -4, 4)
 minimapTrackingBackdrop:SetPoint("BOTTOMRIGHT", MiniMapTracking, "BOTTOMRIGHT", 4, -4)
 minimapTrackingBackdrop:SetBackdrop({
-    bgFile = BG, -- Updated background
+    bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK_RGB)) -- SET BACKDROP COLOR TO BLACK_RGB WITH 50% OPACITY
+minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK_RGB))
 minimapTrackingBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 minimapTrackingBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
@@ -158,8 +158,8 @@ local function updateTracking()
     MiniMapTracking:SetPoint("TOP", Minimap, "TOP", 0, 0)
     MiniMapTrackingIcon:ClearAllPoints()
     MiniMapTrackingIcon:SetSize(18, 18)
-    MiniMapTrackingIcon:SetPoint("CENTER", MiniMapTracking, "CENTER", 0, 0)
     MiniMapTrackingIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
+    MiniMapTrackingIcon:SetPoint("CENTER", MiniMapTracking, "CENTER", 0, 0)
 end
 
 local trackingEvents = CreateFrame("Frame")
