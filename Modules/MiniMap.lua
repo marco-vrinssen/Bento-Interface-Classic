@@ -24,7 +24,6 @@ minimapEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 minimapEvents:RegisterEvent("ZONE_CHANGED")
 minimapEvents:SetScript("OnEvent", updateMinimap)
 
-
 -- ENABLE MOUSE WHEEL ZOOM ON MINIMAP
 
 local function enableMinimapScroll(self, delta)
@@ -39,7 +38,6 @@ local zoomEvents = CreateFrame("Frame", nil, Minimap)
 zoomEvents:SetAllPoints(Minimap)
 zoomEvents:EnableMouseWheel(true)
 zoomEvents:SetScript("OnMouseWheel", enableMinimapScroll)
-
 
 -- UPDATE MINIMAP TIME DISPLAY
 
@@ -74,7 +72,6 @@ local minimapTimerEvents = CreateFrame("Frame")
 minimapTimerEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 minimapTimerEvents:SetScript("OnEvent", updateMinimapTimer)
 
-
 -- UPDATE MINIMAP MAIL ICON
 
 local minimapMailBackdrop = CreateFrame("Frame", nil, MiniMapMailFrame, "BackdropTemplate")
@@ -104,7 +101,6 @@ end
 local minimapMailEvents = CreateFrame("Frame")
 minimapMailEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 minimapMailEvents:SetScript("OnEvent", updateMinimapMail)
-
 
 -- UPDATE MINIMAP BATTLEFIELD ICON
 
@@ -139,8 +135,6 @@ minimapBFFrame:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
 minimapBFFrame:RegisterEvent("UPDATE_ACTIVE_BATTLEFIELD")
 minimapBFFrame:SetScript("OnEvent", minimapBFUpdate)
 
-
-
 -- UPDATE MINIMAP TRACKING ICON
 
 local minimapTrackingBackdrop = CreateFrame("Frame", nil, MiniMapTracking, "BackdropTemplate")
@@ -160,15 +154,16 @@ local function updateTracking()
     MiniMapTrackingBorder:Hide()
     MiniMapTracking:SetParent(Minimap)
     MiniMapTracking:ClearAllPoints()
-    MiniMapTracking:SetSize(12, 12)
+    MiniMapTracking:SetSize(16, 16)
     MiniMapTracking:SetPoint("TOP", Minimap, "TOP", 0, 0)
     MiniMapTrackingIcon:ClearAllPoints()
-    MiniMapTrackingIcon:SetSize(13, 13)
+    MiniMapTrackingIcon:SetSize(18, 18)
     MiniMapTrackingIcon:SetPoint("CENTER", MiniMapTracking, "CENTER", 0, 0)
+    MiniMapTrackingIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 end
 
 local trackingEvents = CreateFrame("Frame")
 trackingEvents:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 trackingEvents:SetScript("OnEvent", function()
-    C_Timer.After(0.1, updateTracking)
+    C_Timer.After(0, updateTracking)
 end)
