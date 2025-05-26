@@ -87,11 +87,11 @@ local function updateTargetFrame()
     end
 
     TargetFrameHealthBar:ClearAllPoints()
-    TargetFrameHealthBar:SetSize(TargetFrameBackground:GetWidth(), 14)
+    TargetFrameHealthBar:SetSize(TargetFrameBackground:GetWidth(), 12)
     TargetFrameHealthBar:SetPoint("BOTTOM", TargetFrameManaBar, "TOP", 0, 0)
 
     TargetFrameManaBar:ClearAllPoints()
-    TargetFrameManaBar:SetSize(TargetFrameBackground:GetWidth(), 8)
+    TargetFrameManaBar:SetSize(TargetFrameBackground:GetWidth(), 10)
     TargetFrameManaBar:SetPoint("BOTTOM", TargetFrameBackdrop, "BOTTOM", 0, 3)
 end
 

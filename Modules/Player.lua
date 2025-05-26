@@ -61,12 +61,12 @@ local function updatePlayerElements()
     end
 
     PlayerFrameHealthBar:ClearAllPoints()
-    PlayerFrameHealthBar:SetSize(PlayerFrameBackground:GetWidth(), 14)
+    PlayerFrameHealthBar:SetSize(PlayerFrameBackground:GetWidth(), 12)
     PlayerFrameHealthBar:SetPoint("BOTTOM", PlayerFrameManaBar, "TOP", 0, 0)
 
     PlayerFrameManaBar:ClearAllPoints()
     PlayerFrameManaBar:SetPoint("BOTTOM", PlayerFrameBackdrop, "BOTTOM", 0, 3)
-    PlayerFrameManaBar:SetSize(PlayerFrameBackground:GetWidth(), 8)
+    PlayerFrameManaBar:SetSize(PlayerFrameBackground:GetWidth(), 10)
 
     PlayerFrameHealthBarText:SetPoint("CENTER", PlayerFrameHealthBar, "CENTER", 0, 0)
     PlayerFrameHealthBarText:SetFont(FONT, 12, "OUTLINE")
