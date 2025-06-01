@@ -132,6 +132,28 @@ local function updateAllChatFrames()
     alignEditBoxHeaders()
 end
 
+-- SET CLASS COLORS FOR CHAT NAMES
+
+local function setClassColorsForChatTypes()
+    SetCVar("chatClassColorOverride", "0")
+
+    for chatType, _ in pairs(ChatTypeGroup) do
+        SetChatColorNameByClass(chatType, true)
+    end
+
+    for chatType, _ in pairs(CHAT_CONFIG_CHAT_LEFT) do
+        SetChatColorNameByClass(chatType, true)
+    end
+
+    local channels = { GetChannelList() }
+    for i = 1, #channels, 3 do
+        local channelID = channels[i]
+        if channelID then
+            SetChatColorNameByClass("CHANNEL" .. channelID, true)
+        end
+    end
+end
+
 -- RECOLOR WHISPER MESSAGES
 
 local function recolorWhisperMessages(self, event, message, sender, ...)
@@ -145,6 +167,7 @@ end
 local function onChatFrameEvent()
     updateAllChatFrames()
     updateChatScrollBehavior()
+    setClassColorsForChatTypes()
 end
 
 -- REGISTER EVENTS
