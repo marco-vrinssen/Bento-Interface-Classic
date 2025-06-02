@@ -66,6 +66,16 @@ local function addCustomBackdropToEditBox(editBox)
     end
 end
 
+-- POSITION MINIMIZE BUTTONS
+
+local function positionMinimizeButton(chatFrame)
+    local minimizeButton = _G[chatFrame:GetName() .. "MinimizeButton"]
+    if minimizeButton then
+        minimizeButton:ClearAllPoints()
+        minimizeButton:SetPoint("BOTTOMRIGHT", chatFrame, "TOPRIGHT", 0, 0)
+    end
+end
+
 -- CUSTOMIZE CHAT FRAME
 
 local function customizeChatFrame(chatFrame)
@@ -79,6 +89,7 @@ local function customizeChatFrame(chatFrame)
 
     hideChildUIElements(chatFrame, hideElements)
     customizeChatTab(chatFrame)
+    positionMinimizeButton(chatFrame)
 
     local editBox = _G[chatFrame:GetName() .. "EditBox"]
     if editBox then
