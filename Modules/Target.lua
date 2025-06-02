@@ -223,18 +223,7 @@ end)
 
 local function updateTargetResources()
     TargetFrameHealthBar:SetStatusBarTexture(BAR)
-    TargetFrameHealthBar:SetStatusBarColor(unpack(GREEN_RGB))
     TargetFrameManaBar:SetStatusBarTexture(BAR)
-    local targetPowerType = UnitPowerType("target")
-    if targetPowerType == 0 then -- MANA
-        TargetFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
-    elseif targetPowerType == 1 then -- RAGE
-        TargetFrameManaBar:SetStatusBarColor(unpack(RED_RGB))
-    elseif targetPowerType == 3 then -- ENERGY
-        TargetFrameManaBar:SetStatusBarColor(unpack(YELLOW_RGB))
-    else
-        TargetFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
-    end
 end
 
 -- HOOK TARGET FRAME UPDATES TO MAINTAIN CUSTOM TEXTURES

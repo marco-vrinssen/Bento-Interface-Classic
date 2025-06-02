@@ -115,18 +115,7 @@ playerLevelEvents:SetScript("OnEvent", delayedUpdatePlayerLevel)
 
 local function updatePlayerResources()
     PlayerFrameHealthBar:SetStatusBarTexture(BAR)
-    PlayerFrameHealthBar:SetStatusBarColor(unpack(GREEN_RGB))
     PlayerFrameManaBar:SetStatusBarTexture(BAR)
-    local playerPowerType = UnitPowerType("player")
-    if playerPowerType == 0 then -- MANA
-        PlayerFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
-    elseif playerPowerType == 1 then -- RAGE
-        PlayerFrameManaBar:SetStatusBarColor(unpack(RED_RGB))
-    elseif playerPowerType == 3 then -- ENERGY
-        PlayerFrameManaBar:SetStatusBarColor(unpack(YELLOW_RGB))
-    else
-        PlayerFrameManaBar:SetStatusBarColor(unpack(BLUE_RGB))
-    end
 end
 
 -- HOOK PLAYER FRAME UPDATES TO MAINTAIN CUSTOM TEXTURES

@@ -87,7 +87,7 @@ minimapMailBackdrop:SetBackdropColor(unpack(BLACK_RGB))
 minimapMailBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 minimapMailBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
-local function updateMinimapMail()
+local function updateMail()
     MiniMapMailBorder:Hide()
     MiniMapMailFrame:SetParent(Minimap)
     MiniMapMailFrame:ClearAllPoints()
@@ -98,26 +98,28 @@ local function updateMinimapMail()
     MiniMapMailIcon:SetPoint("CENTER", MiniMapMailFrame, "CENTER", 0, 0)
 end
 
-local minimapMailEvents = CreateFrame("Frame")
-minimapMailEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-minimapMailEvents:SetScript("OnEvent", updateMinimapMail)
+local mailEvents = CreateFrame("Frame")
+mailEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+mailEvents:SetScript("OnEvent", function()
+    C_Timer.After(0, updateMail)
+end)
 
 -- UPDATE MINIMAP BATTLEFIELD ICON
 
-local minimapBFBackdrop = CreateFrame("Frame", nil, MiniMapBattlefieldFrame, "BackdropTemplate")
-minimapBFBackdrop:SetPoint("TOPLEFT", MiniMapBattlefieldFrame, "TOPLEFT", -4, 4)
-minimapBFBackdrop:SetPoint("BOTTOMRIGHT", MiniMapBattlefieldFrame, "BOTTOMRIGHT", 4, -4)
-minimapBFBackdrop:SetBackdrop({
-    bgFile = BG, -- Updated background
+local minimapBattlefieldBackdrop = CreateFrame("Frame", nil, MiniMapBattlefieldFrame, "BackdropTemplate")
+minimapBattlefieldBackdrop:SetPoint("TOPLEFT", MiniMapBattlefieldFrame, "TOPLEFT", -4, 4)
+minimapBattlefieldBackdrop:SetPoint("BOTTOMRIGHT", MiniMapBattlefieldFrame, "BOTTOMRIGHT", 4, -4)
+minimapBattlefieldBackdrop:SetBackdrop({
+    bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapBFBackdrop:SetBackdropColor(unpack(BLACK_RGB)) -- SET BACKDROP COLOR TO BLACK_RGB WITH 50% OPACITY
-minimapBFBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-minimapBFBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+minimapBattlefieldBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+minimapBattlefieldBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+minimapBattlefieldBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
-local function minimapBFUpdate()
+local function updateBattlefield()
     MiniMapBattlefieldBorder:Hide()
     BattlegroundShine:Hide()
     MiniMapBattlefieldFrame:SetParent(Minimap)
@@ -129,11 +131,13 @@ local function minimapBFUpdate()
     MiniMapBattlefieldIcon:SetPoint("CENTER", MiniMapBattlefieldFrame, "CENTER", 0, 0)
 end
 
-local minimapBFFrame = CreateFrame("Frame")
-minimapBFFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-minimapBFFrame:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
-minimapBFFrame:RegisterEvent("UPDATE_ACTIVE_BATTLEFIELD")
-minimapBFFrame:SetScript("OnEvent", minimapBFUpdate)
+local battlefieldEvents = CreateFrame("Frame")
+battlefieldEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+battlefieldEvents:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
+battlefieldEvents:RegisterEvent("UPDATE_ACTIVE_BATTLEFIELD")
+battlefieldEvents:SetScript("OnEvent", function()
+    C_Timer.After(0, updateBattlefield)
+end)
 
 -- UPDATE MINIMAP TRACKING ICON
 
