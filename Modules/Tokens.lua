@@ -63,4 +63,4 @@ FONT = STANDARD_TEXT_FONT
 BG = "Interface/Tooltips/UI-Tooltip-Background.blp"
 BG_SOLID = "Interface/Buttons/WHITE8x8"
 BORD = "Interface/Tooltips/UI-Tooltip-Border.blp"
-BAR = "Interface/AddOns/BentoInterface-Classic/Textures/Statusbar.blp"
+BAR = "Interface/RaidFrame/Raid-Bar-Hp-Fill.blp"
