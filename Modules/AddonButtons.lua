@@ -1,4 +1,5 @@
 -- UPDATE ADDON BUTTONS ON MINIMAP
+
 local function updateAddonButtonsOnMinimap()
     local libDbIcon = _G.LibStub and _G.LibStub("LibDBIcon-1.0", true)
     if not libDbIcon then return end
@@ -56,6 +57,7 @@ local function updateAddonButtonsOnMinimap()
 end
 
 -- REGISTER EVENTS FOR BUTTON UPDATES
+
 local eventHandler = CreateFrame("Frame")
 eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventHandler:RegisterEvent("ADDON_LOADED")
