@@ -1,15 +1,16 @@
 local itemBorderAddon = CreateFrame("Button", "ItemBorderFrame");
 
-local slotWidth, slotHeight = 68, 68;
-local borderIntensity = 0.5;
+local slotWidthDimension, slotHeightDimension = 68, 68;
+local borderOpacityIntensity = 0.5;
 
--- ADD QUEST ITEM QUALITY COLOR
+-- DEFINE ITEM QUALITY COLOR CONSTANTS
 
-QUALITY_QUEST = #BAG_ITEM_QUALITY_COLORS + 1;
-QUALITY_POOR = 0;
-QUALITY_COMMON = 1;
-BAG_ITEM_QUALITY_COLORS[QUALITY_POOR] = { r = 0.1, g = 0.1, b = 0.1 }
-BAG_ITEM_QUALITY_COLORS[QUALITY_QUEST] = { r = 1, g = 1, b = 0 }
+QUALITY_QUEST_TIER = #BAG_ITEM_QUALITY_COLORS + 1;
+QUALITY_POOR_TIER = 0;
+QUALITY_COMMON_TIER = 1;
+
+BAG_ITEM_QUALITY_COLORS[QUALITY_POOR_TIER] = { r = GREY_RGB[1], g = GREY_RGB[2], b = GREY_RGB[3] }
+BAG_ITEM_QUALITY_COLORS[QUALITY_QUEST_TIER] = { r = YELLOW_RGB[1], g = YELLOW_RGB[2], b = YELLOW_RGB[3] }
 
 -- REGISTER EVENTS
 
@@ -118,16 +119,16 @@ function itemBorderAddon:updateContainerSlot(containerId, slotId, slotFrameName)
     if not slotFrame then return end
 
     if (not slotFrame.itemBorder) then
-        slotFrame.itemBorder = self:createBorder(slotFrameName, slotFrame, slotWidth, slotHeight);
+        slotFrame.itemBorder = self:createBorder(slotFrameName, slotFrame, slotWidthDimension, slotHeightDimension);
     end
 
     local itemId = C_Container.GetContainerItemID(containerId, slotId);
     if (itemId) then
         local quality = GetItemQuality(itemId);
-        if (quality and quality > QUALITY_COMMON) then
+        if (quality and quality > QUALITY_COMMON_TIER) then
             local r, g, b = GetQualityColor(quality);
             slotFrame.itemBorder:SetVertexColor(r, g, b);
-            slotFrame.itemBorder:SetAlpha(borderIntensity);
+            slotFrame.itemBorder:SetAlpha(borderOpacityIntensity);
             slotFrame.itemBorder:Show();
         else
             slotFrame.itemBorder:Hide();
@@ -154,7 +155,7 @@ function itemBorderAddon:updateCharacterSlots(unit, frameType)
 
         if (slotFrame) then
             if (not slotFrame.itemBorder) then
-                local width, height = slotWidth, slotHeight;
+                local width, height = slotWidthDimension, slotHeightDimension;
                 if slotName == "Ammo" then
                     width, height = 58, 58;
                 end
@@ -164,7 +165,7 @@ function itemBorderAddon:updateCharacterSlots(unit, frameType)
             if (quality) then
                 local r, g, b = GetQualityColor(quality);
                 slotFrame.itemBorder:SetVertexColor(r, g, b);
-                slotFrame.itemBorder:SetAlpha(borderIntensity);
+                slotFrame.itemBorder:SetAlpha(borderOpacityIntensity);
                 slotFrame.itemBorder:Show();
             else
                 slotFrame.itemBorder:Hide();
@@ -190,7 +191,7 @@ function itemBorderAddon:updateMerchantItems(itemLinkFunc)
         local itemFrame = _G[slotName];
         if itemFrame then
             if (not itemFrame.itemBorder) then
-                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidth, slotHeight);
+                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidthDimension, slotHeightDimension);
             end
 
             local link = itemLinkFunc(slotId);
@@ -208,7 +209,7 @@ function itemBorderAddon:updateBuybackButton()
     local itemFrame = _G[buybackSlotName];
     if itemFrame then
         if (not itemFrame.itemBorder) then
-            itemFrame.itemBorder = self:createBorder(buybackSlotName, itemFrame, slotWidth, slotHeight);
+            itemFrame.itemBorder = self:createBorder(buybackSlotName, itemFrame, slotWidthDimension, slotHeightDimension);
         end
 
         local lastLink = self:findLastBuybackItem();
@@ -222,10 +223,10 @@ end
 
 function itemBorderAddon:updateSlotBorderFromLink(itemFrame, itemId)
     local itemQuality = GetItemQuality(itemId);
-    if (itemQuality and itemQuality > QUALITY_COMMON) then
+    if (itemQuality and itemQuality > QUALITY_COMMON_TIER) then
         local r, g, b = GetQualityColor(itemQuality);
         itemFrame.itemBorder:SetVertexColor(r, g, b);
-        itemFrame.itemBorder:SetAlpha(borderIntensity);
+        itemFrame.itemBorder:SetAlpha(borderOpacityIntensity);
         itemFrame.itemBorder:Show();
     else
         itemFrame.itemBorder:Hide();
@@ -253,7 +254,7 @@ function itemBorderAddon:updateTradeskillItem(skillId)
     local itemFrame = _G[slotName];
     if itemFrame then
         if (not itemFrame.itemBorder) then
-            itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidth, slotHeight);
+            itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidthDimension, slotHeightDimension);
         end
 
         local link = GetTradeSkillItemLink(skillId);
@@ -272,7 +273,7 @@ function itemBorderAddon:updateTradeskillReagents(skillId)
         local itemFrame = _G[slotName];
         if itemFrame then
             if (not itemFrame.itemBorder) then
-                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidth, slotHeight, -54);
+                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidthDimension, slotHeightDimension, -54);
             end
 
             local link = GetTradeSkillReagentItemLink(skillId, index);
@@ -294,7 +295,7 @@ function itemBorderAddon:createBorder(name, parent, width, height, offsetX, offs
     local border = parent:CreateTexture(name .. "Border", "OVERLAY");
     border:SetTexture("Interface\\Buttons\\UI-ActionButton-Border");
     border:SetBlendMode("ADD");
-    border:SetAlpha(borderIntensity);
+    border:SetAlpha(borderOpacityIntensity);
     border:SetHeight(height);
     border:SetWidth(width);
     border:SetPoint("CENTER", parent, "CENTER", offsetX, offsetY);
@@ -314,6 +315,6 @@ end
 
 function GetItemQuality(itemId)
     local quality, _, _, _, _, _, _, _, _, classId = select(3, GetItemInfo(itemId));
-    if (classId == 12) then quality = QUALITY_QUEST; end
+    if (classId == 12) then quality = QUALITY_QUEST_TIER; end
     return quality;
 end
