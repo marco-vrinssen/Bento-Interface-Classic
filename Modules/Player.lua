@@ -1,5 +1,4 @@
--- CREATE PLAYER FRAME BACKDROPS
-
+-- Create backdrop frames with click attributes to enable player interaction
 PlayerFrameBackdrop = CreateFrame("Button", nil, PlayerFrame, "SecureUnitButtonTemplate, BackdropTemplate")
 PlayerFrameBackdrop:SetPoint("BOTTOM", UIParent, "BOTTOM", -190, 232)
 PlayerFrameBackdrop:SetSize(128, 48)
@@ -22,8 +21,7 @@ PlayerPortraitBackdrop:RegisterForClicks("AnyUp")
 PlayerPortraitBackdrop:SetAttribute("type1", "target")
 PlayerPortraitBackdrop:SetAttribute("type2", "togglemenu")
 
--- UPDATE PLAYER FRAME
-  
+-- Position elements within backdrop boundaries to achieve clean layout
 local function updatePlayerElements()
     PlayerFrame:ClearAllPoints()
     PlayerFrame:SetPoint("TOPLEFT", PlayerPortraitBackdrop, "TOPLEFT", 0, 0)
@@ -87,9 +85,7 @@ local playerElementEvents = CreateFrame("Frame")
 playerElementEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 playerElementEvents:SetScript("OnEvent", updatePlayerElements)
 
-
--- ADD DELAYED PLAYER LEVEL TEXT UPDATE
-
+-- Update player level display with delay to ensure proper synchronization
 local function delayedUpdatePlayerLevel()
     C_Timer.After(0.2, function()
         local currentPlayerLevel = UnitLevel("player")
@@ -110,16 +106,13 @@ playerLevelEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 playerLevelEvents:RegisterEvent("PLAYER_LEVEL_UP")
 playerLevelEvents:SetScript("OnEvent", delayedUpdatePlayerLevel)
 
-
--- UPDATE PLAYER RESOURCE TEXTURES
-
+-- Apply custom textures to player resource bars
 local function updatePlayerResources()
     PlayerFrameHealthBar:SetStatusBarTexture(BAR)
     PlayerFrameManaBar:SetStatusBarTexture(BAR)
 end
 
--- HOOK PLAYER FRAME UPDATES TO MAINTAIN CUSTOM TEXTURES
-
+-- Maintain custom bar textures through frame updates
 local function enforcePlayerBarTextures()
     if PlayerFrameHealthBar then
         PlayerFrameHealthBar:SetStatusBarTexture(BAR)
@@ -159,9 +152,7 @@ playerResourceEvents:SetScript("OnEvent", function(_, event, unit)
     end
 end)
 
-
--- UPDATE PLAYER PORTRAIT
-  
+-- Position portrait within backdrop with cropped texture coordinates
 local function updatePlayerPortrait()
     PlayerPortrait:ClearAllPoints()
     PlayerPortrait:SetPoint("CENTER", PlayerPortraitBackdrop, "CENTER", 0, 0)

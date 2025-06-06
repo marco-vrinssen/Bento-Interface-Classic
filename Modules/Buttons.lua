@@ -1,6 +1,5 @@
--- UPDATE AND REPOSITION ACTION BARS
-
-local function updateActionButtons()
+-- Position action bars with optimal layout to achieve proper ui alignment
+local function positionActionBars()
     MainMenuBar:SetWidth(512)
     MainMenuBar:ClearAllPoints()
     MainMenuBar:SetPoint("BOTTOM", UIParent, "BOTTOM", -2, 72)
@@ -56,13 +55,12 @@ local function updateActionButtons()
     MainMenuBarPerformanceBarFrame.Show = MainMenuBarPerformanceBarFrame.Hide
 end
 
-local actionBarFrame = CreateFrame("Frame")
-actionBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-actionBarFrame:SetScript("OnEvent", updateActionButtons)
+local actionBarEventFrame = CreateFrame("Frame")
+actionBarEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+actionBarEventFrame:SetScript("OnEvent", positionActionBars)
 
 
--- UPDATE BUTTON USABILITY
-
+-- Update button colors with usability to achieve visual feedback
 local function updateButtonUsability(self)
     if not self or not self.action then 
         return 
@@ -78,10 +76,9 @@ end
 hooksecurefunc("ActionButton_OnUpdate", updateButtonUsability)
 
 
--- UPDATE ACTION BUTTONS
-
-local function updateActionButtonAppearance()
-    local function hideNormalTexture(button)
+-- Customize button appearance with borders to achieve visual consistency
+local function styleActionButtons()
+    local function hideTextures(button)
         if button then
             local normalTexture = _G[button:GetName() .. "NormalTexture"]
             if normalTexture then
@@ -96,7 +93,7 @@ local function updateActionButtonAppearance()
         end
     end
 
-    local function customizeButton(button)
+    local function addBorder(button)
         if button then
             if not button.customBorder then
                 local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
@@ -115,7 +112,7 @@ local function updateActionButtonAppearance()
         end
     end
 
-    local function updateButtonFonts(button)
+    local function styleFonts(button)
         if button then
             local macroName = _G[button:GetName() .. "Name"]
             if macroName then
@@ -133,29 +130,27 @@ local function updateActionButtonAppearance()
     end
 
     for i = 1, 12 do
-        local buttons = {
+        local buttonList = {
             _G["ActionButton" .. i],
             _G["MultiBarBottomLeftButton" .. i],
             _G["MultiBarBottomRightButton" .. i],
             _G["MultiBarRightButton" .. i],
             _G["MultiBarLeftButton" .. i]
         }
-        for _, button in ipairs(buttons) do
-            hideNormalTexture(button)
-            customizeButton(button)
-            updateButtonFonts(button)
+        for _, button in ipairs(buttonList) do
+            hideTextures(button)
+            addBorder(button)
+            styleFonts(button)
         end
     end
 end
 
-local actionButtonFrame = CreateFrame("Frame")
-actionButtonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-actionButtonFrame:SetScript("OnEvent", updateActionButtonAppearance)
+local buttonEventFrame = CreateFrame("Frame")
+buttonEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+buttonEventFrame:SetScript("OnEvent", styleActionButtons)
 
-
--- UPDATE CLASS BUTTONS
-
-local function hideClassButtonTextures(button)
+-- Style class buttons with borders to achieve visual uniformity
+local function hideStanceTextures(button)
     for numTextures = 1, 3 do
         local normalTexture = _G[button:GetName() .. "NormalTexture" .. numTextures]
         if normalTexture then
@@ -165,7 +160,7 @@ local function hideClassButtonTextures(button)
     end
 end
 
-local function addCustomBorderToClassButton(button)
+local function addStanceBorder(button)
     if not button.customBorder then
         local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
         backdrop:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
@@ -182,31 +177,30 @@ local function addCustomBorderToClassButton(button)
     end
 end
 
--- ALIGN CLASS BUTTONS BASED ON MULTIBARBOTTOMLEFT VISIBILITY
-
-local function updateClassButtons()
+-- Position stance buttons with multibar to achieve proper alignment
+local function positionStanceButtons()
     if InCombatLockdown() then return end
 
-    local previousClassButton
+    local previousButton
     local anchorButton = MultiBarBottomLeft:IsShown() and MultiBarBottomLeftButton1 or ActionButton1
 
     for numStances = 1, NUM_STANCE_SLOTS do
-        local classButton = _G["StanceButton" .. numStances]
+        local stanceButton = _G["StanceButton" .. numStances]
         
-        classButton:ClearAllPoints()
+        stanceButton:ClearAllPoints()
 
-        if not previousClassButton then
-            classButton:SetPoint("BOTTOMLEFT", anchorButton, "TOPLEFT", 0, 8)
+        if not previousButton then
+            stanceButton:SetPoint("BOTTOMLEFT", anchorButton, "TOPLEFT", 0, 8)
         else
-            classButton:SetPoint("LEFT", previousClassButton, "RIGHT", 4, 0)
+            stanceButton:SetPoint("LEFT", previousButton, "RIGHT", 4, 0)
         end
 
-        classButton:SetScale(0.9)
+        stanceButton:SetScale(0.9)
         
-        hideClassButtonTextures(classButton)
-        addCustomBorderToClassButton(classButton)
+        hideStanceTextures(stanceButton)
+        addStanceBorder(stanceButton)
 
-        previousClassButton = classButton
+        previousButton = stanceButton
     end
 
     StanceBarLeft:SetAlpha(0)
@@ -217,29 +211,28 @@ local function updateClassButtons()
     StanceBarRight:SetTexture(nil)
 end
 
-local classButtonsFrame = CreateFrame("Frame")
-classButtonsFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-classButtonsFrame:RegisterEvent("UPDATE_STEALTH")
-classButtonsFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-classButtonsFrame:RegisterEvent("UPDATE_SHAPESHIFT_USABLE")
-classButtonsFrame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
-classButtonsFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-classButtonsFrame:SetScript("OnEvent", updateClassButtons)
+local stanceFrame = CreateFrame("Frame")
+stanceFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+stanceFrame:RegisterEvent("UPDATE_STEALTH")
+stanceFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+stanceFrame:RegisterEvent("UPDATE_SHAPESHIFT_USABLE")
+stanceFrame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
+stanceFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+stanceFrame:SetScript("OnEvent", positionStanceButtons)
 
 
--- UPDATE PET BUTTONS
-
-local function hidePetButtonTextures(button)
-    local petButtonTexture1 = _G[button:GetName() .. "NormalTexture"]
-    if petButtonTexture1 then
-        petButtonTexture1:SetAlpha(0)
-        petButtonTexture1:SetTexture(nil)
+-- Style pet buttons with borders to achieve unified appearance
+local function hidePetTextures(button)
+    local petTexture1 = _G[button:GetName() .. "NormalTexture"]
+    if petTexture1 then
+        petTexture1:SetAlpha(0)
+        petTexture1:SetTexture(nil)
     end
     
-    local petButtonTexture2 = _G[button:GetName() .. "NormalTexture2"]
-    if petButtonTexture2 then
-        petButtonTexture2:SetAlpha(0)
-        petButtonTexture2:SetTexture(nil)
+    local petTexture2 = _G[button:GetName() .. "NormalTexture2"]
+    if petTexture2 then
+        petTexture2:SetAlpha(0)
+        petTexture2:SetTexture(nil)
     end
     
     local autoCastable = _G[button:GetName() .. "AutoCastable"]
@@ -249,7 +242,7 @@ local function hidePetButtonTextures(button)
     end
 end
 
-local function addCustomBorderToPetButton(button)
+local function addPetBorder(button)
     if not button.customBorder then
         local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
         backdrop:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
@@ -266,41 +259,39 @@ local function addCustomBorderToPetButton(button)
     end
 end
 
-local function updatePetButton()
-    local previousPetButton
+local function positionPetButtons()
+    local previousButton
 
     for numStances = 1, 10 do
         local petButton = _G["PetActionButton" .. numStances]
         petButton:ClearAllPoints()
 
-        if not previousPetButton then
+        if not previousButton then
             petButton:SetPoint("BOTTOMLEFT", MultiBarBottomLeft, "TOPLEFT", 0, 6)
         else
-            petButton:SetPoint("LEFT", previousPetButton, "RIGHT", 6, 0)
+            petButton:SetPoint("LEFT", previousButton, "RIGHT", 6, 0)
         end
 
         petButton:SetScale(0.9)
 
-        hidePetButtonTextures(petButton)
-        addCustomBorderToPetButton(petButton)
+        hidePetTextures(petButton)
+        addPetBorder(petButton)
 
-        previousPetButton = petButton
+        previousButton = petButton
     end
 end
 
-local petButtonsFrame = CreateFrame("Frame")
-petButtonsFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-petButtonsFrame:RegisterEvent("UNIT_PET")
-petButtonsFrame:RegisterEvent("PET_BAR_UPDATE")
-petButtonsFrame:SetScript("OnEvent", updatePetButton)
+local petFrame = CreateFrame("Frame")
+petFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+petFrame:RegisterEvent("UNIT_PET")
+petFrame:RegisterEvent("PET_BAR_UPDATE")
+petFrame:SetScript("OnEvent", positionPetButtons)
 
-
--- UPDATE VEHICLE LEAVE BUTTON
-
-local function vehicleButtonUpdate()
+-- Position vehicle leave button with portrait to achieve proper placement
+local function positionVehicleButton()
     MainMenuBarVehicleLeaveButton:SetSize(24, 24)
     MainMenuBarVehicleLeaveButton:ClearAllPoints()
     MainMenuBarVehicleLeaveButton:SetPoint("BOTTOMRIGHT", PlayerPortrait, "TOPLEFT", -2, 2)
 end
 
-MainMenuBarVehicleLeaveButton:HookScript("OnShow", vehicleButtonUpdate)
+MainMenuBarVehicleLeaveButton:HookScript("OnShow", positionVehicleButton)

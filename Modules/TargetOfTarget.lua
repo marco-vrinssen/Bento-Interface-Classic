@@ -1,80 +1,80 @@
--- CREATE TARGET TARGET BACKDROP
+-- Create targetTargetBackdrop for target of target frame
 
-local ToTFrameBackdrop = CreateFrame("Button", nil, TargetFrameToT, "SecureUnitButtonTemplate, BackdropTemplate")
-ToTFrameBackdrop:SetPoint("BOTTOMLEFT", TargetPortraitBackdrop, "BOTTOMRIGHT", 0, 0)
-ToTFrameBackdrop:SetSize(64, 24)
-ToTFrameBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-ToTFrameBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-ToTFrameBackdrop:SetFrameLevel(TargetFrameToT:GetFrameLevel() + 2)
-ToTFrameBackdrop:SetAttribute("unit", "targettarget")
-ToTFrameBackdrop:RegisterForClicks("AnyUp")
-ToTFrameBackdrop:SetAttribute("type1", "target")
-ToTFrameBackdrop:SetAttribute("type2", "togglemenu")
+local targetTargetBackdrop = CreateFrame("Button", nil, TargetFrameToT, "SecureUnitButtonTemplate, BackdropTemplate")
+targetTargetBackdrop:SetPoint("BOTTOMLEFT", TargetPortraitBackdrop, "BOTTOMRIGHT", 0, 0)
+targetTargetBackdrop:SetSize(64, 24)
+targetTargetBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
+targetTargetBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+targetTargetBackdrop:SetFrameLevel(TargetFrameToT:GetFrameLevel() + 2)
+targetTargetBackdrop:SetAttribute("unit", "targettarget")
+targetTargetBackdrop:RegisterForClicks("AnyUp")
+targetTargetBackdrop:SetAttribute("type1", "target")
+targetTargetBackdrop:SetAttribute("type2", "togglemenu")
 
--- UPDATE TARGET TARGET FRAME
+-- Update targetOfTargetFrame to reposition and restyle elements
 
-local function UpdateToT()
+local function updateTargetOfTargetFrame()
 
 	TargetFrameToT:ClearAllPoints()
-	TargetFrameToT:SetPoint("CENTER", ToTFrameBackdrop, "CENTER", 0, 0)
+	TargetFrameToT:SetPoint("CENTER", targetTargetBackdrop, "CENTER", 0, 0)
 
 	TargetFrameToTTextureFrameTexture:Hide()
 	TargetFrameToTPortrait:Hide()
 
 	TargetFrameToTBackground:ClearAllPoints()
-	TargetFrameToTBackground:SetPoint("TOPLEFT", ToTFrameBackdrop, "TOPLEFT", 2, -2)
-	TargetFrameToTBackground:SetPoint("BOTTOMRIGHT", ToTFrameBackdrop, "BOTTOMRIGHT", -2, 2)
+	TargetFrameToTBackground:SetPoint("TOPLEFT", targetTargetBackdrop, "TOPLEFT", 2, -2)
+	TargetFrameToTBackground:SetPoint("BOTTOMRIGHT", targetTargetBackdrop, "BOTTOMRIGHT", -2, 2)
 
 	TargetFrameToTTextureFrame:Hide()
 	TargetFrameToTTextureFrameName:SetParent(TargetFrameToT)
 	TargetFrameToTTextureFrameName:ClearAllPoints()
-	TargetFrameToTTextureFrameName:SetPoint("BOTTOMLEFT", ToTFrameBackdrop, "TOPLEFT", 2, 2)
-	TargetFrameToTTextureFrameName:SetWidth(ToTFrameBackdrop:GetWidth() - 4)
+	TargetFrameToTTextureFrameName:SetPoint("BOTTOMLEFT", targetTargetBackdrop, "TOPLEFT", 2, 2)
+	TargetFrameToTTextureFrameName:SetWidth(targetTargetBackdrop:GetWidth() - 4)
 	TargetFrameToTTextureFrameName:SetTextColor(1, 1, 1, 1)
 	TargetFrameToTTextureFrameName:SetFont(FONT, 10, "OUTLINE")
 
 	TargetFrameToTHealthBar:ClearAllPoints()
-	TargetFrameToTHealthBar:SetPoint("TOP", ToTFrameBackdrop, "TOP", 0, -2)
+	TargetFrameToTHealthBar:SetPoint("TOP", targetTargetBackdrop, "TOP", 0, -2)
 	TargetFrameToTHealthBar:SetPoint("BOTTOMRIGHT", TargetFrameToTManaBar, "TOPRIGHT", 0, 0)
-	TargetFrameToTHealthBar:SetWidth(ToTFrameBackdrop:GetWidth() - 6)
+	TargetFrameToTHealthBar:SetWidth(targetTargetBackdrop:GetWidth() - 6)
 	TargetFrameToTHealthBar:SetStatusBarTexture(BAR)
 
 	TargetFrameToTManaBar:ClearAllPoints()
-	TargetFrameToTManaBar:SetPoint("BOTTOM", ToTFrameBackdrop, "BOTTOM", 0, 2)
+	TargetFrameToTManaBar:SetPoint("BOTTOM", targetTargetBackdrop, "BOTTOM", 0, 2)
 	TargetFrameToTManaBar:SetHeight(8)
-	TargetFrameToTManaBar:SetWidth(ToTFrameBackdrop:GetWidth() - 6)
+	TargetFrameToTManaBar:SetWidth(targetTargetBackdrop:GetWidth() - 6)
 	TargetFrameToTManaBar:SetStatusBarTexture(BAR)
 
 	for i = 1, MAX_TARGET_BUFFS do
-		local ToTBuff = _G["TargetFrameToTBuff" .. i]
-		if ToTBuff then
-			ToTBuff:SetAlpha(0)
+		local targetBuff = _G["TargetFrameToTBuff" .. i]
+		if targetBuff then
+			targetBuff:SetAlpha(0)
 		end
 	end
 
 	for i = 1, MAX_TARGET_DEBUFFS do
-		local ToTDebuff = _G["TargetFrameToTDebuff" .. i]
-		if ToTDebuff then
-			ToTDebuff:SetAlpha(0)
+		local targetDebuff = _G["TargetFrameToTDebuff" .. i]
+		if targetDebuff then
+			targetDebuff:SetAlpha(0)
 		end
 	end
 end
 
--- REGISTER TARGET TARGET FRAME EVENTS
+-- Register targetOfTargetFrame events for updating
 
-local ToTEvents = CreateFrame("Frame")
-ToTEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-ToTEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
-ToTEvents:SetScript("OnEvent", UpdateToT)
+local targetOfTargetEvents = CreateFrame("Frame")
+targetOfTargetEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+targetOfTargetEvents:RegisterEvent("PLAYER_TARGET_CHANGED")
+targetOfTargetEvents:SetScript("OnEvent", updateTargetOfTargetFrame)
 
--- UPDATE TARGET OF TARGET CONFIGURATION
+-- Update targetOfTargetConfig to ensure CVar is set
 
-local function UpdateToTConfig()
+local function updateTargetOfTargetConfig()
 	SetCVar("ShowTargetOfTarget", 1)
 end
 
--- REGISTER TARGET OF TARGET CONFIGURATION EVENTS
+-- Register targetOfTargetConfig events for CVar update
 
-local ToTConfigEvents = CreateFrame("Frame")
-ToTConfigEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-ToTConfigEvents:SetScript("OnEvent", UpdateToTConfig)
+local targetOfTargetConfigEvents = CreateFrame("Frame")
+targetOfTargetConfigEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+targetOfTargetConfigEvents:SetScript("OnEvent", updateTargetOfTargetConfig)

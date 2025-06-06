@@ -1,72 +1,70 @@
--- HIDE UI ELEMENTS
+-- Hide UI elements with secure methods to achieve clean interface
 
-local function hideUIElement(element)
+local function hideElement(element)
     if element then
         element:Hide()
         element:SetScript("OnShow", element.Hide)
     end
 end
 
-local function hideChildUIElements(parentFrame, childElementNames)
-    for _, childName in ipairs(childElementNames) do
+local function hideChildElements(parentFrame, childNames)
+    for _, childName in ipairs(childNames) do
         local childElement = _G[parentFrame:GetName() .. childName] or parentFrame[childName]
-        hideUIElement(childElement)
+        hideElement(childElement)
     end
 end
 
-local function hideFrameTextures(frame)
+local function hideTextures(frame)
     for _, region in ipairs({frame:GetRegions()}) do
         if region:IsObjectType("Texture") then
-            hideUIElement(region)
+            hideElement(region)
         end
     end
 end
 
--- CUSTOMIZE CHAT TABS
+-- Customize chat tab styling to achieve better appearance
 
-local function customizeChatTab(chatFrame)
+local function customizeTab(chatFrame)
     local chatTab = _G[chatFrame:GetName() .. "Tab"]
-    local chatTabText = _G[chatFrame:GetName() .. "TabText"]
-    local chatTabFlash = _G[chatFrame:GetName() .. "TabFlash"]
+    local tabText = _G[chatFrame:GetName() .. "TabText"]
+    local tabFlash = _G[chatFrame:GetName() .. "TabFlash"]
 
-    hideFrameTextures(chatTab)
+    hideTextures(chatTab)
     
-    if chatTabText then
-        chatTabText:SetFont(FONT, 14)
-        chatTabText:ClearAllPoints()
-        chatTabText:SetPoint("LEFT", chatTab, "LEFT", 4, 0)
+    if tabText then
+        tabText:SetFont(FONT, 14)
+        tabText:ClearAllPoints()
+        tabText:SetPoint("LEFT", chatTab, "LEFT", 4, 0)
     end
 
-    if chatTabFlash and chatTabText then
-        chatTabFlash:ClearAllPoints()
-        chatTabFlash:SetAllPoints(chatTabText)
-        chatTabFlash:SetPoint("CENTER", chatTabText, "CENTER", 0, 0)
-        chatTabFlash:SetWidth(chatTabText:GetWidth())
-        chatTabFlash:SetHeight(chatTabText:GetHeight())
+    if tabFlash and tabText then
+        tabFlash:ClearAllPoints()
+        tabFlash:SetAllPoints(tabText)
+        tabFlash:SetPoint("CENTER", tabText, "CENTER", 0, 0)
+        tabFlash:SetWidth(tabText:GetWidth())
+        tabFlash:SetHeight(tabText:GetHeight())
     end
 end
 
--- ADD CUSTOM EDITBOX BACKDROP
+-- Create custom backdrop for editbox to achieve visual consistency
 
-local function addCustomBackdropToEditBox(editBox)
+local function addBackdrop(editBox)
     if editBox and not editBox.customBackdrop then
-        local editBoxBackdrop = CreateFrame("Frame", nil, editBox, "BackdropTemplate")
-        editBoxBackdrop:SetPoint("TOPLEFT", editBox, "TOPLEFT", 0, 0)
-        editBoxBackdrop:SetPoint("BOTTOMRIGHT", editBox, "BOTTOMRIGHT", 0, 0)
-        editBoxBackdrop:SetBackdrop({
+        local backdrop = CreateFrame("Frame", nil, editBox, "BackdropTemplate")
+        backdrop:SetPoint("TOPLEFT", editBox, "TOPLEFT", 0, 0)
+        backdrop:SetPoint("BOTTOMRIGHT", editBox, "BOTTOMRIGHT", 0, 0)
+        backdrop:SetBackdrop({
             bgFile = BG,
             edgeFile = BORD,
             edgeSize = 12,
             insets = {left = 2, right = 2, top = 2, bottom = 2}
         })
-        editBoxBackdrop:SetBackdropColor(unpack(BLACK_RGB))
-        editBoxBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-        editBox.customBackdrop = editBoxBackdrop
-        editBoxBackdrop:SetFrameLevel(editBox:GetFrameLevel() - 1)
+        backdrop:SetBackdropColor(unpack(BLACK_RGB))
+        backdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+        editBox.customBackdrop = backdrop
+        backdrop:SetFrameLevel(editBox:GetFrameLevel() - 1)
     end
 end
-
--- POSITION MINIMIZE BUTTONS
 
 local function positionMinimizeButton(chatFrame)
     local minimizeButton = _G[chatFrame:GetName() .. "MinimizeButton"]
@@ -76,76 +74,74 @@ local function positionMinimizeButton(chatFrame)
     end
 end
 
--- CUSTOMIZE CHAT FRAME
+-- Apply comprehensive styling to chat frames to achieve unified appearance
 
-local function customizeChatFrame(chatFrame)
-    hideFrameTextures(chatFrame)
+local function customizeFrame(chatFrame)
+    hideTextures(chatFrame)
 
-    local hideElements = {
+    local elementsToHide = {
         "ButtonFrame", "EditBoxLeft", "EditBoxMid", "EditBoxRight",
         "EditBoxHeaderSuffix", "TabUpButton", "TabDownButton",
         "TabBottomButton", "TabMinimizeButton"
     }
 
-    hideChildUIElements(chatFrame, hideElements)
-    customizeChatTab(chatFrame)
+    hideChildElements(chatFrame, elementsToHide)
+    customizeTab(chatFrame)
     positionMinimizeButton(chatFrame)
 
     local editBox = _G[chatFrame:GetName() .. "EditBox"]
     if editBox then
-        addCustomBackdropToEditBox(editBox)
+        addBackdrop(editBox)
     end
 end
 
--- ALIGN EDITBOX HEADERS
-
-local function alignEditBoxHeaders()
+local function alignHeaders()
     for i = 1, NUM_CHAT_WINDOWS do
         local editBox = _G["ChatFrame" .. i .. "EditBox"]
-        local editBoxHeader = _G["ChatFrame" .. i .. "EditBoxHeader"]
-        if editBox and editBoxHeader then
-            editBoxHeader:ClearAllPoints()
-            editBoxHeader:SetPoint("LEFT", editBox, "LEFT", 8, 0)
+        local header = _G["ChatFrame" .. i .. "EditBoxHeader"]
+        if editBox and header then
+            header:ClearAllPoints()
+            header:SetPoint("LEFT", editBox, "LEFT", 8, 0)
         end
     end
 end
 
--- HOOK CHAT TAB SCROLL BEHAVIOR
+-- Hook tab scroll behavior to chat frames to achieve auto-scroll
 
-local function hookChatTabScroll(chatFrameID)
-    local chatTab = _G["ChatFrame" .. chatFrameID .. "Tab"]
+local function hookTabScroll(frameID)
+    local chatTab = _G["ChatFrame" .. frameID .. "Tab"]
     if not chatTab.scrollHooked then
-        chatTab:HookScript("OnClick", function() _G["ChatFrame" .. chatFrameID]:ScrollToBottom() end)
+        chatTab:HookScript("OnClick", function() _G["ChatFrame" .. frameID]:ScrollToBottom() end)
         chatTab.scrollHooked = true
     end
 end
 
-local function updateChatScrollBehavior()
+local function updateScrollBehavior()
     for i = 1, NUM_CHAT_WINDOWS do
-        hookChatTabScroll(i)
+        hookTabScroll(i)
     end
 end
 
--- UPDATE ALL CHAT FRAMES
+-- Update all chat components to achieve complete customization
 
-local function updateAllChatFrames()
+local function updateAllFrames()
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame" .. i]
-        customizeChatFrame(chatFrame)
+        customizeFrame(chatFrame)
     end
 
-    hideUIElement(ChatFrameMenuButton)
-    hideUIElement(ChatFrameChannelButton)
+    hideElement(ChatFrameMenuButton)
+    hideElement(ChatFrameChannelButton)
     if CombatLogQUIckButtonFrame_Custom then
         CombatLogQUIckButtonFrame_Custom:SetAlpha(0)
     end
 
-    alignEditBoxHeaders()
+    alignHeaders()
 end
 
--- SET CLASS COLORS FOR CHAT NAMES
+-- Enable class colors for chat names to achieve better readability
 
-local function setClassColorsForChatTypes()
+local function setClassColors()
     SetCVar("chatClassColorOverride", "0")
 
     for chatType, _ in pairs(ChatTypeGroup) do
@@ -165,38 +161,36 @@ local function setClassColorsForChatTypes()
     end
 end
 
--- RECOLOR WHISPER MESSAGES
-
-local function recolorWhisperMessages(self, event, message, sender, ...)
+local function recolorWhispers(self, event, message, sender, ...)
     if event == "CHAT_MSG_WHISPER" then
         return false, PINK_LIGHT_LUA .. message .. "|r", sender, ...
     end
 end
 
--- EVENT HANDLER
+-- Handle chat frame events to achieve proper initialization
 
-local function onChatFrameEvent()
-    updateAllChatFrames()
-    updateChatScrollBehavior()
-    setClassColorsForChatTypes()
+local function onFrameEvent()
+    updateAllFrames()
+    updateScrollBehavior()
+    setClassColors()
 end
 
--- REGISTER EVENTS
+-- Register events with handler to achieve automatic updates
 
-local chatFrameEventHandler = CreateFrame("Frame")
-chatFrameEventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
-chatFrameEventHandler:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS")
-chatFrameEventHandler:RegisterEvent("UI_SCALE_CHANGED")
-chatFrameEventHandler:RegisterEvent("CHAT_MSG_WHISPER")
-chatFrameEventHandler:SetScript("OnEvent", onChatFrameEvent)
+local eventHandler = CreateFrame("Frame")
+eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventHandler:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS")
+eventHandler:RegisterEvent("UI_SCALE_CHANGED")
+eventHandler:RegisterEvent("CHAT_MSG_WHISPER")
+eventHandler:SetScript("OnEvent", onFrameEvent)
 
-ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", recolorWhisperMessages)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", recolorWhispers)
 
 hooksecurefunc("FCF_OpenTemporaryWindow", function()
-    local currentChatFrame = FCF_GetCurrentChatFrame()
-    if currentChatFrame then
-        customizeChatFrame(currentChatFrame)
-        hookChatTabScroll(currentChatFrame:GetID())
-        alignEditBoxHeaders()
+    local currentFrame = FCF_GetCurrentChatFrame()
+    if currentFrame then
+        customizeFrame(currentFrame)
+        hookTabScroll(currentFrame:GetID())
+        alignHeaders()
     end
 end)

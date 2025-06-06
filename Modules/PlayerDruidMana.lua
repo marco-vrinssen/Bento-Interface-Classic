@@ -1,82 +1,74 @@
--- CREATE EDGE-ONLY BACKDROP FRAME ABOVE MANA BAR
+-- Create border frame to display druid mana above player frame
 
-local druidManaBorder = CreateFrame("Frame", nil, PlayerFrame, "BackdropTemplate")
-druidManaBorder:SetPoint("TOP", PlayerFrameBackdrop, "BOTTOM", 0, 0)
-druidManaBorder:SetSize(PlayerFrameBackdrop:GetWidth(), 18)
-druidManaBorder:SetBackdrop({edgeFile = BORD, edgeSize = 12})
-druidManaBorder:SetBackdropBorderColor(unpack(GREY_RGB))
-druidManaBorder:SetFrameLevel(PlayerFrameBackdrop:GetFrameLevel() + 4)
+local manaBorder = CreateFrame("Frame", nil, PlayerFrame, "BackdropTemplate")
+manaBorder:SetPoint("TOP", PlayerFrameBackdrop, "BOTTOM", 0, 0)
+manaBorder:SetSize(PlayerFrameBackdrop:GetWidth(), 18)
+manaBorder:SetBackdrop({edgeFile = BORD, edgeSize = 12})
+manaBorder:SetBackdropBorderColor(unpack(GREY_RGB))
+manaBorder:SetFrameLevel(PlayerFrameBackdrop:GetFrameLevel() + 4)
 
--- CREATE MANA BAR INSIDE EDGE FRAME, CROPPED BY EDGE
+local manaBar = CreateFrame("StatusBar", nil, manaBorder, "BackdropTemplate")
+manaBar:SetPoint("TOPLEFT", manaBorder, "TOPLEFT", 2, -2)
+manaBar:SetPoint("BOTTOMRIGHT", manaBorder, "BOTTOMRIGHT", -2, 2)
+manaBar:SetStatusBarTexture(BAR)
+manaBar:SetStatusBarColor(unpack(BLUE_RGB))
+manaBar:SetMinMaxValues(0, 1)
+manaBar:SetFrameLevel(manaBorder:GetFrameLevel() - 1)
 
-local druidManaBar = CreateFrame("StatusBar", nil, druidManaBorder, "BackdropTemplate")
-druidManaBar:SetPoint("TOPLEFT", druidManaBorder, "TOPLEFT", 2, -2)
-druidManaBar:SetPoint("BOTTOMRIGHT", druidManaBorder, "BOTTOMRIGHT", -2, 2)
-druidManaBar:SetStatusBarTexture(BAR)
-druidManaBar:SetStatusBarColor(unpack(BLUE_RGB))
-druidManaBar:SetMinMaxValues(0, 1)
-druidManaBar:SetFrameLevel(druidManaBorder:GetFrameLevel() - 1)
+local manaBackground = CreateFrame("Frame", nil, manaBorder, "BackdropTemplate")
+manaBackground:SetPoint("TOPLEFT", manaBorder, "TOPLEFT", 2, -2)
+manaBackground:SetPoint("BOTTOMRIGHT", manaBorder, "BOTTOMRIGHT", -2, 2)
+manaBackground:SetBackdrop({ bgFile = BG })
+manaBackground:SetBackdropColor(unpack(BLACK_RGB))
+manaBackground:SetFrameLevel(manaBar:GetFrameLevel() - 1)
 
--- CREATE BG FRAME BELOW BAR FOR BACKGROUND COLOR
+local manaText = manaBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+manaText:SetPoint("CENTER", manaBar, "CENTER", 0, 0)
+manaText:SetTextColor(unpack(WHITE_RGB))
+manaText:SetFont(GameFontNormal:GetFont(), 8, "OUTLINE")
 
-local druidManaBackground = CreateFrame("Frame", nil, druidManaBorder, "BackdropTemplate")
-druidManaBackground:SetPoint("TOPLEFT", druidManaBorder, "TOPLEFT", 2, -2)
-druidManaBackground:SetPoint("BOTTOMRIGHT", druidManaBorder, "BOTTOMRIGHT", -2, 2)
-druidManaBackground:SetBackdrop({ bgFile = BG })
-druidManaBackground:SetBackdropColor(unpack(BLACK_RGB))
-druidManaBackground:SetFrameLevel(druidManaBar:GetFrameLevel() - 1)
+-- Hide frames for non-druids to prevent unnecessary display
 
--- CREATE MANA TEXT INSIDE MANA BAR
-
-local druidManaText = druidManaBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-druidManaText:SetPoint("CENTER", druidManaBar, "CENTER", 0, 0)
-druidManaText:SetTextColor(unpack(WHITE_RGB))
-druidManaText:SetFont(GameFontNormal:GetFont(), 8, "OUTLINE")
-
--- ONLY ENABLE FOR DRUIDS
-
-local _, classIdentifier = UnitClass("player")
-if classIdentifier ~= "DRUID" then
-    druidManaBorder:Hide()
+local _, playerClass = UnitClass("player")
+if playerClass ~= "DRUID" then
+    manaBorder:Hide()
     return
 end
 
--- UPDATE DRUID MANA BAR VISIBILITY AND VALUES
+-- Update mana display with current values to show secondary resource
 
-local function UpdateDruidManaBar()
-    
-    -- ONLY SHOW BAR IN FORM AND NOT USING MANA AS PRIMARY POWER
-    local currentPowerType = UnitPowerType("player")
-    local currentFormId = GetShapeshiftFormID()
-    if currentFormId and currentFormId > 0 and currentPowerType ~= Enum.PowerType.Mana then
-        local druidCurrentMana = UnitPower("player", Enum.PowerType.Mana)
-        local druidMaxMana = UnitPowerMax("player", Enum.PowerType.Mana)
-        if druidMaxMana > 0 then
-            druidManaBar:SetValue(druidCurrentMana / druidMaxMana)
-            druidManaText:SetText(druidCurrentMana .. " / " .. druidMaxMana)
-            druidManaBorder:Show()
-            druidManaBar:Show()
-            druidManaBackground:Show()
+local function updateManaDisplay()
+    local powerType = UnitPowerType("player")
+    local formId = GetShapeshiftFormID()
+    if formId and formId > 0 and powerType ~= Enum.PowerType.Mana then
+        local currentMana = UnitPower("player", Enum.PowerType.Mana)
+        local maxMana = UnitPowerMax("player", Enum.PowerType.Mana)
+        if maxMana > 0 then
+            manaBar:SetValue(currentMana / maxMana)
+            manaText:SetText(currentMana .. " / " .. maxMana)
+            manaBorder:Show()
+            manaBar:Show()
+            manaBackground:Show()
         else
-            druidManaBorder:Hide()
-            druidManaBar:Hide()
-            druidManaBackground:Hide()
+            manaBorder:Hide()
+            manaBar:Hide()
+            manaBackground:Hide()
         end
     else
-        druidManaBorder:Hide()
-        druidManaBar:Hide()
-        druidManaBackground:Hide()
+        manaBorder:Hide()
+        manaBar:Hide()
+        manaBackground:Hide()
     end
 end
 
--- REGISTER EVENTS FOR MANA BAR UPDATES
+-- Register events to track power changes for real-time updates
 
-local druidManaEventFrame = CreateFrame("Frame")
-druidManaEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-druidManaEventFrame:RegisterEvent("UNIT_POWER_UPDATE")
-druidManaEventFrame:RegisterEvent("UNIT_DISPLAYPOWER")
-druidManaEventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-druidManaEventFrame:SetScript("OnEvent", function(self, event, arg1)
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("UNIT_POWER_UPDATE")
+eventFrame:RegisterEvent("UNIT_DISPLAYPOWER")
+eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+eventFrame:SetScript("OnEvent", function(self, event, arg1)
     if event == "UNIT_POWER_UPDATE" and arg1 ~= "player" then return end
-    UpdateDruidManaBar()
+    updateManaDisplay()
 end)

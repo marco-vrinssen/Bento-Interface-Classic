@@ -1,40 +1,44 @@
-local mapScale = 0.9
+-- Set map scale for WorldMapFrame display
 
-local function updateWorldMap()
+local mapScaleValue = 0.9
+
+-- Update WorldMapFrame position, scale, and cursor position
+
+local function updateMapFrameDisplay()
     WorldMapFrame:ClearAllPoints()
-    WorldMapFrame:SetScale(mapScale)
+    WorldMapFrame:SetScale(mapScaleValue)
     WorldMapFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     WorldMapFrame.BlackoutFrame.Show = function()
         WorldMapFrame.BlackoutFrame:Hide()
     end
     WorldMapFrame.ScrollContainer.GetCursorPosition = function()
-        local mapWidth, mapHeight = MapCanvasScrollControllerMixin.GetCursorPosition()
-        return mapWidth / mapScale, mapHeight / mapScale
+        local cursorWidth, cursorHeight = MapCanvasScrollControllerMixin.GetCursorPosition()
+        return cursorWidth / mapScaleValue, cursorHeight / mapScaleValue
     end
 end
 
--- HANDLE MAP TRANSPARENCY WHILE PLAYER IS MOVING
+-- Fade WorldMapFrame when player is moving
 
-local function fadeMap()
+local function fadeMapOnMove()
     if WorldMapFrame:IsShown() then
-        local mapAlpha = IsPlayerMoving() and 0.5 or 1
-        UIFrameFadeOut(WorldMapFrame, 0.1, WorldMapFrame:GetAlpha(), mapAlpha)
+        local mapAlphaValue = IsPlayerMoving() and 0.5 or 1
+        UIFrameFadeOut(WorldMapFrame, 0.1, WorldMapFrame:GetAlpha(), mapAlphaValue)
     end
 end
 
--- REGISTER MOVEMENT EVENTS FOR MAP FADING
+-- Register movement events for map fading
 
-local fadeMapEvents = CreateFrame("Frame")
-fadeMapEvents:RegisterEvent("PLAYER_STARTED_MOVING")
-fadeMapEvents:RegisterEvent("PLAYER_STOPPED_MOVING")
-fadeMapEvents:SetScript("OnEvent", fadeMap)
+local mapFadeEventFrame = CreateFrame("Frame")
+mapFadeEventFrame:RegisterEvent("PLAYER_STARTED_MOVING")
+mapFadeEventFrame:RegisterEvent("PLAYER_STOPPED_MOVING")
+mapFadeEventFrame:SetScript("OnEvent", fadeMapOnMove)
 
--- HOOK MAP SCRIPTS FOR UPDATING AND INITIAL DISPLAY
+-- Hook WorldMapFrame scripts for update and initial display
 
-WorldMapFrame:HookScript("OnUpdate", updateWorldMap)
+WorldMapFrame:HookScript("OnUpdate", updateMapFrameDisplay)
 WorldMapFrame:HookScript("OnShow", function()
-    local initialAlpha = IsPlayerMoving() and 0.5 or 1
+    local initialMapAlpha = IsPlayerMoving() and 0.5 or 1
     WorldMapFrame:SetAlpha(0)
-    UIFrameFadeIn(WorldMapFrame, 0.1, 0, initialAlpha)
-    updateWorldMap()
+    UIFrameFadeIn(WorldMapFrame, 0.1, 0, initialMapAlpha)
+    updateMapFrameDisplay()
 end)

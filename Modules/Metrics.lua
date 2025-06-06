@@ -1,72 +1,80 @@
--- CREATE PERFORMANCE DISPLAY
+local metricsFrame
+local metricsText
+local metricsTimer
+local metricsVisible = false
 
-local performanceFrame
-local performanceText
-local performanceUpdateTimer
-local performanceIsVisible = false
+-- Create performance display with backdrop styling to show metrics
 
-local function createPerformanceDisplay()
-    performanceFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-    performanceFrame:SetSize(280, 28)
-    performanceFrame:SetPoint("TOP", UIParent, "TOP", 0, -16)
-    performanceFrame:SetBackdrop({
+local function createMetricsDisplay()
+    metricsFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+    metricsFrame:SetSize(280, 28)
+    metricsFrame:SetPoint("TOP", UIParent, "TOP", 0, -16)
+    metricsFrame:SetBackdrop({
         bgFile = BG,
         edgeFile = BORD,
         edgeSize = 12,
         insets = {left = 2, right = 2, top = 2, bottom = 2}
     })
-    performanceFrame:SetBackdropColor(unpack(BLACK_RGB))
-    performanceFrame:SetBackdropBorderColor(unpack(GREY_RGB))
-    performanceFrame:SetFrameStrata("HIGH")
-    performanceFrame:Hide()
+    metricsFrame:SetBackdropColor(unpack(BLACK_RGB))
+    metricsFrame:SetBackdropBorderColor(unpack(GREY_RGB))
+    metricsFrame:SetFrameStrata("HIGH")
+    metricsFrame:Hide()
 
-    performanceText = performanceFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    performanceText:SetPoint("CENTER", performanceFrame, "CENTER", 0, 0)
-    performanceText:SetFont(FONT, 12, "OUTLINE")
-    performanceText:SetTextColor(unpack(WHITE_RGB))
-    performanceText:SetText("FPS: 0 | Home: 0ms World: 0ms")
+    metricsText = metricsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    metricsText:SetPoint("CENTER", metricsFrame, "CENTER", 0, 0)
+    metricsText:SetFont(FONT, 12, "OUTLINE")
+    metricsText:SetTextColor(unpack(WHITE_RGB))
+    metricsText:SetText("FPS: 0 | Home: 0ms World: 0ms")
 end
 
-local function updatePerformanceDisplay()
-    if not performanceIsVisible then return end
+-- Update metrics display with framerate and latency to show performance
+
+local function updateMetricsDisplay()
+    if not metricsVisible then return end
     
     local fps = GetFramerate()
     local _, _, homeLatency, worldLatency = GetNetStats()
     
     if fps and homeLatency and worldLatency then
-        performanceText:SetText(string.format("FPS: %d / Latency: %dms (Home) %dms (Server)", math.floor(fps), homeLatency, worldLatency))
+        metricsText:SetText(string.format("FPS: %d / Latency: %dms (Home) %dms (Server)", math.floor(fps), homeLatency, worldLatency))
     end
 end
 
-local function startPerformanceUpdates()
-    if performanceUpdateTimer then return end
+-- Start metrics updates with timer to provide continuous monitoring
+
+local function startMetricsUpdates()
+    if metricsTimer then return end
     
-    performanceUpdateTimer = C_Timer.NewTicker(1, updatePerformanceDisplay)
+    metricsTimer = C_Timer.NewTicker(1, updateMetricsDisplay)
 end
 
-local function stopPerformanceUpdates()
-    if performanceUpdateTimer then
-        performanceUpdateTimer:Cancel()
-        performanceUpdateTimer = nil
+-- Stop metrics updates with timer cleanup to save resources
+
+local function stopMetricsUpdates()
+    if metricsTimer then
+        metricsTimer:Cancel()
+        metricsTimer = nil
     end
 end
 
-local function togglePerformanceDisplay()
-    if not performanceFrame then
-        createPerformanceDisplay()
+-- Toggle metrics display with visibility state to control display
+
+local function toggleMetricsDisplay()
+    if not metricsFrame then
+        createMetricsDisplay()
     end
     
-    performanceIsVisible = not performanceIsVisible
+    metricsVisible = not metricsVisible
     
-    if performanceIsVisible then
-        performanceFrame:Show()
-        startPerformanceUpdates()
-        updatePerformanceDisplay()
+    if metricsVisible then
+        metricsFrame:Show()
+        startMetricsUpdates()
+        updateMetricsDisplay()
     else
-        performanceFrame:Hide()
-        stopPerformanceUpdates()
+        metricsFrame:Hide()
+        stopMetricsUpdates()
     end
 end
 
 SLASH_PERFORMANCE1 = "/performance"
-SlashCmdList["PERFORMANCE"] = togglePerformanceDisplay
+SlashCmdList["PERFORMANCE"] = toggleMetricsDisplay

@@ -1,15 +1,13 @@
--- CREATE CASTBAR BACKDROP
+-- Create backdrop frame with border styling for cast bar
+local castBarBackdrop = CreateFrame("Frame", nil, CastingBarFrame, "BackdropTemplate")
+castBarBackdrop:SetPoint("TOPLEFT", CastingBarFrame, "TOPLEFT", -3, 3)
+castBarBackdrop:SetPoint("BOTTOMRIGHT", CastingBarFrame, "BOTTOMRIGHT", 3, -3)
+castBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
+castBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+castBarBackdrop:SetFrameLevel(CastingBarFrame:GetFrameLevel() + 2)
 
-local castingBarBackdrop = CreateFrame("Frame", nil, CastingBarFrame, "BackdropTemplate")
-castingBarBackdrop:SetPoint("TOPLEFT", CastingBarFrame, "TOPLEFT", -3, 3)
-castingBarBackdrop:SetPoint("BOTTOMRIGHT", CastingBarFrame, "BOTTOMRIGHT", 3, -3)
-castingBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-castingBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-castingBarBackdrop:SetFrameLevel(CastingBarFrame:GetFrameLevel() + 2)
-
--- UPDATE CASTBAR
-
-local function updateCastBar()
+-- Configure cast bar with positioning to enhance visibility
+local function configureCastBar()
     CastingBarFrame:ClearAllPoints()
     CastingBarFrame:SetSize(160, 20)
     CastingBarFrame:SetMovable(true)
@@ -20,8 +18,6 @@ local function updateCastBar()
     CastingBarFrame.Spark:ClearAllPoints()
     CastingBarFrame.Spark:SetHeight(CastingBarFrame:GetHeight() * 2)
     CastingBarFrame.Spark:SetPoint("CENTER", CastingBarFrame, "RIGHT", 0, -2)
-
-
     CastingBarFrame.Flash:SetTexture(nil)
     CastingBarFrame.Text:ClearAllPoints()
     CastingBarFrame.Text:SetPoint("TOPLEFT", CastingBarFrame, "TOPLEFT", 2, -2)
@@ -29,9 +25,8 @@ local function updateCastBar()
     CastingBarFrame.Text:SetFont(FONT, 12, "OUTLINE")
 end
 
--- RECOLOR CASTBAR ON EVENTS
-
-local function recolorCastBar(event, unit)
+-- Apply cast bar colors based on spell events
+local function applyCastColors(event, unit)
     if unit ~= "player" then return end
 
     if event == "UNIT_SPELLCAST_START" then
@@ -45,20 +40,19 @@ local function recolorCastBar(event, unit)
     end
 end
 
--- INITIALIZE EVENT HANDLING
+-- Register events for spell tracking to enable cast functionality
+local castEventFrame = CreateFrame("Frame")
+castEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+castEventFrame:RegisterEvent("UNIT_SPELLCAST_START")
+castEventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+castEventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+castEventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+castEventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
-local castBarEvents = CreateFrame("Frame")
-castBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-castBarEvents:RegisterEvent("UNIT_SPELLCAST_START")
-castBarEvents:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-castBarEvents:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-castBarEvents:RegisterEvent("UNIT_SPELLCAST_FAILED")
-castBarEvents:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-
-castBarEvents:SetScript("OnEvent", function(self, event, unit, ...)
+castEventFrame:SetScript("OnEvent", function(self, event, unit, ...)
     if event == "PLAYER_ENTERING_WORLD" then
-        updateCastBar()
+        configureCastBar()
     elseif unit == "player" then
-        recolorCastBar(event, unit)
+        applyCastColors(event, unit)
     end
 end)

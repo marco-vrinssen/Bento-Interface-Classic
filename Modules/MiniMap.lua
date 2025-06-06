@@ -1,13 +1,14 @@
--- UPDATE MINIMAP
 
-local minimapFirstBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
-minimapFirstBackdrop:SetSize(199, 199)
-minimapFirstBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
-minimapFirstBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
-minimapFirstBackdrop:SetBackdropColor(0, 0, 0, 0.5)
-minimapFirstBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1) 
+-- Create backdrop frame with minimap to achieve visual enhancement
+local minimapBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
+minimapBackdrop:SetSize(199, 199)
+minimapBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
+minimapBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
+minimapBackdrop:SetBackdropColor(0, 0, 0, 0.5)
+minimapBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 
-local function updateMinimap()
+-- Configure minimap position with UIParent to achieve proper positioning
+local function configureMinimapPosition()
     Minimap:SetClampedToScreen(false)
     Minimap:SetParent(UIParent)
     Minimap:SetSize(200, 200)
@@ -19,14 +20,14 @@ local function updateMinimap()
     MinimapCluster:Hide()
 end
 
-local minimapEvents = CreateFrame("Frame")
-minimapEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-minimapEvents:RegisterEvent("ZONE_CHANGED")
-minimapEvents:SetScript("OnEvent", updateMinimap)
+-- Register minimap events with frame to achieve automatic updates
+local minimapEventHandler = CreateFrame("Frame")
+minimapEventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+minimapEventHandler:RegisterEvent("ZONE_CHANGED")
+minimapEventHandler:SetScript("OnEvent", configureMinimapPosition)
 
--- ENABLE MOUSE WHEEL ZOOM ON MINIMAP
-
-local function enableMinimapScroll(self, delta)
+-- Enable scroll functionality with mouse wheel to achieve zoom control
+local function handleMinimapScroll(self, delta)
     if delta > 0 then
         Minimap_ZoomIn()
     else
@@ -34,127 +35,135 @@ local function enableMinimapScroll(self, delta)
     end
 end
 
-local zoomEvents = CreateFrame("Frame", nil, Minimap)
-zoomEvents:SetAllPoints(Minimap)
-zoomEvents:EnableMouseWheel(true)
-zoomEvents:SetScript("OnMouseWheel", enableMinimapScroll)
+-- Create scroll handler with minimap to achieve wheel zoom
+local scrollHandler = CreateFrame("Frame", nil, Minimap)
+scrollHandler:SetAllPoints(Minimap)
+scrollHandler:EnableMouseWheel(true)
+scrollHandler:SetScript("OnMouseWheel", handleMinimapScroll)
 
--- UPDATE MINIMAP TIME DISPLAY
-
-local minimapTimeBackdrop = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-minimapTimeBackdrop:SetSize(48, 24)
-minimapTimeBackdrop:SetPoint("CENTER", Minimap, "BOTTOM", 0, 0)
-minimapTimeBackdrop:SetBackdrop({
+-- Create time display backdrop with minimap to achieve styled time frame
+local timeDisplayBackdrop = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+local timeDisplayBackdrop = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+timeDisplayBackdrop:SetSize(48, 24)
+timeDisplayBackdrop:SetPoint("CENTER", Minimap, "BOTTOM", 0, 0)
+timeDisplayBackdrop:SetBackdrop({
     bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTimeBackdrop:SetBackdropColor(unpack(BLACK_RGB))
-minimapTimeBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-minimapTimeBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+timeDisplayBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+timeDisplayBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+timeDisplayBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
-local function updateMinimapTimer()
+-- Configure timer display with clock button to achieve styled time
+local function configureTimerDisplay()
     for _, buttonRegion in pairs({TimeManagerClockButton:GetRegions()}) do
         if buttonRegion:IsObjectType("Texture") then
             buttonRegion:Hide()
         end
     end
-    TimeManagerClockButton:SetParent(minimapTimeBackdrop)
-    TimeManagerClockButton:SetAllPoints(minimapTimeBackdrop)
+    TimeManagerClockButton:SetParent(timeDisplayBackdrop)
+    TimeManagerClockButton:SetAllPoints(timeDisplayBackdrop)
     TimeManagerClockTicker:SetPoint("CENTER", TimeManagerClockButton, "CENTER", 0, 0)
     TimeManagerClockTicker:SetFont(FONT, 12)
     TimeManagerFrame:ClearAllPoints()
-    TimeManagerFrame:SetPoint("TOPRIGHT", minimapTimeBackdrop, "BOTTOMRIGHT", 0, -4)
+    TimeManagerFrame:SetPoint("TOPRIGHT", timeDisplayBackdrop, "BOTTOMRIGHT", 0, -4)
 end
 
-local minimapTimerEvents = CreateFrame("Frame")
-minimapTimerEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-minimapTimerEvents:SetScript("OnEvent", updateMinimapTimer)
+-- Register timer events with frame to achieve automatic timer updates
+local timerEventHandler = CreateFrame("Frame")
+timerEventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+timerEventHandler:SetScript("OnEvent", configureTimerDisplay)
 
--- UPDATE MINIMAP MAIL ICON
-
-local minimapMailBackdrop = CreateFrame("Frame", nil, MiniMapMailFrame, "BackdropTemplate")
-minimapMailBackdrop:SetPoint("TOPLEFT", MiniMapMailFrame, "TOPLEFT", -4, 4)
-minimapMailBackdrop:SetPoint("BOTTOMRIGHT", MiniMapMailFrame, "BOTTOMRIGHT", 4, -4)
-minimapMailBackdrop:SetBackdrop({
+-- Create mail icon backdrop with mail frame to achieve styled mail display
+local mailIconBackdrop = CreateFrame("Frame", nil, MiniMapMailFrame, "BackdropTemplate")
+local mailIconBackdrop = CreateFrame("Frame", nil, MiniMapMailFrame, "BackdropTemplate")
+mailIconBackdrop:SetPoint("TOPLEFT", MiniMapMailFrame, "TOPLEFT", -4, 4)
+mailIconBackdrop:SetPoint("BOTTOMRIGHT", MiniMapMailFrame, "BOTTOMRIGHT", 4, -4)
+mailIconBackdrop:SetBackdrop({
     bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapMailBackdrop:SetBackdropColor(unpack(BLACK_RGB))
-minimapMailBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-minimapMailBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+mailIconBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+mailIconBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+mailIconBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
-local function updateMail()
+-- Configure mail display with mail frame to achieve styled mail icon
+local function configureMailDisplay()
     MiniMapMailBorder:Hide()
     MiniMapMailFrame:SetParent(Minimap)
     MiniMapMailFrame:ClearAllPoints()
     MiniMapMailFrame:SetSize(16, 16)
-    MiniMapMailFrame:SetPoint("RIGHT", minimapTimeBackdrop, "LEFT", -4, 0)
+    MiniMapMailFrame:SetPoint("RIGHT", timeDisplayBackdrop, "LEFT", -4, 0)
     MiniMapMailIcon:ClearAllPoints()
     MiniMapMailIcon:SetSize(18, 18)
     MiniMapMailIcon:SetPoint("CENTER", MiniMapMailFrame, "CENTER", 0, 0)
 end
 
-local mailEvents = CreateFrame("Frame")
-mailEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-mailEvents:SetScript("OnEvent", function()
-    C_Timer.After(0, updateMail)
+-- Register mail events with frame to achieve automatic mail updates
+local mailEventHandler = CreateFrame("Frame")
+mailEventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+mailEventHandler:SetScript("OnEvent", function()
+    C_Timer.After(0, configureMailDisplay)
 end)
 
--- UPDATE MINIMAP BATTLEFIELD ICON
-
-local minimapBattlefieldBackdrop = CreateFrame("Frame", nil, MiniMapBattlefieldFrame, "BackdropTemplate")
-minimapBattlefieldBackdrop:SetPoint("TOPLEFT", MiniMapBattlefieldFrame, "TOPLEFT", -4, 4)
-minimapBattlefieldBackdrop:SetPoint("BOTTOMRIGHT", MiniMapBattlefieldFrame, "BOTTOMRIGHT", 4, -4)
-minimapBattlefieldBackdrop:SetBackdrop({
+-- Create battlefield icon backdrop with battlefield frame to achieve styled battlefield display
+local battlefieldIconBackdrop = CreateFrame("Frame", nil, MiniMapBattlefieldFrame, "BackdropTemplate")
+local battlefieldIconBackdrop = CreateFrame("Frame", nil, MiniMapBattlefieldFrame, "BackdropTemplate")
+battlefieldIconBackdrop:SetPoint("TOPLEFT", MiniMapBattlefieldFrame, "TOPLEFT", -4, 4)
+battlefieldIconBackdrop:SetPoint("BOTTOMRIGHT", MiniMapBattlefieldFrame, "BOTTOMRIGHT", 4, -4)
+battlefieldIconBackdrop:SetBackdrop({
     bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapBattlefieldBackdrop:SetBackdropColor(unpack(BLACK_RGB))
-minimapBattlefieldBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-minimapBattlefieldBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+battlefieldIconBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+battlefieldIconBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+battlefieldIconBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
-local function updateBattlefield()
+-- Configure battlefield display with battlefield frame to achieve styled battlefield icon
+local function configureBattlefieldDisplay()
     MiniMapBattlefieldBorder:Hide()
     BattlegroundShine:Hide()
     MiniMapBattlefieldFrame:SetParent(Minimap)
     MiniMapBattlefieldFrame:ClearAllPoints()
     MiniMapBattlefieldFrame:SetSize(16, 16)
-    MiniMapBattlefieldFrame:SetPoint("LEFT", minimapTimeBackdrop, "RIGHT", 4, 0)
+    MiniMapBattlefieldFrame:SetPoint("LEFT", timeDisplayBackdrop, "RIGHT", 4, 0)
     MiniMapBattlefieldIcon:ClearAllPoints()
     MiniMapBattlefieldIcon:SetSize(16, 16)
     MiniMapBattlefieldIcon:SetPoint("CENTER", MiniMapBattlefieldFrame, "CENTER", 0, 0)
 end
 
-local battlefieldEvents = CreateFrame("Frame")
-battlefieldEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-battlefieldEvents:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
-battlefieldEvents:RegisterEvent("UPDATE_ACTIVE_BATTLEFIELD")
-battlefieldEvents:SetScript("OnEvent", function()
-    C_Timer.After(0, updateBattlefield)
+-- Register battlefield events with frame to achieve automatic battlefield updates
+local battlefieldEventHandler = CreateFrame("Frame")
+battlefieldEventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+battlefieldEventHandler:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
+battlefieldEventHandler:RegisterEvent("UPDATE_ACTIVE_BATTLEFIELD")
+battlefieldEventHandler:SetScript("OnEvent", function()
+    C_Timer.After(0, configureBattlefieldDisplay)
 end)
 
--- UPDATE MINIMAP TRACKING ICON
-
-local minimapTrackingBackdrop = CreateFrame("Frame", nil, MiniMapTracking, "BackdropTemplate")
-minimapTrackingBackdrop:SetPoint("TOPLEFT", MiniMapTracking, "TOPLEFT", -4, 4)
-minimapTrackingBackdrop:SetPoint("BOTTOMRIGHT", MiniMapTracking, "BOTTOMRIGHT", 4, -4)
-minimapTrackingBackdrop:SetBackdrop({
+-- Create tracking icon backdrop with tracking frame to achieve styled tracking display
+local trackingIconBackdrop = CreateFrame("Frame", nil, MiniMapTracking, "BackdropTemplate")
+local trackingIconBackdrop = CreateFrame("Frame", nil, MiniMapTracking, "BackdropTemplate")
+trackingIconBackdrop:SetPoint("TOPLEFT", MiniMapTracking, "TOPLEFT", -4, 4)
+trackingIconBackdrop:SetPoint("BOTTOMRIGHT", MiniMapTracking, "BOTTOMRIGHT", 4, -4)
+trackingIconBackdrop:SetBackdrop({
     bgFile = BG,
     edgeFile = BORD,
     edgeSize = 12,
     insets = {left = 2, right = 2, top = 2, bottom = 2}
 })
-minimapTrackingBackdrop:SetBackdropColor(unpack(BLACK_RGB))
-minimapTrackingBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
-minimapTrackingBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+trackingIconBackdrop:SetBackdropColor(unpack(BLACK_RGB))
+trackingIconBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+trackingIconBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 
-local function updateTracking()
+-- Configure tracking display with tracking frame to achieve styled tracking icon
+local function configureTrackingDisplay()
     MiniMapTrackingBorder:Hide()
     MiniMapTracking:SetParent(Minimap)
     MiniMapTracking:ClearAllPoints()
@@ -166,8 +175,9 @@ local function updateTracking()
     MiniMapTrackingIcon:SetPoint("CENTER", MiniMapTracking, "CENTER", 0, 0)
 end
 
-local trackingEvents = CreateFrame("Frame")
-trackingEvents:RegisterEvent("MINIMAP_UPDATE_TRACKING")
-trackingEvents:SetScript("OnEvent", function()
-    C_Timer.After(0, updateTracking)
+-- Register tracking events with frame to achieve automatic tracking updates
+local trackingEventHandler = CreateFrame("Frame")
+trackingEventHandler:RegisterEvent("MINIMAP_UPDATE_TRACKING")
+trackingEventHandler:SetScript("OnEvent", function()
+    C_Timer.After(0, configureTrackingDisplay)
 end)

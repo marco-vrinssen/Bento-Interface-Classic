@@ -1,204 +1,199 @@
--- UPDATE AURA DURATION
-
-local function UpdateAuraTimer(aura)
-    local auraDuration = _G[aura:GetName().."Duration"]
-    if auraDuration then
-        auraDuration:SetFont(FONT, 10, "OUTLINE")
-        auraDuration:SetTextColor(1, 1, 1)
-        auraDuration:ClearAllPoints()
-        auraDuration:SetPoint("BOTTOM", aura, "BOTTOM", 2, -14)
-        auraDuration:SetTextColor(unpack(WHITE_RGB))
-    end
+-- Style aura timer text to improve readability
+local function styleAuraTimer(aura)
+  local durationText = _G[aura:GetName().."Duration"]
+  if durationText then
+    durationText:SetFont(FONT, 10, "OUTLINE")
+    durationText:SetTextColor(1, 1, 1)
+    durationText:ClearAllPoints()
+    durationText:SetPoint("BOTTOM", aura, "BOTTOM", 2, -14)
+    durationText:SetTextColor(unpack(WHITE_RGB))
+  end
 end
 
 hooksecurefunc("AuraButton_UpdateDuration", function(aura)
-    if aura then
-        UpdateAuraTimer(aura)
-    end
+  if aura then
+    styleAuraTimer(aura)
+  end
 end)
 
--- UPDATE AURA DESIGN
+-- Add border styling and crop icons to create uniform appearance
+local function applyAuraStyle(button, borderColor)
+  if not button.customBorder then
+    local borderFrame = CreateFrame("Frame", nil, button, "BackdropTemplate")
+    borderFrame:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
+    borderFrame:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 3, -3)
+    borderFrame:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
+    borderFrame:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
+    borderFrame:SetFrameLevel(button:GetFrameLevel() + 2)
+    button.customBorder = borderFrame
+  else
+    button.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
+  end
 
-local function StyleAuraButton(button, borderColor)
-    if not button.customBorder then
-        local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
-        backdrop:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
-        backdrop:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 3, -3)
-        backdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
-        backdrop:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
-        backdrop:SetFrameLevel(button:GetFrameLevel() + 2)
-        button.customBorder = backdrop
-    else
-        button.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
-    end
+  local buttonIcon = _G[button:GetName().."Icon"]
+  if buttonIcon then
+    buttonIcon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+  end
 
-    local icon = _G[button:GetName().."Icon"]
-    if icon then
-        icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-    end
-
-    local border = _G[button:GetName().."Border"]
-    if border then
-        border:Hide()
-    end
+  local buttonBorder = _G[button:GetName().."Border"]
+  if buttonBorder then
+    buttonBorder:Hide()
+  end
 end
 
-local function StyleBuffButton(button)
-    StyleAuraButton(button, GREY_RGB)
+local function styleBuffButton(button)
+  applyAuraStyle(button, GREY_RGB)
 end
 
-local function StyleDebuffButton(button)
-    StyleAuraButton(button, RED_RGB)
+local function styleDebuffButton(button)
+  applyAuraStyle(button, RED_RGB)
 end
 
-local function StyleTempEnchant(button)
-    StyleAuraButton(button, VIOLET_RGB)
+local function styleTempEnchant(button)
+  applyAuraStyle(button, VIOLET_RGB)
 
-    local border = _G[button:GetName().."Border"]
-    if border then
-        border:Hide()
-    end
+  local enchantBorder = _G[button:GetName().."Border"]
+  if enchantBorder then
+    enchantBorder:Hide()
+  end
 end
 
 hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
-    local button = _G[buttonName..index]
-    if button then
-        if filter == "HARMFUL" then
-            StyleDebuffButton(button)
-        else
-            StyleBuffButton(button)
-        end
+  local auraButton = _G[buttonName..index]
+  if auraButton then
+    if filter == "HARMFUL" then
+      styleDebuffButton(auraButton)
+    else
+      styleBuffButton(auraButton)
     end
+  end
 end)
 
--- REPOSITION AURAS
+-- Position auras near minimap to maintain clean interface layout
+local function arrangeAuraPosition()
+  BuffFrame:ClearAllPoints()
 
-local function UpdateAuraPosition()
-    BuffFrame:ClearAllPoints()
+  local anchorPoint = Minimap
+  local offsetX = -40
+  local offsetY = 0
+  local padding = 8
 
-    local firstAnchor = Minimap
-    local xOffset = -40
-    local yOffset = 0
-    local padding = 8
+  local hasFirstAura = false
 
-    local firstAuraSet = false
-
-    for i = 1, 5 do
-        local tempEnchant = _G["TempEnchant"..i]
-        if tempEnchant and tempEnchant:IsShown() then
-            if not firstAuraSet then
-                tempEnchant:ClearAllPoints()
-                tempEnchant:SetPoint("TOPRIGHT", firstAnchor, "TOPLEFT", xOffset, yOffset)
-                firstAnchor = tempEnchant
-                firstAuraSet = true
-            else
-                tempEnchant:ClearAllPoints()
-                tempEnchant:SetPoint("TOPRIGHT", firstAnchor, "TOPLEFT", -padding, 0)
-                firstAnchor = tempEnchant
-            end
-        end
+  for i = 1, 5 do
+    local enchantButton = _G["TempEnchant"..i]
+    if enchantButton and enchantButton:IsShown() then
+      if not hasFirstAura then
+        enchantButton:ClearAllPoints()
+        enchantButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", offsetX, offsetY)
+        anchorPoint = enchantButton
+        hasFirstAura = true
+      else
+        enchantButton:ClearAllPoints()
+        enchantButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", -padding, 0)
+        anchorPoint = enchantButton
+      end
     end
+  end
 
+  for i = 1, BUFF_MAX_DISPLAY do
+    local buffButton = _G["BuffButton"..i]
+    if buffButton and buffButton:IsShown() then
+      if not hasFirstAura then
+        buffButton:ClearAllPoints()
+        buffButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", offsetX, offsetY)
+        anchorPoint = buffButton
+        hasFirstAura = true
+      else
+        buffButton:ClearAllPoints()
+        buffButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", -padding, 0)
+        anchorPoint = buffButton
+      end
+    end
+  end
+
+  local debuffAnchor = Minimap
+  local hasBuffs = false
+
+  for i = 1, 5 do
+    local enchantButton = _G["TempEnchant"..i]
+    if enchantButton and enchantButton:IsShown() and not hasBuffs then
+      debuffAnchor = enchantButton
+      hasBuffs = true
+      break
+    end
+  end
+
+  if not hasBuffs then
     for i = 1, BUFF_MAX_DISPLAY do
-        local buff = _G["BuffButton"..i]
-        if buff and buff:IsShown() then
-            if not firstAuraSet then
-                buff:ClearAllPoints()
-                buff:SetPoint("TOPRIGHT", firstAnchor, "TOPLEFT", xOffset, yOffset)
-                firstAnchor = buff
-                firstAuraSet = true
-            else
-                buff:ClearAllPoints()
-                buff:SetPoint("TOPRIGHT", firstAnchor, "TOPLEFT", -padding, 0)
-                firstAnchor = buff
-            end
-        end
+      local buffButton = _G["BuffButton"..i]
+      if buffButton and buffButton:IsShown() then
+        debuffAnchor = buffButton
+        hasBuffs = true
+        break
+      end
     end
+  end
 
-    local debuffAnchor = Minimap
-    local firstBuffFound = false
+  local hasFirstDebuff = false
+  local debuffAnchorPoint = hasBuffs and debuffAnchor or Minimap
+  local debuffOffsetX = hasBuffs and 0 or offsetX
 
-    for i = 1, 5 do
-        local tempEnchant = _G["TempEnchant"..i]
-        if tempEnchant and tempEnchant:IsShown() and not firstBuffFound then
-            debuffAnchor = tempEnchant
-            firstBuffFound = true
-            break
-        end
+  for i = 1, DEBUFF_MAX_DISPLAY do
+    local debuffButton = _G["DebuffButton"..i]
+    if debuffButton and debuffButton:IsShown() then
+      if not hasFirstDebuff then
+        debuffButton:ClearAllPoints()
+        debuffButton:SetPoint("TOPRIGHT", debuffAnchorPoint, hasBuffs and "BOTTOMRIGHT" or "TOPLEFT", debuffOffsetX, -24)
+        debuffAnchor = debuffButton
+        hasFirstDebuff = true
+      else
+        debuffButton:ClearAllPoints()
+        debuffButton:SetPoint("TOPRIGHT", debuffAnchor, "TOPLEFT", -padding, 0)
+        debuffAnchor = debuffButton
+      end
     end
-
-    if not firstBuffFound then
-        for i = 1, BUFF_MAX_DISPLAY do
-            local buff = _G["BuffButton"..i]
-            if buff and buff:IsShown() then
-                debuffAnchor = buff
-                firstBuffFound = true
-                break
-            end
-        end
-    end
-
-    local firstDebuffSet = false
-    local debuffAnchorPoint = firstBuffFound and debuffAnchor or Minimap
-    local debuffXOffset = firstBuffFound and 0 or xOffset
-
-    for i = 1, DEBUFF_MAX_DISPLAY do
-        local debuff = _G["DebuffButton"..i]
-        if debuff and debuff:IsShown() then
-            if not firstDebuffSet then
-                debuff:ClearAllPoints()
-                debuff:SetPoint("TOPRIGHT", debuffAnchorPoint, firstBuffFound and "BOTTOMRIGHT" or "TOPLEFT", debuffXOffset, -24)
-                debuffAnchor = debuff
-                firstDebuffSet = true
-            else
-                debuff:ClearAllPoints()
-                debuff:SetPoint("TOPRIGHT", debuffAnchor, "TOPLEFT", -padding, 0)
-                debuffAnchor = debuff
-            end
-        end
-    end
+  end
 end
 
--- INITIALIZE AURA UPDATE
-
-local function UpdatePlayerAuras()
-    for i = 1, BUFF_MAX_DISPLAY do
-        local buff = _G["BuffButton"..i]
-        if buff then
-            UpdateAuraTimer(buff)
-            StyleBuffButton(buff)
-        end
+-- Update all player auras to ensure consistent styling
+local function refreshPlayerAuras()
+  for i = 1, BUFF_MAX_DISPLAY do
+    local buffButton = _G["BuffButton"..i]
+    if buffButton then
+      styleAuraTimer(buffButton)
+      styleBuffButton(buffButton)
     end
+  end
 
-    for i = 1, DEBUFF_MAX_DISPLAY do
-        local debuff = _G["DebuffButton"..i]
-        if debuff then
-            UpdateAuraTimer(debuff)
-            StyleDebuffButton(debuff)
-        end
+  for i = 1, DEBUFF_MAX_DISPLAY do
+    local debuffButton = _G["DebuffButton"..i]
+    if debuffButton then
+      styleAuraTimer(debuffButton)
+      styleDebuffButton(debuffButton)
     end
+  end
 
-    for i = 1, 5 do
-        local tempEnchant = _G["TempEnchant"..i]
-        if tempEnchant then
-            UpdateAuraTimer(tempEnchant)
-            StyleTempEnchant(tempEnchant)
-        end
+  for i = 1, 5 do
+    local enchantButton = _G["TempEnchant"..i]
+    if enchantButton then
+      styleAuraTimer(enchantButton)
+      styleTempEnchant(enchantButton)
     end
+  end
 
-    UpdateAuraPosition()
+  arrangeAuraPosition()
 end
 
--- REGISTER EVENTS
-
-local auraEvents = CreateFrame("Frame")
-auraEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-auraEvents:RegisterEvent("UNIT_AURA")
-auraEvents:SetScript("OnEvent", function(self, event, unit)
-    if event == "UNIT_AURA" and unit ~= "player" then
-        return
-    end
-    UpdatePlayerAuras()
+-- Handle aura update events to maintain visual consistency
+local auraEventFrame = CreateFrame("Frame")
+auraEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+auraEventFrame:RegisterEvent("UNIT_AURA")
+auraEventFrame:SetScript("OnEvent", function(self, event, unit)
+  if event == "UNIT_AURA" and unit ~= "player" then
+    return
+  end
+  refreshPlayerAuras()
 end)
 
-hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", UpdateAuraPosition)
+hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeAuraPosition)

@@ -1,9 +1,11 @@
-local itemBorderAddon = CreateFrame("Button", "ItemBorderFrame");
 
-local slotWidthDimension, slotHeightDimension = 68, 68;
-local borderOpacityIntensity = 0.5;
+-- Initialize item frame manager to handle item border display
+local itemFrameManager = CreateFrame("Button", "ItemBorderFrame");
 
--- DEFINE ITEM QUALITY COLOR CONSTANTS
+local slotWidth, slotHeight = 68, 68;
+local borderAlpha = 0.5;
+
+-- Define quality constants with color mappings to enhance item display
 
 QUALITY_QUEST_TIER = #BAG_ITEM_QUALITY_COLORS + 1;
 QUALITY_POOR_TIER = 0;
@@ -12,18 +14,18 @@ QUALITY_COMMON_TIER = 1;
 BAG_ITEM_QUALITY_COLORS[QUALITY_POOR_TIER] = { r = GREY_RGB[1], g = GREY_RGB[2], b = GREY_RGB[3] }
 BAG_ITEM_QUALITY_COLORS[QUALITY_QUEST_TIER] = { r = YELLOW_RGB[1], g = YELLOW_RGB[2], b = YELLOW_RGB[3] }
 
--- REGISTER EVENTS
+-- Register events with frame manager to handle item updates
 
-itemBorderAddon:RegisterEvent("ADDON_LOADED");
-itemBorderAddon:RegisterEvent("PLAYER_ENTERING_WORLD");
-itemBorderAddon:RegisterEvent("INSPECT_READY");
-itemBorderAddon:RegisterEvent("BAG_UPDATE");
-itemBorderAddon:RegisterEvent("BANKFRAME_OPENED");
-itemBorderAddon:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
+itemFrameManager:RegisterEvent("ADDON_LOADED");
+itemFrameManager:RegisterEvent("PLAYER_ENTERING_WORLD");
+itemFrameManager:RegisterEvent("INSPECT_READY");
+itemFrameManager:RegisterEvent("BAG_UPDATE");
+itemFrameManager:RegisterEvent("BANKFRAME_OPENED");
+itemFrameManager:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
 
-itemBorderAddon:SetScript("OnEvent", function(self, event, arg1) self[event](self, arg1) end);
+itemFrameManager:SetScript("OnEvent", function(self, event, arg1) self[event](self, arg1) end);
 
-function itemBorderAddon:ADDON_LOADED(addonName)
+function itemFrameManager:ADDON_LOADED(addonName)
     if (addonName == "BentoInterface-Classic") then
         hooksecurefunc("ToggleCharacter", function() self:updateCharacterFrame() end);
         hooksecurefunc("ToggleBackpack", function() self:updateBackpack() end);
@@ -37,12 +39,12 @@ function itemBorderAddon:ADDON_LOADED(addonName)
     end
 end
 
-function itemBorderAddon:PLAYER_ENTERING_WORLD()
+function itemFrameManager:PLAYER_ENTERING_WORLD()
 end
 
--- CHARACTER FRAME UPDATES
+-- Update character frame display to show item borders
 
-function itemBorderAddon:updateCharacterFrame()
+function itemFrameManager:updateCharacterFrame()
     if (CharacterFrame:IsShown()) then
         self:RegisterEvent("UNIT_INVENTORY_CHANGED");
         self:updateCharacterSlots("player", "Character");
@@ -51,35 +53,35 @@ function itemBorderAddon:updateCharacterFrame()
     end
 end
 
-function itemBorderAddon:UNIT_INVENTORY_CHANGED()
+function itemFrameManager:UNIT_INVENTORY_CHANGED()
     self:updateCharacterSlots("player", "Character");
 end
 
--- BAG UPDATES
+-- Update bag contents to reflect item quality borders
 
-function itemBorderAddon:BAG_UPDATE(bagId)
+function itemFrameManager:BAG_UPDATE(bagId)
     self:updateBag(bagId);
 end
 
--- INSPECT FRAME UPDATE
+-- Update inspect frame to display target item borders
 
-function itemBorderAddon:INSPECT_READY()
+function itemFrameManager:INSPECT_READY()
     self:updateCharacterSlots("target", "Inspect");
 end
 
--- BANK UPDATES
+-- Update bank interface to show item quality borders
 
-function itemBorderAddon:BANKFRAME_OPENED()
+function itemFrameManager:BANKFRAME_OPENED()
     self:updateBankSlots();
 end
 
-function itemBorderAddon:PLAYERBANKSLOTS_CHANGED()
+function itemFrameManager:PLAYERBANKSLOTS_CHANGED()
     self:updateBankSlots();
 end
 
--- BACKPACK UPDATE
+-- Update backpack display to show all bag contents
 
-function itemBorderAddon:updateBackpack()
+function itemFrameManager:updateBackpack()
     local containerFrame = _G["ContainerFrame1"];
     if (containerFrame.allBags == true) then
         for bagId = 0, NUM_BAG_SLOTS do
@@ -89,9 +91,9 @@ function itemBorderAddon:updateBackpack()
     end
 end
 
--- UPDATE BAG CONTENTS
+-- Update bag items with quality borders
 
-function itemBorderAddon:updateBag(bagId)
+function itemFrameManager:updateBag(bagId)
     local frameId = IsBagOpen(bagId);
     if (frameId) then
         local slotCount = C_Container.GetContainerNumSlots(bagId);
@@ -103,23 +105,23 @@ function itemBorderAddon:updateBag(bagId)
     end
 end
 
--- UPDATE BANK SLOTS
+-- Update bank slots with item quality borders
 
-function itemBorderAddon:updateBankSlots()
+function itemFrameManager:updateBankSlots()
     local container = BANK_CONTAINER;
     for slot = 1, C_Container.GetContainerNumSlots(container) do
         self:updateContainerSlot(container, slot, "BankFrameItem" .. slot);
     end
 end
 
--- UPDATE CONTAINER SLOT BORDER
+-- Update container slot border based on item quality
 
-function itemBorderAddon:updateContainerSlot(containerId, slotId, slotFrameName)
+function itemFrameManager:updateContainerSlot(containerId, slotId, slotFrameName)
     local slotFrame = _G[slotFrameName];
     if not slotFrame then return end
 
     if (not slotFrame.itemBorder) then
-        slotFrame.itemBorder = self:createBorder(slotFrameName, slotFrame, slotWidthDimension, slotHeightDimension);
+        slotFrame.itemBorder = self:createBorder(slotFrameName, slotFrame, slotWidth, slotHeight);
     end
 
     local itemId = C_Container.GetContainerItemID(containerId, slotId);
@@ -128,7 +130,7 @@ function itemBorderAddon:updateContainerSlot(containerId, slotId, slotFrameName)
         if (quality and quality > QUALITY_COMMON_TIER) then
             local r, g, b = GetQualityColor(quality);
             slotFrame.itemBorder:SetVertexColor(r, g, b);
-            slotFrame.itemBorder:SetAlpha(borderOpacityIntensity);
+            slotFrame.itemBorder:SetAlpha(borderAlpha);
             slotFrame.itemBorder:Show();
         else
             slotFrame.itemBorder:Hide();
@@ -138,16 +140,16 @@ function itemBorderAddon:updateContainerSlot(containerId, slotId, slotFrameName)
     end
 end
 
-local characterSlotTypes = {
+local equipmentSlots = {
     "Head", "Neck", "Shoulder", "Back", "Chest", "Shirt", "Tabard",
     "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger0", "Finger1",
     "Trinket0", "Trinket1", "MainHand", "SecondaryHand", "Ranged", "Ammo"
 };
 
--- UPDATE CHARACTER FRAME ITEM BORDERS
+-- Update character equipment slots with quality borders
 
-function itemBorderAddon:updateCharacterSlots(unit, frameType)
-    for _, slotName in ipairs(characterSlotTypes) do
+function itemFrameManager:updateCharacterSlots(unit, frameType)
+    for _, slotName in ipairs(equipmentSlots) do
         local slotId = GetInventorySlotInfo(slotName .. "Slot");
         local quality = GetInventoryItemQuality(unit, slotId);
         local slotFrameName = frameType .. slotName .. "Slot";
@@ -155,7 +157,7 @@ function itemBorderAddon:updateCharacterSlots(unit, frameType)
 
         if (slotFrame) then
             if (not slotFrame.itemBorder) then
-                local width, height = slotWidthDimension, slotHeightDimension;
+                local width, height = slotWidth, slotHeight;
                 if slotName == "Ammo" then
                     width, height = 58, 58;
                 end
@@ -165,7 +167,7 @@ function itemBorderAddon:updateCharacterSlots(unit, frameType)
             if (quality) then
                 local r, g, b = GetQualityColor(quality);
                 slotFrame.itemBorder:SetVertexColor(r, g, b);
-                slotFrame.itemBorder:SetAlpha(borderOpacityIntensity);
+                slotFrame.itemBorder:SetAlpha(borderAlpha);
                 slotFrame.itemBorder:Show();
             else
                 slotFrame.itemBorder:Hide();
@@ -174,24 +176,24 @@ function itemBorderAddon:updateCharacterSlots(unit, frameType)
     end
 end
 
--- MERCHANT FRAME UPDATES
+-- Update merchant frame items with quality borders
 
-function itemBorderAddon:updateMerchant()
+function itemFrameManager:updateMerchant()
     self:updateMerchantItems(GetMerchantItemLink);
     self:updateBuybackButton();
 end
 
-function itemBorderAddon:updateBuyback()
+function itemFrameManager:updateBuyback()
     self:updateMerchantItems(GetBuybackItemLink);
 end
 
-function itemBorderAddon:updateMerchantItems(itemLinkFunc)
+function itemFrameManager:updateMerchantItems(itemLinkFunc)
     for slotId = 1, 12 do
         local slotName = "MerchantItem" .. slotId .. "ItemButton";
         local itemFrame = _G[slotName];
         if itemFrame then
             if (not itemFrame.itemBorder) then
-                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidthDimension, slotHeightDimension);
+                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidth, slotHeight);
             end
 
             local link = itemLinkFunc(slotId);
@@ -199,17 +201,17 @@ function itemBorderAddon:updateMerchantItems(itemLinkFunc)
                 self:updateSlotBorderFromLink(itemFrame, link);
             else
                 itemFrame.itemBorder:Hide();
-            end
+                        end
         end
     end
 end
 
-function itemBorderAddon:updateBuybackButton()
+function itemFrameManager:updateBuybackButton()
     local buybackSlotName = "MerchantBuyBackItemItemButton";
     local itemFrame = _G[buybackSlotName];
     if itemFrame then
         if (not itemFrame.itemBorder) then
-            itemFrame.itemBorder = self:createBorder(buybackSlotName, itemFrame, slotWidthDimension, slotHeightDimension);
+            itemFrame.itemBorder = self:createBorder(buybackSlotName, itemFrame, slotWidth, slotHeight);
         end
 
         local lastLink = self:findLastBuybackItem();
@@ -221,19 +223,19 @@ function itemBorderAddon:updateBuybackButton()
     end
 end
 
-function itemBorderAddon:updateSlotBorderFromLink(itemFrame, itemId)
+function itemFrameManager:updateSlotBorderFromLink(itemFrame, itemId)
     local itemQuality = GetItemQuality(itemId);
     if (itemQuality and itemQuality > QUALITY_COMMON_TIER) then
         local r, g, b = GetQualityColor(itemQuality);
         itemFrame.itemBorder:SetVertexColor(r, g, b);
-        itemFrame.itemBorder:SetAlpha(borderOpacityIntensity);
+        itemFrame.itemBorder:SetAlpha(borderAlpha);
         itemFrame.itemBorder:Show();
     else
         itemFrame.itemBorder:Hide();
     end
 end
 
-function itemBorderAddon:findLastBuybackItem()
+function itemFrameManager:findLastBuybackItem()
     local lastLink = nil;
     for slotId = 1, 12 do
         local link = GetBuybackItemLink(slotId);
@@ -242,19 +244,19 @@ function itemBorderAddon:findLastBuybackItem()
     return lastLink;
 end
 
--- TRADESKILL FRAME UPDATES
+-- Update tradeskill interface with item quality borders
 
-function itemBorderAddon:updateTradeskill(skillId)
+function itemFrameManager:updateTradeskill(skillId)
     self:updateTradeskillItem(skillId);
     self:updateTradeskillReagents(skillId);
 end
 
-function itemBorderAddon:updateTradeskillItem(skillId)
+function itemFrameManager:updateTradeskillItem(skillId)
     local slotName = "TradeSkillSkillIcon";
     local itemFrame = _G[slotName];
     if itemFrame then
         if (not itemFrame.itemBorder) then
-            itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidthDimension, slotHeightDimension);
+            itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidth, slotHeight);
         end
 
         local link = GetTradeSkillItemLink(skillId);
@@ -266,14 +268,14 @@ function itemBorderAddon:updateTradeskillItem(skillId)
     end
 end
 
-function itemBorderAddon:updateTradeskillReagents(skillId)
+function itemFrameManager:updateTradeskillReagents(skillId)
     local reagentCount = GetTradeSkillNumReagents(skillId);
     for index = 1, reagentCount do
         local slotName = "TradeSkillReagent" .. index;
         local itemFrame = _G[slotName];
         if itemFrame then
             if (not itemFrame.itemBorder) then
-                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidthDimension, slotHeightDimension, -54);
+                itemFrame.itemBorder = self:createBorder(slotName, itemFrame, slotWidth, slotHeight, -54);
             end
 
             local link = GetTradeSkillReagentItemLink(skillId, index);
@@ -286,16 +288,16 @@ function itemBorderAddon:updateTradeskillReagents(skillId)
     end
 end
 
--- CREATE BORDER TEXTURE
+-- Create border texture for item slots
 
-function itemBorderAddon:createBorder(name, parent, width, height, offsetX, offsetY)
+function itemFrameManager:createBorder(name, parent, width, height, offsetX, offsetY)
     local offsetX = offsetX or 0;
     local offsetY = offsetY or 1;
 
     local border = parent:CreateTexture(name .. "Border", "OVERLAY");
     border:SetTexture("Interface\\Buttons\\UI-ActionButton-Border");
     border:SetBlendMode("ADD");
-    border:SetAlpha(borderOpacityIntensity);
+    border:SetAlpha(borderAlpha);
     border:SetHeight(height);
     border:SetWidth(width);
     border:SetPoint("CENTER", parent, "CENTER", offsetX, offsetY);
@@ -304,14 +306,14 @@ function itemBorderAddon:createBorder(name, parent, width, height, offsetX, offs
     return border;
 end
 
--- CUSTOM QUALITY COLOR FUNCTION
+-- Override quality color function to use custom colors
 
 function GetQualityColor(quality)
     local colorData = BAG_ITEM_QUALITY_COLORS[quality];
     return colorData.r, colorData.g, colorData.b;
 end
 
--- CUSTOM ITEM QUALITY FUNCTION FOR QUEST ITEMS
+-- Override item quality function to handle quest items
 
 function GetItemQuality(itemId)
     local quality, _, _, _, _, _, _, _, _, classId = select(3, GetItemInfo(itemId));
