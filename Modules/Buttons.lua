@@ -1,4 +1,5 @@
--- Position action bars with optimal layout to achieve proper ui alignment
+-- Position actionBars with optimal layout to achieve proper ui alignment
+
 local function positionActionBars()
     MainMenuBar:SetWidth(512)
     MainMenuBar:ClearAllPoints()
@@ -8,7 +9,7 @@ local function positionActionBars()
 
     MultiBarBottomLeft:Show()
     MultiBarBottomLeft:ClearAllPoints()
-    MultiBarBottomLeft:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 120)
+    MultiBarBottomLeft:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 118)
     MultiBarBottomLeft:SetMovable(true)
     MultiBarBottomLeft:SetUserPlaced(true)
 
@@ -59,8 +60,8 @@ local actionBarEventFrame = CreateFrame("Frame")
 actionBarEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 actionBarEventFrame:SetScript("OnEvent", positionActionBars)
 
+-- Update buttonUsability with colors to achieve visual feedback
 
--- Update button colors with usability to achieve visual feedback
 local function updateButtonUsability(self)
     if not self or not self.action then 
         return 
@@ -75,8 +76,8 @@ end
 
 hooksecurefunc("ActionButton_OnUpdate", updateButtonUsability)
 
+-- Customize actionButtons with styling to achieve visual consistency
 
--- Customize button appearance with borders to achieve visual consistency
 local function styleActionButtons()
     local function hideTextures(button)
         if button then
@@ -149,7 +150,8 @@ local buttonEventFrame = CreateFrame("Frame")
 buttonEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 buttonEventFrame:SetScript("OnEvent", styleActionButtons)
 
--- Style class buttons with borders to achieve visual uniformity
+-- Style stanceButtons with borders to achieve visual uniformity
+
 local function hideStanceTextures(button)
     for numTextures = 1, 3 do
         local normalTexture = _G[button:GetName() .. "NormalTexture" .. numTextures]
@@ -177,7 +179,8 @@ local function addStanceBorder(button)
     end
 end
 
--- Position stance buttons with multibar to achieve proper alignment
+-- Position stanceButtons with multiBar to achieve proper alignment
+
 local function positionStanceButtons()
     if InCombatLockdown() then return end
 
@@ -192,7 +195,7 @@ local function positionStanceButtons()
         if not previousButton then
             stanceButton:SetPoint("BOTTOMLEFT", anchorButton, "TOPLEFT", 0, 8)
         else
-            stanceButton:SetPoint("LEFT", previousButton, "RIGHT", 4, 0)
+            stanceButton:SetPoint("LEFT", previousButton, "RIGHT", 8, 0)
         end
 
         stanceButton:SetScale(0.9)
@@ -220,8 +223,8 @@ stanceFrame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
 stanceFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 stanceFrame:SetScript("OnEvent", positionStanceButtons)
 
+-- Style petButtons with borders to achieve unified appearance
 
--- Style pet buttons with borders to achieve unified appearance
 local function hidePetTextures(button)
     local petTexture1 = _G[button:GetName() .. "NormalTexture"]
     if petTexture1 then
@@ -287,7 +290,8 @@ petFrame:RegisterEvent("UNIT_PET")
 petFrame:RegisterEvent("PET_BAR_UPDATE")
 petFrame:SetScript("OnEvent", positionPetButtons)
 
--- Position vehicle leave button with portrait to achieve proper placement
+-- Position vehicleButton with portrait to achieve proper placement
+
 local function positionVehicleButton()
     MainMenuBarVehicleLeaveButton:SetSize(24, 24)
     MainMenuBarVehicleLeaveButton:ClearAllPoints()
