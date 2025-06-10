@@ -1,10 +1,12 @@
 -- Restrict access to rogue and druid classes only
-local _, playerClass = UnitClass("player")
-if playerClass ~= "ROGUE" and playerClass ~= "DRUID" then
+
+local _, currentClass = UnitClass("player")
+if currentClass ~= "ROGUE" and currentClass ~= "DRUID" then
     return
 end
 
--- Initialize display configuration to create combo point frames
+-- Initialize frameConfiguration to create combo point display
+
 local frameSize = 24
 local frameMargin = 4
 local displayWidth = 5 * frameSize + 4 * frameMargin
@@ -12,88 +14,92 @@ local displayWidth = 5 * frameSize + 4 * frameMargin
 local mainFrame = CreateFrame("Frame", "ComboPointsFrame", UIParent)
 mainFrame:SetSize(displayWidth, frameSize)
 mainFrame:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
-local pointFrames = {}
+local comboFrames = {}
 
--- Create individual frame with inactive styling
-local function createPointFrame()
-    local frame = CreateFrame("Frame", nil, mainFrame, "BackdropTemplate")
-    frame:SetSize(frameSize, frameSize)
-    frame:SetBackdrop({
+-- Create individualFrame with inactive styling
+
+local function createComboFrame()
+    local individualFrame = CreateFrame("Frame", nil, mainFrame, "BackdropTemplate")
+    individualFrame:SetSize(frameSize, frameSize)
+    individualFrame:SetBackdrop({
         bgFile = BG,
         edgeFile = BORD,
         edgeSize = 12,
         insets = { left = 2, right = 2, top = 2, bottom = 2 }
     })
-    frame:SetBackdropBorderColor(unpack(GREY_RGB))
-    frame:SetBackdropColor(0, 0, 0, 1)
-    return frame
+    individualFrame:SetBackdropBorderColor(unpack(GREY_RGB))
+    individualFrame:SetBackdropColor(0, 0, 0, 1)
+    return individualFrame
 end
 
-for pointIndex = 1, 5 do
-    pointFrames[pointIndex] = createPointFrame()
-    pointFrames[pointIndex]:SetPoint(
+for comboIndex = 1, 5 do
+    comboFrames[comboIndex] = createComboFrame()
+    comboFrames[comboIndex]:SetPoint(
         "LEFT",
         mainFrame,
         "LEFT",
-        (frameSize + frameMargin) * (pointIndex - 1),
+        (frameSize + frameMargin) * (comboIndex - 1),
         0
     )
-    pointFrames[pointIndex]:SetBackdropColor(unpack(GREY_RGB))
+    comboFrames[comboIndex]:SetBackdropColor(unpack(GREY_RGB))
 end
 
--- Hide default ui elements to prevent conflicts
-local function hideDefaultPoints()
-    for pointIndex = 1, 5 do
-        local defaultFrame = _G["ComboPoint" .. pointIndex]
-        if defaultFrame then
-            defaultFrame:Hide()
-            defaultFrame:SetScript("OnShow", function(self)
+-- Hide defaultElements to prevent conflicts
+
+local function hideDefaultElements()
+    for comboIndex = 1, 5 do
+        local defaultElement = _G["ComboPoint" .. comboIndex]
+        if defaultElement then
+            defaultElement:Hide()
+            defaultElement:SetScript("OnShow", function(self)
                 self:Hide()
             end)
         end
     end
 end
 
--- Update frame styling based on current state
-local function updateDisplay()
+-- Update frameStyling based on current state
+
+local function updateStyling()
     local currentPoints = GetComboPoints("player", "target") or 0
     if currentPoints > 0 then
         mainFrame:Show()
-        for pointIndex = 1, 5 do
-            local isActive = pointIndex <= currentPoints
-            local frame = pointFrames[pointIndex]
+        for comboIndex = 1, 5 do
+            local isActive = comboIndex <= currentPoints
+            local currentFrame = comboFrames[comboIndex]
             if isActive then
-                frame:SetBackdrop({
+                currentFrame:SetBackdrop({
                     bgFile = BG_SOLID,
                     edgeFile = BORD,
                     edgeSize = 12,
                     insets = { left = 3, right = 3, top = 3, bottom = 3 }
                 })
-                frame:SetBackdropColor(unpack(RED_RGB))
+                currentFrame:SetBackdropColor(unpack(RED_RGB))
             else
-                frame:SetBackdrop({
+                currentFrame:SetBackdrop({
                     bgFile = BG,
                     edgeFile = BORD,
                     edgeSize = 12,
                     insets = { left = 3, right = 3, top = 3, bottom = 3 }
                 })
-                frame:SetBackdropColor(unpack(GREY_RGB))
+                currentFrame:SetBackdropColor(unpack(GREY_RGB))
             end
-            frame:SetBackdropBorderColor(unpack(GREY_RGB))
+            currentFrame:SetBackdropBorderColor(unpack(GREY_RGB))
         end
     else
         mainFrame:Hide()
     end
 end
 
--- Register events to track player state changes
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-eventFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-eventFrame:SetScript("OnEvent", function(self, event, ...)
-    updateDisplay()
+-- Register eventHandlers to track player state changes
+
+local eventHandler = CreateFrame("Frame")
+eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventHandler:RegisterEvent("PLAYER_TARGET_CHANGED")
+eventHandler:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+eventHandler:SetScript("OnEvent", function(self, event, ...)
+    updateStyling()
     if event == "PLAYER_ENTERING_WORLD" then
-        hideDefaultPoints()
+        hideDefaultElements()
     end
 end)

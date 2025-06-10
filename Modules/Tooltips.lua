@@ -13,8 +13,8 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", tooltipPositionUpdate)
 
 local tooltipStatusBarBackdrop = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
 tooltipStatusBarBackdrop:ClearAllPoints()
-tooltipStatusBarBackdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, "TOPLEFT", -2, 2)
-tooltipStatusBarBackdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, "BOTTOMRIGHT", 2, -2)
+tooltipStatusBarBackdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, "TOPLEFT", -3, 3)
+tooltipStatusBarBackdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, "BOTTOMRIGHT", 3, -3)
 tooltipStatusBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
 tooltipStatusBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 
