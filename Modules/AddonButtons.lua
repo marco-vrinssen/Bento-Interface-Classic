@@ -1,67 +1,69 @@
--- Position minimap buttons in arc formation to create organized layout
+-- Position minimapButtons in arc formation to create organized layout
+
 local function positionMinimapButtons()
-  local libDbIcon = _G.LibStub and _G.LibStub("LibDBIcon-1.0", true)
-  if not libDbIcon then 
+  local libraryDbIcon = _G.LibStub and _G.LibStub("LibDBIcon-1.0", true)
+  if not libraryDbIcon then 
     return 
   end
 
-  local buttonList = {}
-  for addonName, iconButton in pairs(libDbIcon.objects) do
-    table.insert(buttonList, {name = addonName, button = iconButton})
+  local addonButtonList = {}
+  for addonName, iconButton in pairs(libraryDbIcon.objects) do
+    table.insert(addonButtonList, {name = addonName, button = iconButton})
   end
-  table.sort(buttonList, function(a, b) 
+  table.sort(addonButtonList, function(a, b) 
     return a.name < b.name 
   end)
 
-  local angleStep = 120 / #buttonList
-  local radius = 100
+  local angleStep = 120 / #addonButtonList
+  local arcRadius = 100
   
-  for index, data in ipairs(buttonList) do
-    local button = data.button
-    if button:IsShown() then
-      for regionIndex = 1, button:GetNumRegions() do
-        local region = select(regionIndex, button:GetRegions())
-        if region:IsObjectType("Texture") and region ~= button.icon then
-          region:Hide()
+  for buttonIndex, buttonData in ipairs(addonButtonList) do
+    local minimapButton = buttonData.button
+    if minimapButton:IsShown() then
+      for regionIndex = 1, minimapButton:GetNumRegions() do
+        local textureRegion = select(regionIndex, minimapButton:GetRegions())
+        if textureRegion:IsObjectType("Texture") and textureRegion ~= minimapButton.icon then
+          textureRegion:Hide()
         end
       end
 
-      local angle = math.rad(120 + angleStep * (index - 1))
-      local xPos = math.cos(angle) * radius
-      local yPos = math.sin(angle) * radius
+      local buttonAngle = math.rad(120 + angleStep * (buttonIndex - 1))
+      local xPosition = math.cos(buttonAngle) * arcRadius
+      local yPosition = math.sin(buttonAngle) * arcRadius
       
-      button:SetParent(Minimap)
-      button:SetSize(16, 16)
-      button:SetFrameLevel(Minimap:GetFrameLevel() + 2)
-      button:ClearAllPoints()
-      button:SetPoint("CENTER", Minimap, "CENTER", xPos, yPos)
-      button.icon:ClearAllPoints()
-      button.icon:SetPoint("CENTER", button, "CENTER", 0, 0)
-      button.icon:SetSize(12, 12)
+      minimapButton:SetParent(Minimap)
+      minimapButton:SetSize(16, 16)
+      minimapButton:SetFrameLevel(Minimap:GetFrameLevel() + 2)
+      minimapButton:ClearAllPoints()
+      minimapButton:SetPoint("CENTER", Minimap, "CENTER", xPosition, yPosition)
+      minimapButton.icon:ClearAllPoints()
+      minimapButton.icon:SetPoint("CENTER", minimapButton, "CENTER", 0, 0)
+      minimapButton.icon:SetSize(12, 12)
 
-      if not button.background then
-        button.background = CreateFrame("Frame", nil, button, BackdropTemplateMixin and "BackdropTemplate")
-        button.background:SetPoint("TOPLEFT", button, "TOPLEFT", -2, 2)
-        button.background:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
-        button.background:SetBackdrop({
+      if not minimapButton.background then
+        minimapButton.background = CreateFrame("Frame", nil, minimapButton, BackdropTemplateMixin and "BackdropTemplate")
+        minimapButton.background:SetPoint("TOPLEFT", minimapButton, "TOPLEFT", -2, 2)
+        minimapButton.background:SetPoint("BOTTOMRIGHT", minimapButton, "BOTTOMRIGHT", 2, -2)
+        minimapButton.background:SetBackdrop({
           bgFile = BG,
           edgeFile = BORD,
           edgeSize = 8,
           insets = {left = 2, right = 2, top = 2, bottom = 2}
         })
-        button.background:SetBackdropColor(unpack(BLACK_RGB))
-        button.background:SetBackdropBorderColor(unpack(GREY_RGB))
-        button.background:SetFrameLevel(button:GetFrameLevel() - 1)
+        minimapButton.background:SetBackdropColor(unpack(BLACK_RGB))
+        minimapButton.background:SetBackdropBorderColor(unpack(GREY_RGB))
+        minimapButton.background:SetFrameLevel(minimapButton:GetFrameLevel() - 1)
       end
     end
   end
 end
 
--- Handle addon loading events to initialize button positioning
-local addonEventFrame = CreateFrame("Frame")
-addonEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-addonEventFrame:RegisterEvent("ADDON_LOADED")
-addonEventFrame:SetScript("OnEvent", function(self, event)
+-- Handle addonEvents to initialize button positioning
+
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("ADDON_LOADED")
+eventFrame:SetScript("OnEvent", function(self, event)
   if event == "ADDON_LOADED" or event == "PLAYER_ENTERING_WORLD" then
     C_Timer.After(0.5, positionMinimapButtons)
   end

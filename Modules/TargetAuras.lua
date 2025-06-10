@@ -1,4 +1,4 @@
--- Update target auras for custom layout and border
+-- Update targetAuras for customLayout and borderStyling
 
 local function updateTargetAurasLayout()
     local maxAurasPerRow = 5
@@ -14,8 +14,12 @@ local function updateTargetAurasLayout()
             horizontalStartOffset + col * (auraSize + xOffset), 
             verticalStartOffset + row * (auraSize + yOffset))
         aura:SetSize(auraSize, auraSize)
-        local border = _G[aura:GetName().."Border"]
-        if border then border:Hide() end
+
+        local auraNameBorder = _G[aura:GetName().."Border"]
+        if auraNameBorder then 
+            auraNameBorder:Hide() 
+        end
+
         if not aura.backdrop then
             aura.backdrop = CreateFrame("Frame", nil, aura, "BackdropTemplate")
             aura.backdrop:SetPoint("TOPLEFT", aura, "TOPLEFT", -2, 2)
@@ -23,35 +27,44 @@ local function updateTargetAurasLayout()
             aura.backdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 8 })
             aura.backdrop:SetFrameLevel(aura:GetFrameLevel() + 2)
         end
+
         if isDebuff then
             aura.backdrop:SetBackdropBorderColor(unpack(RED_RGB))
         else
             aura.backdrop:SetBackdropBorderColor(unpack(GREY_RGB))
         end
-        local icon = _G[aura:GetName().."Icon"]
-        if icon then icon:SetTexCoord(0.1, 0.9, 0.1, 0.9) end
+
+        local auraIcon = _G[aura:GetName().."Icon"]
+        if auraIcon then 
+            auraIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9) 
+        end
     end
 
+    -- Count visible buffs
     local buffCount = 0
     local currentBuff = _G["TargetFrameBuff1"]
     while currentBuff and currentBuff:IsShown() and buffCount < maxAurasPerRow * maxRows do
         buffCount = buffCount + 1
         currentBuff = _G["TargetFrameBuff"..(buffCount + 1)]
     end
+
+    -- Position buff frames
     for i = 1, buffCount do
         local currentBuff = _G["TargetFrameBuff"..i]
-        local row = math.floor((i - 1) / maxAurasPerRow)
-        local col = (i - 1) % maxAurasPerRow
-        setupAuraFrame(currentBuff, row, col, false)
+        local buffRow = math.floor((i - 1) / maxAurasPerRow)
+        local buffCol = (i - 1) % maxAurasPerRow
+        setupAuraFrame(currentBuff, buffRow, buffCol, false)
     end
+
+    -- Count and position debuff frames
     local debuffCount = 0
     local currentDebuff = _G["TargetFrameDebuff1"]
     while currentDebuff and currentDebuff:IsShown() and (buffCount + debuffCount) < maxAurasPerRow * maxRows do
         debuffCount = debuffCount + 1
         local totalIndex = buffCount + debuffCount
-        local row = math.floor((totalIndex - 1) / maxAurasPerRow)
-        local col = (totalIndex - 1) % maxAurasPerRow
-        setupAuraFrame(currentDebuff, row, col, true)
+        local debuffRow = math.floor((totalIndex - 1) / maxAurasPerRow)
+        local debuffCol = (totalIndex - 1) % maxAurasPerRow
+        setupAuraFrame(currentDebuff, debuffRow, debuffCol, true)
         currentDebuff = _G["TargetFrameDebuff"..(debuffCount + 1)]
     end
 end

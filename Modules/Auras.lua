@@ -1,62 +1,72 @@
 -- Style aura timer text to improve readability
-local function styleAuraTimer(aura)
-  local durationText = _G[aura:GetName().."Duration"]
+
+local function styleAuraTimer(auraElement)
+  local durationText = _G[auraElement:GetName().."Duration"]
   if durationText then
     durationText:SetFont(FONT, 10, "OUTLINE")
     durationText:SetTextColor(1, 1, 1)
     durationText:ClearAllPoints()
-    durationText:SetPoint("BOTTOM", aura, "BOTTOM", 2, -14)
+    durationText:SetPoint("BOTTOM", auraElement, "BOTTOM", 2, -14)
     durationText:SetTextColor(unpack(WHITE_RGB))
   end
 end
 
-hooksecurefunc("AuraButton_UpdateDuration", function(aura)
-  if aura then
-    styleAuraTimer(aura)
-  end
-end)
+-- Apply consistent border styling to aura buttons
 
--- Add border styling and crop icons to create uniform appearance
-local function applyAuraStyle(button, borderColor)
-  if not button.customBorder then
-    local borderFrame = CreateFrame("Frame", nil, button, "BackdropTemplate")
-    borderFrame:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
-    borderFrame:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 3, -3)
+local function applyAuraStyle(auraButton, borderColor)
+  if not auraButton.customBorder then
+    local borderFrame = CreateFrame("Frame", nil, auraButton, "BackdropTemplate")
+    borderFrame:SetPoint("TOPLEFT", auraButton, "TOPLEFT", -3, 3)
+    borderFrame:SetPoint("BOTTOMRIGHT", auraButton, "BOTTOMRIGHT", 3, -3)
     borderFrame:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
     borderFrame:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
-    borderFrame:SetFrameLevel(button:GetFrameLevel() + 2)
-    button.customBorder = borderFrame
+    borderFrame:SetFrameLevel(auraButton:GetFrameLevel() + 2)
+    auraButton.customBorder = borderFrame
   else
-    button.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
+    auraButton.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
   end
 
-  local buttonIcon = _G[button:GetName().."Icon"]
-  if buttonIcon then
-    buttonIcon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+  local icon = _G[auraButton:GetName().."Icon"]
+  if icon then
+    icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
   end
 
-  local buttonBorder = _G[button:GetName().."Border"]
-  if buttonBorder then
-    buttonBorder:Hide()
+  local border = _G[auraButton:GetName().."Border"]
+  if border then
+    border:Hide()
   end
 end
 
-local function styleBuffButton(button)
-  applyAuraStyle(button, GREY_RGB)
+
+-- Style buff buttons with default border color
+
+local function styleBuffButton(buffButton)
+  applyAuraStyle(buffButton, GREY_RGB)
 end
 
-local function styleDebuffButton(button)
-  applyAuraStyle(button, RED_RGB)
+-- Style debuff buttons with red border color
+
+local function styleDebuffButton(debuffButton)
+  applyAuraStyle(debuffButton, RED_RGB)
 end
 
-local function styleTempEnchant(button)
-  applyAuraStyle(button, VIOLET_RGB)
+-- Style temporary enchant buttons with violet border
 
-  local enchantBorder = _G[button:GetName().."Border"]
+local function styleTempEnchant(tempEnchant)
+  applyAuraStyle(tempEnchant, VIOLET_RGB)
+
+  local enchantBorder = _G[tempEnchant:GetName().."Border"]
   if enchantBorder then
     enchantBorder:Hide()
   end
 end
+
+hooksecurefunc("AuraButton_UpdateDuration", function(auraElement)
+  if auraElement then
+    styleAuraTimer(auraElement)
+  end
+end)
+
 
 hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   local auraButton = _G[buttonName..index]
@@ -69,11 +79,12 @@ hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   end
 end)
 
--- Position auras near minimap to maintain clean interface layout
+-- Position aura elements near minimap for organized layout
+
 local function arrangeAuraPosition()
   BuffFrame:ClearAllPoints()
 
-  local anchorPoint = Minimap
+  local anchor = Minimap
   local offsetX = -40
   local offsetY = 0
   local padding = 8
@@ -81,17 +92,17 @@ local function arrangeAuraPosition()
   local hasFirstAura = false
 
   for i = 1, 5 do
-    local enchantButton = _G["TempEnchant"..i]
-    if enchantButton and enchantButton:IsShown() then
+    local tempEnchant = _G["TempEnchant"..i]
+    if tempEnchant and tempEnchant:IsShown() then
       if not hasFirstAura then
-        enchantButton:ClearAllPoints()
-        enchantButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", offsetX, offsetY)
-        anchorPoint = enchantButton
+        tempEnchant:ClearAllPoints()
+        tempEnchant:SetPoint("TOPRIGHT", anchor, "TOPLEFT", offsetX, offsetY)
+        anchor = tempEnchant
         hasFirstAura = true
       else
-        enchantButton:ClearAllPoints()
-        enchantButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", -padding, 0)
-        anchorPoint = enchantButton
+        tempEnchant:ClearAllPoints()
+        tempEnchant:SetPoint("TOPRIGHT", anchor, "TOPLEFT", -padding, 0)
+        anchor = tempEnchant
       end
     end
   end
@@ -101,13 +112,13 @@ local function arrangeAuraPosition()
     if buffButton and buffButton:IsShown() then
       if not hasFirstAura then
         buffButton:ClearAllPoints()
-        buffButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", offsetX, offsetY)
-        anchorPoint = buffButton
+        buffButton:SetPoint("TOPRIGHT", anchor, "TOPLEFT", offsetX, offsetY)
+        anchor = buffButton
         hasFirstAura = true
       else
         buffButton:ClearAllPoints()
-        buffButton:SetPoint("TOPRIGHT", anchorPoint, "TOPLEFT", -padding, 0)
-        anchorPoint = buffButton
+        buffButton:SetPoint("TOPRIGHT", anchor, "TOPLEFT", -padding, 0)
+        anchor = buffButton
       end
     end
   end
@@ -116,9 +127,9 @@ local function arrangeAuraPosition()
   local hasBuffs = false
 
   for i = 1, 5 do
-    local enchantButton = _G["TempEnchant"..i]
-    if enchantButton and enchantButton:IsShown() and not hasBuffs then
-      debuffAnchor = enchantButton
+    local tempEnchant = _G["TempEnchant"..i]
+    if tempEnchant and tempEnchant:IsShown() and not hasBuffs then
+      debuffAnchor = tempEnchant
       hasBuffs = true
       break
     end
@@ -156,7 +167,9 @@ local function arrangeAuraPosition()
   end
 end
 
--- Update all player auras to ensure consistent styling
+
+-- Update all player auras for visual consistency
+
 local function refreshPlayerAuras()
   for i = 1, BUFF_MAX_DISPLAY do
     local buffButton = _G["BuffButton"..i]
@@ -175,21 +188,22 @@ local function refreshPlayerAuras()
   end
 
   for i = 1, 5 do
-    local enchantButton = _G["TempEnchant"..i]
-    if enchantButton then
-      styleAuraTimer(enchantButton)
-      styleTempEnchant(enchantButton)
+    local tempEnchant = _G["TempEnchant"..i]
+    if tempEnchant then
+      styleAuraTimer(tempEnchant)
+      styleTempEnchant(tempEnchant)
     end
   end
 
   arrangeAuraPosition()
 end
 
--- Handle aura update events to maintain visual consistency
-local auraEventFrame = CreateFrame("Frame")
-auraEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-auraEventFrame:RegisterEvent("UNIT_AURA")
-auraEventFrame:SetScript("OnEvent", function(self, event, unit)
+-- Handle aura update events for consistent styling
+
+local auraUpdateFrame = CreateFrame("Frame")
+auraUpdateFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+auraUpdateFrame:RegisterEvent("UNIT_AURA")
+auraUpdateFrame:SetScript("OnEvent", function(self, event, unit)
   if event == "UNIT_AURA" and unit ~= "player" then
     return
   end

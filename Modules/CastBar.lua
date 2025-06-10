@@ -1,4 +1,5 @@
--- Create backdrop frame with border styling for cast bar
+-- Create cast bar backdrop with consistent border styling
+
 local castBarBackdrop = CreateFrame("Frame", nil, CastingBarFrame, "BackdropTemplate")
 castBarBackdrop:SetPoint("TOPLEFT", CastingBarFrame, "TOPLEFT", -3, 3)
 castBarBackdrop:SetPoint("BOTTOMRIGHT", CastingBarFrame, "BOTTOMRIGHT", 3, -3)
@@ -6,7 +7,8 @@ castBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
 castBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 castBarBackdrop:SetFrameLevel(CastingBarFrame:GetFrameLevel() + 2)
 
--- Configure cast bar with positioning to enhance visibility
+-- Configure cast bar positioning and visual elements
+
 local function configureCastBar()
     CastingBarFrame:ClearAllPoints()
     CastingBarFrame:SetSize(160, 20)
@@ -26,7 +28,8 @@ local function configureCastBar()
 end
 
 -- Apply cast bar colors based on spell events
-local function applyCastColors(event, unit)
+
+local function applyCastBarColors(event, unit)
     if unit ~= "player" then return end
 
     if event == "UNIT_SPELLCAST_START" then
@@ -40,19 +43,20 @@ local function applyCastColors(event, unit)
     end
 end
 
--- Register events for spell tracking to enable cast functionality
-local castEventFrame = CreateFrame("Frame")
-castEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-castEventFrame:RegisterEvent("UNIT_SPELLCAST_START")
-castEventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-castEventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-castEventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-castEventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+-- Register cast bar events for spell tracking
 
-castEventFrame:SetScript("OnEvent", function(self, event, unit, ...)
+local castBarFrame = CreateFrame("Frame")
+castBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+castBarFrame:RegisterEvent("UNIT_SPELLCAST_START")
+castBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+castBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+castBarFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+castBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+
+castBarFrame:SetScript("OnEvent", function(self, event, unit, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         configureCastBar()
     elseif unit == "player" then
-        applyCastColors(event, unit)
+        applyCastBarColors(event, unit)
     end
 end)

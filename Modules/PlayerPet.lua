@@ -1,4 +1,4 @@
--- Create pet container with border to achieve frame positioning
+-- Create petContainer to achieve secure unit button positioning
 local petContainer = CreateFrame("Button", nil, PetFrame, "SecureUnitButtonTemplate, BackdropTemplate")
 petContainer:SetPoint("BOTTOMRIGHT", PlayerPortraitBackdrop, "BOTTOMLEFT", 0, 0)
 petContainer:SetSize(64, 24)
@@ -10,7 +10,7 @@ petContainer:RegisterForClicks("AnyUp")
 petContainer:SetAttribute("type1", "target")
 petContainer:SetAttribute("type2", "togglemenu")
 
--- Create background frame with backdrop to achieve visual styling
+-- Create petBackground to achieve visual backdrop styling
 local petBackground = CreateFrame("Frame", nil, petContainer, "BackdropTemplate")
 petBackground:SetPoint("TOPLEFT", petContainer, "TOPLEFT", 2, -2)
 petBackground:SetPoint("BOTTOMRIGHT", petContainer, "BOTTOMRIGHT", -2, 2)
@@ -18,7 +18,7 @@ petBackground:SetBackdrop({ bgFile = BG })
 petBackground:SetBackdropColor(unpack(BLACK_RGB))
 petBackground:SetFrameLevel(petContainer:GetFrameLevel() - 1)
 
--- Configure pet frame positioning to achieve proper display
+-- Configure petFrame to achieve proper display positioning
 local function configurePetFrame()
 	PetFrame:ClearAllPoints()
 	PetFrame:SetPoint("CENTER", petContainer, "CENTER", 0, 0)
@@ -51,7 +51,7 @@ petFrameEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
 petFrameEvents:RegisterEvent("UNIT_PET")
 petFrameEvents:SetScript("OnEvent", configurePetFrame)
 
--- Configure pet resource bars to achieve proper sizing
+-- Configure petResources to achieve proper bar sizing
 local function configurePetResources()
     PetFrameHealthBar:ClearAllPoints()
     PetFrameHealthBar:SetPoint("TOP", petContainer, "TOP", 0, -2)
