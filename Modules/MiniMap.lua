@@ -2,10 +2,10 @@
 -- Create minimapBackdrop to achieve visual enhancement
 
 local minimapBackdrop = CreateFrame("Frame", nil, Minimap, "BackdropTemplate")
-minimapBackdrop:SetSize(199, 199)
+minimapBackdrop:SetSize(196, 196)
 minimapBackdrop:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
 minimapBackdrop:SetBackdrop({bgFile = "Interface/CHARACTERFRAME/TempPortraitAlphaMask",})
-minimapBackdrop:SetBackdropColor(0, 0, 0, 0.5)
+minimapBackdrop:SetBackdropColor(0.5, 0.5, 0.5, 1)
 minimapBackdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 
 -- Configure minimapPosition to achieve proper positioning
