@@ -170,7 +170,6 @@ local function arrangeAuraLayout()
   end
 end
 
-
 -- Update all auras for visual consistency
 
 local function refreshAllAuras()
