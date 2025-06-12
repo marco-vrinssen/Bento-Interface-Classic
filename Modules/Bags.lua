@@ -1,4 +1,4 @@
--- Define bag button elements for consistent interface organization
+-- Define bag button collection
 
 local bagButtons = {
   MainMenuBarBackpackButton,
@@ -9,7 +9,7 @@ local bagButtons = {
   KeyRingButton
 }
 
--- Style bag buttons to create consistent visual appearance
+-- Apply style to single bag button
 
 local function styleBagButton(bagButton)
   if not bagButton or bagButton.customBorder then return end
@@ -43,7 +43,7 @@ local function styleBagButton(bagButton)
   end
 end
 
--- Position bag buttons near microMenu for interface organization
+-- Arrange main bag button positions
 
 local function arrangeBagButtons()
   MainMenuBarBackpackButton:ClearAllPoints()
@@ -74,14 +74,14 @@ local function arrangeBagButtons()
   end
 end
 
--- Register bag slot events to maintain button styling
+-- Register events for bag button styling
 
 local bagSlotFrame = CreateFrame("Frame")
 bagSlotFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 bagSlotFrame:RegisterEvent("BAG_UPDATE")
 bagSlotFrame:SetScript("OnEvent", arrangeBagButtons)
 
--- Arrange container frames in optimized grid formation
+-- Arrange open container frame positions
 
 local function arrangeContainers()
   local visibleContainers = {}
@@ -116,9 +116,11 @@ local function arrangeContainers()
   end
 end
 
+-- Hook container anchor updates
+
 hooksecurefunc("UpdateContainerFrameAnchors", arrangeContainers)
 
--- Register bag container events for dynamic updates
+-- Register events for container arranging
 
 local bagContainerFrame = CreateFrame("Frame")
 bagContainerFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -131,7 +133,7 @@ bagContainerFrame:RegisterEvent("BAG_OPEN")
 bagContainerFrame:RegisterEvent("BAG_CLOSED")
 bagContainerFrame:SetScript("OnEvent", arrangeContainers)
 
--- Toggle all player bags for simplified management
+-- Implement toggle for all player bags
 
 local function toggleAllBags()
   if IsBagOpen(0) then
@@ -141,25 +143,27 @@ local function toggleAllBags()
   end
 end
 
+-- Set backpack button click to toggle bags
+
 MainMenuBarBackpackButton:SetScript("OnClick", toggleAllBags)
 
--- Open bank containers when accessing bank interface
+-- Implement opening all bank bags
 
 local function openBankContainers()
-  for bagID = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
-    OpenBag(bagID)
+  for bagId = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+    OpenBag(bagId)
   end
 end
 
--- Close bank containers when leaving bank interface
+-- Implement closing all bank bags
 
 local function closeBankContainers()
-  for bagID = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
-    CloseBag(bagID)
+  for bagId = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+    CloseBag(bagId)
   end
 end
 
--- Register bank toggle events for automatic handling
+-- Register events for bank bag toggling
 
 local bankToggleFrame = CreateFrame("Frame")
 bankToggleFrame:RegisterEvent("BANKFRAME_OPENED")
@@ -172,17 +176,17 @@ bankToggleFrame:SetScript("OnEvent", function(self, event)
   end
 end)
 
--- Style bank bag buttons to match interface appearance
+-- Implement styling for bank bag buttons
 
 local function styleBankBags()
 end
 
--- Register bank bag style events for consistency
+-- Register events for bank bag styling
 
-local bankBagStyleFrame = CreateFrame("Frame")
-bankBagStyleFrame:RegisterEvent("BANKFRAME_OPENED")
-bankBagStyleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-bankBagStyleFrame:SetScript("OnEvent", function(self, event)
+local bankStyleFrame = CreateFrame("Frame")
+bankStyleFrame:RegisterEvent("BANKFRAME_OPENED")
+bankStyleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+bankStyleFrame:SetScript("OnEvent", function(self, event)
   if event == "BANKFRAME_OPENED" then
     styleBankBags()
   elseif event == "PLAYER_ENTERING_WORLD" then

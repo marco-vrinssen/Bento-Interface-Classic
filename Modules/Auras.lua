@@ -1,6 +1,7 @@
--- Style aura timer text to improve readability
 
-local function styleAuraTimer(auraElement)
+-- Style timer text for improved aura readability
+
+local function styleTimerText(auraElement)
   local durationText = _G[auraElement:GetName().."Duration"]
   if durationText then
     durationText:SetFont(FONT, 10, "OUTLINE")
@@ -11,7 +12,7 @@ local function styleAuraTimer(auraElement)
   end
 end
 
--- Apply consistent border styling to aura buttons
+-- Apply border styling to aura buttons
 
 local function applyAuraStyle(auraButton, borderColor)
   if not auraButton.customBorder then
@@ -37,22 +38,21 @@ local function applyAuraStyle(auraButton, borderColor)
   end
 end
 
-
--- Style buff buttons with default border color
+-- Style buff buttons with grey borders
 
 local function styleBuffButton(buffButton)
   applyAuraStyle(buffButton, GREY_RGB)
 end
 
--- Style debuff buttons with red border color
+-- Style debuff buttons with red borders
 
 local function styleDebuffButton(debuffButton)
   applyAuraStyle(debuffButton, RED_RGB)
 end
 
--- Style temporary enchant buttons with violet border
+-- Style enchant buttons with violet borders
 
-local function styleTempEnchant(tempEnchant)
+local function styleEnchantButton(tempEnchant)
   applyAuraStyle(tempEnchant, VIOLET_RGB)
 
   local enchantBorder = _G[tempEnchant:GetName().."Border"]
@@ -61,12 +61,15 @@ local function styleTempEnchant(tempEnchant)
   end
 end
 
+-- Hook duration updates for timer styling
+
 hooksecurefunc("AuraButton_UpdateDuration", function(auraElement)
   if auraElement then
-    styleAuraTimer(auraElement)
+    styleTimerText(auraElement)
   end
 end)
 
+-- Hook aura updates for border styling
 
 hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   local auraButton = _G[buttonName..index]
@@ -79,9 +82,9 @@ hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   end
 end)
 
--- Position aura elements near minimap for organized layout
+-- Position auras near minimap for layout
 
-local function arrangeAuraPosition()
+local function arrangeAuraLayout()
   BuffFrame:ClearAllPoints()
 
   local anchor = Minimap
@@ -168,13 +171,13 @@ local function arrangeAuraPosition()
 end
 
 
--- Update all player auras for visual consistency
+-- Update all auras for visual consistency
 
-local function refreshPlayerAuras()
+local function refreshAllAuras()
   for i = 1, BUFF_MAX_DISPLAY do
     local buffButton = _G["BuffButton"..i]
     if buffButton then
-      styleAuraTimer(buffButton)
+      styleTimerText(buffButton)
       styleBuffButton(buffButton)
     end
   end
@@ -182,7 +185,7 @@ local function refreshPlayerAuras()
   for i = 1, DEBUFF_MAX_DISPLAY do
     local debuffButton = _G["DebuffButton"..i]
     if debuffButton then
-      styleAuraTimer(debuffButton)
+      styleTimerText(debuffButton)
       styleDebuffButton(debuffButton)
     end
   end
@@ -190,24 +193,26 @@ local function refreshPlayerAuras()
   for i = 1, 5 do
     local tempEnchant = _G["TempEnchant"..i]
     if tempEnchant then
-      styleAuraTimer(tempEnchant)
-      styleTempEnchant(tempEnchant)
+      styleTimerText(tempEnchant)
+      styleEnchantButton(tempEnchant)
     end
   end
 
-  arrangeAuraPosition()
+  arrangeAuraLayout()
 end
 
--- Handle aura update events for consistent styling
+-- Handle aura events for styling
 
-local auraUpdateFrame = CreateFrame("Frame")
-auraUpdateFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-auraUpdateFrame:RegisterEvent("UNIT_AURA")
-auraUpdateFrame:SetScript("OnEvent", function(self, event, unit)
+local auraEventFrame = CreateFrame("Frame")
+auraEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+auraEventFrame:RegisterEvent("UNIT_AURA")
+auraEventFrame:SetScript("OnEvent", function(self, event, unit)
   if event == "UNIT_AURA" and unit ~= "player" then
     return
   end
-  refreshPlayerAuras()
+  refreshAllAuras()
 end)
 
-hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeAuraPosition)
+-- Hook anchor updates for layout
+
+hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeAuraLayout)
