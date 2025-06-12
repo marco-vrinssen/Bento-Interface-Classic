@@ -7,7 +7,6 @@
 
 Modules/Tokens.lua
 
-Modules/Auras.lua
 Modules/Bags.lua
 Modules/Buttons.lua
 Modules/CastBar.lua
@@ -21,7 +20,7 @@ Modules/PlayerComboPoints.lua
 Modules/PlayerDruidMana.lua
 Modules/Questie.lua
 Modules/RaidFrames.lua
-Modules/StatusElements.lua
+Modules/StatusBars.lua
 Modules/Target.lua
 Modules/Tooltips.lua
 Modules/WorldMap.lua
