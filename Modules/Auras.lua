@@ -1,7 +1,6 @@
-
 -- Style timer text for improved aura readability
 
-local function styleTimerText(auraElement)
+local function styleAuraTimerText(auraElement)
   local durationText = _G[auraElement:GetName().."Duration"]
   if durationText then
     durationText:SetFont(FONT, 10, "OUTLINE")
@@ -14,7 +13,7 @@ end
 
 -- Apply border styling to aura buttons
 
-local function applyAuraStyle(auraButton, borderColor)
+local function applyAuraBorderStyle(auraButton, borderColor)
   if not auraButton.customBorder then
     local borderFrame = CreateFrame("Frame", nil, auraButton, "BackdropTemplate")
     borderFrame:SetPoint("TOPLEFT", auraButton, "TOPLEFT", -3, 3)
@@ -40,20 +39,20 @@ end
 
 -- Style buff buttons with grey borders
 
-local function styleBuffButton(buffButton)
-  applyAuraStyle(buffButton, GREY_RGB)
+local function styleBuffButtonGrey(buffButton)
+  applyAuraBorderStyle(buffButton, GREY_RGB)
 end
 
 -- Style debuff buttons with red borders
 
-local function styleDebuffButton(debuffButton)
-  applyAuraStyle(debuffButton, RED_RGB)
+local function styleDebuffButtonRed(debuffButton)
+  applyAuraBorderStyle(debuffButton, RED_RGB)
 end
 
 -- Style enchant buttons with violet borders
 
-local function styleEnchantButton(tempEnchant)
-  applyAuraStyle(tempEnchant, VIOLET_RGB)
+local function styleEnchantButtonViolet(tempEnchant)
+  applyAuraBorderStyle(tempEnchant, VIOLET_RGB)
 
   local enchantBorder = _G[tempEnchant:GetName().."Border"]
   if enchantBorder then
@@ -65,7 +64,7 @@ end
 
 hooksecurefunc("AuraButton_UpdateDuration", function(auraElement)
   if auraElement then
-    styleTimerText(auraElement)
+    styleAuraTimerText(auraElement)
   end
 end)
 
@@ -75,16 +74,16 @@ hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   local auraButton = _G[buttonName..index]
   if auraButton then
     if filter == "HARMFUL" then
-      styleDebuffButton(auraButton)
+      styleDebuffButtonRed(auraButton)
     else
-      styleBuffButton(auraButton)
+      styleBuffButtonGrey(auraButton)
     end
   end
 end)
 
 -- Position auras near minimap for layout
 
-local function arrangeAuraLayout()
+local function arrangeAuraLayoutMinimap()
   BuffFrame:ClearAllPoints()
 
   local anchor = Minimap
@@ -172,32 +171,32 @@ end
 
 -- Update all auras for visual consistency
 
-local function refreshAllAuras()
+local function refreshAllAuraStyles()
   for i = 1, BUFF_MAX_DISPLAY do
     local buffButton = _G["BuffButton"..i]
     if buffButton then
-      styleTimerText(buffButton)
-      styleBuffButton(buffButton)
+      styleAuraTimerText(buffButton)
+      styleBuffButtonGrey(buffButton)
     end
   end
 
   for i = 1, DEBUFF_MAX_DISPLAY do
     local debuffButton = _G["DebuffButton"..i]
     if debuffButton then
-      styleTimerText(debuffButton)
-      styleDebuffButton(debuffButton)
+      styleAuraTimerText(debuffButton)
+      styleDebuffButtonRed(debuffButton)
     end
   end
 
   for i = 1, 5 do
     local tempEnchant = _G["TempEnchant"..i]
     if tempEnchant then
-      styleTimerText(tempEnchant)
-      styleEnchantButton(tempEnchant)
+      styleAuraTimerText(tempEnchant)
+      styleEnchantButtonViolet(tempEnchant)
     end
   end
 
-  arrangeAuraLayout()
+  arrangeAuraLayoutMinimap()
 end
 
 -- Handle aura events for styling
@@ -209,9 +208,9 @@ auraEventFrame:SetScript("OnEvent", function(self, event, unit)
   if event == "UNIT_AURA" and unit ~= "player" then
     return
   end
-  refreshAllAuras()
+  refreshAllAuraStyles()
 end)
 
 -- Hook anchor updates for layout
 
-hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeAuraLayout)
+hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeAuraLayoutMinimap)
