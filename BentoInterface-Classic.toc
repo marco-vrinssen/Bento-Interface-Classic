@@ -7,7 +7,6 @@
 
 Modules/Tokens.lua
 
-Modules/AddonButtons.lua
 Modules/Auras.lua
 Modules/Bags.lua
 Modules/Buttons.lua
@@ -17,27 +16,12 @@ Modules/Items.lua
 Modules/MicroMenu.lua
 Modules/MiniMap.lua
 Modules/NamePlates.lua
-Modules/PlayerBaseFrame.lua
-Modules/PlayerCombatIndicator.lua
-Modules/PlayerComboPoints.lua
+Modules/Player.lua
+Modules/PlayerCP.lua
 Modules/PlayerDruidMana.lua
-Modules/PlayerGroupIndicators.lua
-Modules/PlayerLevel.lua
-Modules/PlayerPet.lua
-Modules/PlayerPortrait.lua
-Modules/PlayerResourceBars.lua
 Modules/Questie.lua
 Modules/RaidFrames.lua
 Modules/StatusElements.lua
-Modules/TargetAuras.lua
-Modules/TargetBaseFrame.lua
-Modules/TargetCastBar.lua
-Modules/TargetClassification.lua
-Modules/TargetGroupIndicators.lua
-Modules/TargetOfTarget.lua
-Modules/TargetPortrait.lua
-Modules/TargetRaidIcon.lua
-Modules/TargetResourceBars.lua
-Modules/TargetThreat.lua
+Modules/Target.lua
 Modules/Tooltips.lua
 Modules/WorldMap.lua
