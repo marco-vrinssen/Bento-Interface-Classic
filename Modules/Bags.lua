@@ -1,6 +1,6 @@
--- Define bag button collection
+-- Define bagButtonList for main and keyring bags
 
-local bagButtons = {
+local bagButtonList = {
   MainMenuBarBackpackButton,
   CharacterBag0Slot,
   CharacterBag1Slot,
@@ -9,13 +9,11 @@ local bagButtons = {
   KeyRingButton
 }
 
--- Apply style to single bag button
+-- Style a single bag button for consistent appearance
 
 local function styleBagButton(bagButton)
   if not bagButton or bagButton.customBorder then return end
-
   bagButton:SetScale(0.95)
-
   local bagButtonName = bagButton:GetName()
   local borderFrame = CreateFrame("Frame", nil, bagButton, "BackdropTemplate")
   borderFrame:SetPoint("TOPLEFT", bagButton, "TOPLEFT", -3, 3)
@@ -27,13 +25,11 @@ local function styleBagButton(bagButton)
   borderFrame:SetBackdropBorderColor(unpack(GREY_RGB))
   borderFrame:SetFrameLevel(bagButton:GetFrameLevel() + 2)
   bagButton.customBorder = borderFrame
-
   local normalTexture = _G[bagButtonName.."NormalTexture"]
   if normalTexture then
     normalTexture:SetAlpha(0)
     normalTexture:Hide()
   end
-
   local iconTexture = _G[bagButtonName.."IconTexture"]
   if iconTexture then
     iconTexture:ClearAllPoints()
@@ -43,9 +39,9 @@ local function styleBagButton(bagButton)
   end
 end
 
--- Arrange main bag button positions
+-- Arrange main bag button positions for UI layout
 
-local function arrangeBagButtons()
+local function arrangeBagButtonPositions()
   MainMenuBarBackpackButton:ClearAllPoints()
   MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", HelpMicroButton, "TOPRIGHT", -4, -16)
 
@@ -69,42 +65,42 @@ local function arrangeBagButtons()
   KeyRingButton:SetPoint("RIGHT", CharacterBag3Slot, "LEFT", -4, -1)
   KeyRingButton:SetParent(ContainerFrame1)
 
-  for _, bagButton in ipairs(bagButtons) do
+  for _, bagButton in ipairs(bagButtonList) do
     styleBagButton(bagButton)
   end
 end
 
--- Register events for bag button styling
+-- Register events to style and arrange bag buttons
 
 local bagSlotFrame = CreateFrame("Frame")
 bagSlotFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 bagSlotFrame:RegisterEvent("BAG_UPDATE")
-bagSlotFrame:SetScript("OnEvent", arrangeBagButtons)
+bagSlotFrame:SetScript("OnEvent", arrangeBagButtonPositions)
 
--- Arrange open container frame positions
+-- Arrange open container frame positions for UI
 
-local function arrangeContainers()
-  local visibleContainers = {}
+local function arrangeContainerPositions()
+  local visibleContainerList = {}
 
   for i = 1, NUM_CONTAINER_FRAMES do
     local containerFrame = _G["ContainerFrame"..i]
     if containerFrame and containerFrame:IsShown() then
-      table.insert(visibleContainers, containerFrame)
+      table.insert(visibleContainerList, containerFrame)
     end
   end
 
-  if #visibleContainers > 0 then
-    visibleContainers[1]:ClearAllPoints()
-    visibleContainers[1]:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "TOPRIGHT", 4, 4)
+  if #visibleContainerList > 0 then
+    visibleContainerList[1]:ClearAllPoints()
+    visibleContainerList[1]:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "TOPRIGHT", 4, 4)
 
-    for i = 2, #visibleContainers do
-      local container = visibleContainers[i]
+    for i = 2, #visibleContainerList do
+      local container = visibleContainerList[i]
       container:ClearAllPoints()
 
       if i % 2 == 0 then
-        container:SetPoint("BOTTOMRIGHT", visibleContainers[i-1], "TOPRIGHT", 0, 4)
+        container:SetPoint("BOTTOMRIGHT", visibleContainerList[i-1], "TOPRIGHT", 0, 4)
       else
-        container:SetPoint("BOTTOMRIGHT", visibleContainers[i-2], "BOTTOMLEFT", 0, 4)
+        container:SetPoint("BOTTOMRIGHT", visibleContainerList[i-2], "BOTTOMLEFT", 0, 4)
       end
     end
   end
@@ -116,11 +112,11 @@ local function arrangeContainers()
   end
 end
 
--- Hook container anchor updates
+-- Hook container anchor updates to custom arrangement
 
-hooksecurefunc("UpdateContainerFrameAnchors", arrangeContainers)
+hooksecurefunc("UpdateContainerFrameAnchors", arrangeContainerPositions)
 
--- Register events for container arranging
+-- Register events for container arrangement
 
 local bagContainerFrame = CreateFrame("Frame")
 bagContainerFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -131,9 +127,9 @@ bagContainerFrame:RegisterEvent("MERCHANT_SHOW")
 bagContainerFrame:RegisterEvent("MERCHANT_CLOSED")
 bagContainerFrame:RegisterEvent("BAG_OPEN")
 bagContainerFrame:RegisterEvent("BAG_CLOSED")
-bagContainerFrame:SetScript("OnEvent", arrangeContainers)
+bagContainerFrame:SetScript("OnEvent", arrangeContainerPositions)
 
--- Implement toggle for all player bags
+-- Toggle all player bags open or closed
 
 local function toggleAllBags()
   if IsBagOpen(0) then
@@ -143,21 +139,21 @@ local function toggleAllBags()
   end
 end
 
--- Set backpack button click to toggle bags
+-- Set backpack button click to toggle all bags
 
 MainMenuBarBackpackButton:SetScript("OnClick", toggleAllBags)
 
--- Implement opening all bank bags
+-- Open all bank bags for player
 
-local function openBankContainers()
+local function openBankBagContainers()
   for bagId = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
     OpenBag(bagId)
   end
 end
 
--- Implement closing all bank bags
+-- Close all bank bags for player
 
-local function closeBankContainers()
+local function closeBankBagContainers()
   for bagId = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
     CloseBag(bagId)
   end
@@ -170,26 +166,26 @@ bankToggleFrame:RegisterEvent("BANKFRAME_OPENED")
 bankToggleFrame:RegisterEvent("BANKFRAME_CLOSED")
 bankToggleFrame:SetScript("OnEvent", function(self, event)
   if event == "BANKFRAME_OPENED" then
-    openBankContainers()
+    openBankBagContainers()
   elseif event == "BANKFRAME_CLOSED" then
-    closeBankContainers()
+    closeBankBagContainers()
   end
 end)
 
--- Implement styling for bank bag buttons
+-- Style bank bag buttons for consistent appearance
 
-local function styleBankBags()
+local function styleBankBagButtons()
 end
 
--- Register events for bank bag styling
+-- Register events for bank bag styling and bag arrangement
 
 local bankStyleFrame = CreateFrame("Frame")
 bankStyleFrame:RegisterEvent("BANKFRAME_OPENED")
 bankStyleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 bankStyleFrame:SetScript("OnEvent", function(self, event)
   if event == "BANKFRAME_OPENED" then
-    styleBankBags()
+    styleBankBagButtons()
   elseif event == "PLAYER_ENTERING_WORLD" then
-    arrangeBagButtons()
+    arrangeBagButtonPositions()
   end
 end)
