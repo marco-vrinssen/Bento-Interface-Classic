@@ -17,7 +17,7 @@ Modules/MicroMenu.lua
 Modules/MiniMap.lua
 Modules/NamePlates.lua
 Modules/Player.lua
-Modules/PlayerCP.lua
+Modules/PlayerComboPoints.lua
 Modules/PlayerDruidMana.lua
 Modules/Questie.lua
 Modules/RaidFrames.lua
