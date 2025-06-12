@@ -60,7 +60,7 @@ local actionBarEventFrame = CreateFrame("Frame")
 actionBarEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 actionBarEventFrame:SetScript("OnEvent", positionActionBars)
 
--- Update buttonUsability with colors to achieve visual feedback
+-- Update buttonUsability with opacity to achieve visual feedback
 
 local function updateButtonUsability(self)
     if not self or not self.action then 
@@ -70,8 +70,8 @@ local function updateButtonUsability(self)
     local isUsable = IsUsableAction(self.action)
     local inRange = IsActionInRange(self.action)
 
-    local color = (not isUsable or inRange == false) and RED_RGB or WHITE_RGB
-    self.icon:SetVertexColor(unpack(color))
+    local alpha = (not isUsable or inRange == false) and 0.5 or 1.0
+    self.icon:SetAlpha(alpha)
 end
 
 hooksecurefunc("ActionButton_OnUpdate", updateButtonUsability)
