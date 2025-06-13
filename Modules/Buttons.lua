@@ -70,7 +70,7 @@ local function updateButtonUsability(self)
     local isUsable = IsUsableAction(self.action)
     local inRange = IsActionInRange(self.action)
 
-    local alpha = (not isUsable or inRange == false) and 0.5 or 1.0
+    local alpha = (not isUsable or inRange == false) and 0.9 or 1.0
     self.icon:SetAlpha(alpha)
 end
 
