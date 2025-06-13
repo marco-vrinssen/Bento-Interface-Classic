@@ -390,7 +390,18 @@ targetSpellBarBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
 targetSpellBarBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 targetSpellBarBackdrop:SetFrameLevel(TargetFrameSpellBar:GetFrameLevel() + 2)
 
-local function updateTargetCastBar()
+-- Add backdrop to target spell bar icon and zoom icon texture
+
+local targetCastBarIconBackdrop = CreateFrame("Frame", nil, TargetFrameSpellBar, "BackdropTemplate")
+targetCastBarIconBackdrop:SetPoint("CENTER", TargetFrameSpellBar.Icon, "CENTER", 0, 0)
+targetCastBarIconBackdrop:SetSize(TargetFrameSpellBar.Icon:GetWidth() + 6, TargetFrameSpellBar.Icon:GetHeight() + 6)
+targetCastBarIconBackdrop:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
+targetCastBarIconBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
+targetCastBarIconBackdrop:SetFrameLevel(TargetFrameSpellBar:GetFrameLevel() + 3)
+
+-- Update target cast bar layout and icon appearance
+
+local function updateTargetCastBarLayout()
     TargetFrameSpellBar:ClearAllPoints()
     TargetFrameSpellBar:SetPoint("TOPLEFT", targetSpellBarBackdrop, "TOPLEFT", 3, -2)
     TargetFrameSpellBar:SetPoint("BOTTOMRIGHT", targetSpellBarBackdrop, "BOTTOMRIGHT", -3, 2)
@@ -399,19 +410,24 @@ local function updateTargetCastBar()
     TargetFrameSpellBar.Border:SetTexture(nil)
     TargetFrameSpellBar.Flash:SetTexture(nil)
     TargetFrameSpellBar.Spark:SetTexture(nil)
-    TargetFrameSpellBar.Icon:SetSize(targetSpellBarBackdrop:GetHeight() - 4, targetSpellBarBackdrop:GetHeight() - 4)
+
+    TargetFrameSpellBar.Icon:SetSize(targetSpellBarBackdrop:GetHeight() - 6, targetSpellBarBackdrop:GetHeight() - 6)
+    targetCastBarIconBackdrop:SetPoint("CENTER", TargetFrameSpellBar.Icon, "CENTER", 0, 0)
+    targetCastBarIconBackdrop:SetSize(TargetFrameSpellBar.Icon:GetWidth() + 6, TargetFrameSpellBar.Icon:GetHeight() + 6)
+    TargetFrameSpellBar.Icon:SetTexCoord(0.2, 0.8, 0.2, 0.8)
+
     TargetFrameSpellBar.Text:ClearAllPoints()
     TargetFrameSpellBar.Text:SetPoint("TOPLEFT", TargetFrameSpellBar, "TOPLEFT", 2, -2)
     TargetFrameSpellBar.Text:SetPoint("BOTTOMRIGHT", TargetFrameSpellBar, "BOTTOMRIGHT", -2, 2)
     TargetFrameSpellBar.Text:SetFont(FONT, 10, "OUTLINE")
 end
 
-TargetFrameSpellBar:HookScript("OnShow", updateTargetCastBar)
-TargetFrameSpellBar:HookScript("OnUpdate", updateTargetCastBar)
+TargetFrameSpellBar:HookScript("OnShow", updateTargetCastBarLayout)
+TargetFrameSpellBar:HookScript("OnUpdate", updateTargetCastBarLayout)
 
 local targetCastBarEvents = CreateFrame("Frame")
 targetCastBarEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
-targetCastBarEvents:SetScript("OnEvent", updateTargetCastBar)
+targetCastBarEvents:SetScript("OnEvent", updateTargetCastBarLayout)
 
 -- Update target settings for castbar and buffs
 
