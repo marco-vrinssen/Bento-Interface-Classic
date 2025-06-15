@@ -1,23 +1,26 @@
--- Restrict access to rogue and druid classes only
+-- Restrict to rogue and druid classes only
+
 local _, playerClass = UnitClass("player")
 if playerClass ~= "ROGUE" and playerClass ~= "DRUID" then
     return
 end
 
--- Initialize display configuration to create combo point frames
-local frameSize = 24
-local frameMargin = 4
-local displayWidth = 5 * frameSize + 4 * frameMargin
+-- Initialize combo point display configuration
 
-local mainFrame = CreateFrame("Frame", "ComboPointsFrame", UIParent)
-mainFrame:SetSize(displayWidth, frameSize)
-mainFrame:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
-local pointFrames = {}
+local comboFrameSize = 24
+local comboFrameMargin = 4
+local comboDisplayWidth = 5 * comboFrameSize + 4 * comboFrameMargin
 
--- Create individual frame with inactive styling
-local function createPointFrame()
-    local frame = CreateFrame("Frame", nil, mainFrame, "BackdropTemplate")
-    frame:SetSize(frameSize, frameSize)
+local comboMainFrame = CreateFrame("Frame", "ComboPointsFrame", UIParent)
+comboMainFrame:SetSize(comboDisplayWidth, comboFrameSize)
+comboMainFrame:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
+local comboPointFrames = {}
+
+-- Create combo point frame with inactive styling
+
+local function createComboPointFrame()
+    local frame = CreateFrame("Frame", nil, comboMainFrame, "BackdropTemplate")
+    frame:SetSize(comboFrameSize, comboFrameSize)
     frame:SetBackdrop({
         bgFile = BG,
         edgeFile = BORD,
@@ -29,22 +32,23 @@ local function createPointFrame()
     return frame
 end
 
-for pointIndex = 1, 5 do
-    pointFrames[pointIndex] = createPointFrame()
-    pointFrames[pointIndex]:SetPoint(
+for comboIndex = 1, 5 do
+    comboPointFrames[comboIndex] = createComboPointFrame()
+    comboPointFrames[comboIndex]:SetPoint(
         "LEFT",
-        mainFrame,
+        comboMainFrame,
         "LEFT",
-        (frameSize + frameMargin) * (pointIndex - 1),
+        (comboFrameSize + comboFrameMargin) * (comboIndex - 1),
         0
     )
-    pointFrames[pointIndex]:SetBackdropColor(unpack(GREY_RGB))
+    comboPointFrames[comboIndex]:SetBackdropColor(unpack(GREY_RGB))
 end
 
--- Hide default ui elements to prevent conflicts
-local function hideDefaultPoints()
-    for pointIndex = 1, 5 do
-        local defaultFrame = _G["ComboPoint" .. pointIndex]
+-- Hide default combo point UI elements
+
+local function hideDefaultComboPoints()
+    for comboIndex = 1, 5 do
+        local defaultFrame = _G["ComboPoint" .. comboIndex]
         if defaultFrame then
             defaultFrame:Hide()
             defaultFrame:SetScript("OnShow", function(self)
@@ -54,14 +58,15 @@ local function hideDefaultPoints()
     end
 end
 
--- Update frame styling based on current state
-local function updateDisplay()
-    local currentPoints = GetComboPoints("player", "target") or 0
-    if currentPoints > 0 then
-        mainFrame:Show()
-        for pointIndex = 1, 5 do
-            local isActive = pointIndex <= currentPoints
-            local frame = pointFrames[pointIndex]
+-- Update combo point display based on current state
+
+local function updateComboDisplay()
+    local currentComboPoints = GetComboPoints("player", "target") or 0
+    if currentComboPoints > 0 then
+        comboMainFrame:Show()
+        for comboIndex = 1, 5 do
+            local isActive = comboIndex <= currentComboPoints
+            local frame = comboPointFrames[comboIndex]
             if isActive then
                 frame:SetBackdrop({
                     bgFile = BG_SOLID,
@@ -69,7 +74,7 @@ local function updateDisplay()
                     edgeSize = 12,
                     insets = { left = 3, right = 3, top = 3, bottom = 3 }
                 })
-                frame:SetBackdropColor(unpack(RED_RGB))
+                frame:SetBackdropColor(unpack(ORANGE_LIGHT_RGB))
             else
                 frame:SetBackdrop({
                     bgFile = BG,
@@ -82,18 +87,19 @@ local function updateDisplay()
             frame:SetBackdropBorderColor(unpack(GREY_RGB))
         end
     else
-        mainFrame:Hide()
+        comboMainFrame:Hide()
     end
 end
 
--- Register events to track player state changes
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-eventFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-eventFrame:SetScript("OnEvent", function(self, event, ...)
-    updateDisplay()
+-- Register events to track combo point state changes
+
+local comboEventFrame = CreateFrame("Frame")
+comboEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+comboEventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+comboEventFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+comboEventFrame:SetScript("OnEvent", function(self, event, ...)
+    updateComboDisplay()
     if event == "PLAYER_ENTERING_WORLD" then
-        hideDefaultPoints()
+        hideDefaultComboPoints()
     end
 end)
