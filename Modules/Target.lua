@@ -357,7 +357,7 @@ local function updateRaidIconPosition()
     if GetRaidTargetIndex("target") then
         raidIconBackdrop:Show()
         TargetFrameTextureFrameRaidTargetIcon:ClearAllPoints()
-        TargetFrameTextureFrameRaidTargetIcon:SetPoint("CENTER", raidIconBackdrop, "CENTER", 0, 0)
+        TargetFrameTextureFrameRaidTargetIcon:SetPoint("CENTER", raidIconBackdrop, "CENTER", 0, 1)
         TargetFrameTextureFrameRaidTargetIcon:SetSize(16, 16)
     else
         raidIconBackdrop:Hide()
