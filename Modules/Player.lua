@@ -235,9 +235,9 @@ playerCombatBackdrop:SetBackdropBorderColor(unpack(GREY_RGB))
 playerCombatBackdrop:Hide()
 
 local playerCombatIcon = playerCombatBackdrop:CreateTexture(nil, "OVERLAY")
-playerCombatIcon:SetPoint("CENTER", playerCombatBackdrop, "CENTER", 0, 0)
-playerCombatIcon:SetSize(16 * 1.2, 16 * 1.2)
-playerCombatIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
+playerCombatIcon:SetPoint("CENTER", playerCombatBackdrop, "CENTER", 1, 1)
+playerCombatIcon:SetSize(24, 24)
+playerCombatIcon:SetTexture("Interface/CharacterFrame/UI-StateIcon")
 playerCombatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
 
 -- Update combat state visibility
