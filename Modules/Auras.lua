@@ -11,7 +11,7 @@ local function styleAuraTimerText(auraElement)
   end
 end
 
--- Apply border styling to aura buttons
+-- Apply border styling to aura buttons with dynamic color
 
 local function applyAuraBorderStyle(auraButton, borderColor)
   if not auraButton.customBorder then
@@ -43,17 +43,27 @@ local function styleBuffButtonGrey(buffButton)
   applyAuraBorderStyle(buffButton, GREY_RGB)
 end
 
--- Style debuff buttons with red borders
+-- Style debuff buttons with color by debuff type
 
-local function styleDebuffButtonRed(debuffButton)
-  applyAuraBorderStyle(debuffButton, RED_RGB)
+local function styleDebuffButtonByType(debuffButton)
+  local debuffType = select(5, UnitDebuff("player", debuffButton:GetID()))
+  local color = RED_RGB
+  if debuffType == "Poison" then
+    color = GREEN_RGB
+  elseif debuffType == "Magic" then
+    color = BLUE_RGB
+  elseif debuffType == "Curse" then
+    color = VIOLET_RGB
+  elseif debuffType == "Disease" then
+    color = ORANGE_RGB
+  end
+  applyAuraBorderStyle(debuffButton, color)
 end
 
--- Style enchant buttons with violet borders
+-- Style enchant buttons with blue borders
 
-local function styleEnchantButtonViolet(tempEnchant)
-  applyAuraBorderStyle(tempEnchant, VIOLET_RGB)
-
+local function styleEnchantButtonBlue(tempEnchant)
+  applyAuraBorderStyle(tempEnchant, BLUE_RGB)
   local enchantBorder = _G[tempEnchant:GetName().."Border"]
   if enchantBorder then
     enchantBorder:Hide()
@@ -74,7 +84,7 @@ hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   local auraButton = _G[buttonName..index]
   if auraButton then
     if filter == "HARMFUL" then
-      styleDebuffButtonRed(auraButton)
+      styleDebuffButtonByType(auraButton)
     else
       styleBuffButtonGrey(auraButton)
     end
@@ -157,7 +167,7 @@ local function arrangeAuraLayoutMinimap()
     if debuffButton and debuffButton:IsShown() then
       if not hasFirstDebuff then
         debuffButton:ClearAllPoints()
-        debuffButton:SetPoint("TOPRIGHT", debuffAnchorPoint, hasBuffs and "BOTTOMRIGHT" or "TOPLEFT", debuffOffsetX, -24)
+        debuffButton:SetPoint("TOPRIGHT", debuffAnchorPoint, hasBuffs and "BOTTOMRIGHT" or "TOPLEFT", debuffOffsetX, -40)
         debuffAnchor = debuffButton
         hasFirstDebuff = true
       else
@@ -184,7 +194,7 @@ local function refreshAllAuraStyles()
     local debuffButton = _G["DebuffButton"..i]
     if debuffButton then
       styleAuraTimerText(debuffButton)
-      styleDebuffButtonRed(debuffButton)
+      styleDebuffButtonByType(debuffButton)
     end
   end
 
@@ -192,7 +202,7 @@ local function refreshAllAuraStyles()
     local tempEnchant = _G["TempEnchant"..i]
     if tempEnchant then
       styleAuraTimerText(tempEnchant)
-      styleEnchantButtonViolet(tempEnchant)
+      styleEnchantButtonBlue(tempEnchant)
     end
   end
 
