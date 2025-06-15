@@ -195,28 +195,6 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
     end
 end)
 
--- Handle middle clicks
-
-local function handleMiddleClick(self, link, text, button)
-    if button == "MiddleButton" and link and link:find("player:") then
-        local player = link:match("player:([^:]+)")
-        if player then
-            FCF_OpenNewWindow(player)
-            local frame = FCF_GetCurrentChatFrame()
-            if frame then
-                FCF_SetWindowName(frame, player)
-                ChatFrame_SendTell(player, frame)
-            end
-        end
-    end
-end
-
--- Hook click handlers
-
-hooksecurefunc("SetItemRef", function(link, text, button, ...)
-    handleMiddleClick(nil, link, text, button)
-end)
-
 -- Provide scan messaging
 
 local function getScanFrame()
