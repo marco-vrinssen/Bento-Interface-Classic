@@ -34,7 +34,8 @@ local function updateElements()
     PlayerFrameBackground:SetPoint("BOTTOMRIGHT", PlayerFrameBackdrop, "BOTTOMRIGHT", -3, 3)
 
     PlayerName:ClearAllPoints()
-    PlayerName:SetPoint("TOP", PlayerFrameBackdrop, "TOP", 0, -6)
+    PlayerName:SetPoint("TOPLEFT", PlayerFrameBackdrop, "TOPLEFT", 8, -6)
+    PlayerName:SetPoint("TOPRIGHT", PlayerFrameBackdrop, "TOPRIGHT", -8, -6)
     PlayerName:SetFont(FONT, 12, "OUTLINE")
     PlayerName:SetTextColor(unpack(WHITE_RGB))
 
