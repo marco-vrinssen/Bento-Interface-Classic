@@ -56,8 +56,9 @@ local function updateTargetFrameLayout()
 
     TargetFrameTextureFrameDeadText:ClearAllPoints()
     TargetFrameTextureFrameDeadText:SetParent(TargetFrameBackdrop)
-    TargetFrameTextureFrameDeadText:SetPoint("TOPLEFT", TargetFrameBackdrop, "CENTER", 0, -7)
+    TargetFrameTextureFrameDeadText:SetPoint("CENTER", TargetFrameBackdrop, "CENTER", 0, 0)
     TargetFrameTextureFrameDeadText:SetFont(FONT, 12, "OUTLINE")
+    TargetFrameTextureFrameDeadText:SetTextColor(unpack(WHITE_RGB))
 
     TargetFrameTextureFrameName:ClearAllPoints()
     TargetFrameTextureFrameName:SetPoint("TOP", TargetFrameBackdrop, "TOP", 0, -7)
