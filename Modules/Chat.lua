@@ -194,3 +194,47 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
         alignHeaders()
     end
 end)
+
+-- Handle middle mouse click on player name in chat to open whisper in new tab
+
+local function handleMiddleClickOnPlayer(self, link, text, button)
+    if button == "MiddleButton" and link and link:find("player:") then
+        local player = link:match("player:([^:]+)")
+        if player then
+            -- Open a new whisper window/tab to the player
+            FCF_OpenNewWindow(player)
+            local frame = FCF_GetCurrentChatFrame()
+            if frame then
+                FCF_SetWindowName(frame, player)
+                ChatFrame_SendTell(player, frame)
+            end
+        end
+    end
+end
+
+-- Hook SetItemRef to handle middle mouse clicks on player links
+
+hooksecurefunc("SetItemRef", function(link, text, button, ...)
+    handleMiddleClickOnPlayer(nil, link, text, button)
+end)
+
+-- Provide function to send scan messages to Scan tab if it exists
+
+local function getScanChatFrame()
+    for i = 1, NUM_CHAT_WINDOWS do
+        local name = GetChatWindowInfo(i)
+        if name == "Scan" then
+            return _G["ChatFrame" .. i]
+        end
+    end
+    return nil
+end
+
+local function sendScanMessage(msg, r, g, b)
+    local scanFrame = getScanChatFrame()
+    if scanFrame then
+        scanFrame:AddMessage(msg, r or 1, g or 1, b or 1)
+    else
+        DEFAULT_CHAT_FRAME:AddMessage(msg, r or 1, g or 1, b or 1)
+    end
+end
