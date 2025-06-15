@@ -1,4 +1,4 @@
--- Hide UI elements with secure methods to achieve clean interface
+-- Hide interface elements
 
 local function hideElement(element)
     if element then
@@ -7,7 +7,7 @@ local function hideElement(element)
     end
 end
 
-local function hideChildElements(parentFrame, childNames)
+local function hideChilds(parentFrame, childNames)
     for _, childName in ipairs(childNames) do
         local childElement = _G[parentFrame:GetName() .. childName] or parentFrame[childName]
         hideElement(childElement)
@@ -22,9 +22,9 @@ local function hideTextures(frame)
     end
 end
 
--- Customize chat tab styling to achieve better appearance
+-- Style chat tabs
 
-local function customizeTab(chatFrame)
+local function styleTab(chatFrame)
     local chatTab = _G[chatFrame:GetName() .. "Tab"]
     local tabText = _G[chatFrame:GetName() .. "TabText"]
     local tabFlash = _G[chatFrame:GetName() .. "TabFlash"]
@@ -46,7 +46,7 @@ local function customizeTab(chatFrame)
     end
 end
 
--- Create custom backdrop for editbox to achieve visual consistency
+-- Create editbox backdrop
 
 local function addBackdrop(editBox)
     if editBox and not editBox.customBackdrop then
@@ -66,7 +66,7 @@ local function addBackdrop(editBox)
     end
 end
 
-local function positionMinimizeButton(chatFrame)
+local function positionMinimize(chatFrame)
     local minimizeButton = _G[chatFrame:GetName() .. "MinimizeButton"]
     if minimizeButton then
         minimizeButton:ClearAllPoints()
@@ -74,9 +74,9 @@ local function positionMinimizeButton(chatFrame)
     end
 end
 
--- Apply comprehensive styling to chat frames to achieve unified appearance
+-- Style chat frames
 
-local function customizeFrame(chatFrame)
+local function styleFrame(chatFrame)
     hideTextures(chatFrame)
 
     local elementsToHide = {
@@ -85,9 +85,9 @@ local function customizeFrame(chatFrame)
         "TabBottomButton", "TabMinimizeButton"
     }
 
-    hideChildElements(chatFrame, elementsToHide)
-    customizeTab(chatFrame)
-    positionMinimizeButton(chatFrame)
+    hideChilds(chatFrame, elementsToHide)
+    styleTab(chatFrame)
+    positionMinimize(chatFrame)
 
     local editBox = _G[chatFrame:GetName() .. "EditBox"]
     if editBox then
@@ -106,7 +106,7 @@ local function alignHeaders()
     end
 end
 
--- Hook tab scroll behavior to chat frames to achieve auto-scroll
+-- Hook tab scrolling
 
 local function hookTabScroll(frameID)
     local chatTab = _G["ChatFrame" .. frameID .. "Tab"]
@@ -116,18 +116,18 @@ local function hookTabScroll(frameID)
     end
 end
 
-local function updateScrollBehavior()
+local function updateScrolling()
     for i = 1, NUM_CHAT_WINDOWS do
         hookTabScroll(i)
     end
 end
 
--- Update all chat components to achieve complete customization
+-- Update all frames
 
-local function updateAllFrames()
+local function updateFrames()
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame" .. i]
-        customizeFrame(chatFrame)
+        styleFrame(chatFrame)
     end
 
     hideElement(ChatFrameMenuButton)
@@ -139,9 +139,9 @@ local function updateAllFrames()
     alignHeaders()
 end
 
--- Enable class colors for chat names to achieve better readability
+-- Enable class colors
 
-local function setClassColors()
+local function enableClassColors()
     SetCVar("chatClassColorOverride", "0")
 
     for chatType, _ in pairs(ChatTypeGroup) do
@@ -167,15 +167,15 @@ local function recolorWhispers(self, event, message, sender, ...)
     end
 end
 
--- Handle chat frame events to achieve proper initialization
+-- Handle frame events
 
 local function onFrameEvent()
-    updateAllFrames()
-    updateScrollBehavior()
-    setClassColors()
+    updateFrames()
+    updateScrolling()
+    enableClassColors()
 end
 
--- Register events with handler to achieve automatic updates
+-- Register event handlers
 
 local eventHandler = CreateFrame("Frame")
 eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -189,19 +189,18 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", recolorWhispers)
 hooksecurefunc("FCF_OpenTemporaryWindow", function()
     local currentFrame = FCF_GetCurrentChatFrame()
     if currentFrame then
-        customizeFrame(currentFrame)
+        styleFrame(currentFrame)
         hookTabScroll(currentFrame:GetID())
         alignHeaders()
     end
 end)
 
--- Handle middle mouse click on player name in chat to open whisper in new tab
+-- Handle middle clicks
 
-local function handleMiddleClickOnPlayer(self, link, text, button)
+local function handleMiddleClick(self, link, text, button)
     if button == "MiddleButton" and link and link:find("player:") then
         local player = link:match("player:([^:]+)")
         if player then
-            -- Open a new whisper window/tab to the player
             FCF_OpenNewWindow(player)
             local frame = FCF_GetCurrentChatFrame()
             if frame then
@@ -212,15 +211,15 @@ local function handleMiddleClickOnPlayer(self, link, text, button)
     end
 end
 
--- Hook SetItemRef to handle middle mouse clicks on player links
+-- Hook click handlers
 
 hooksecurefunc("SetItemRef", function(link, text, button, ...)
-    handleMiddleClickOnPlayer(nil, link, text, button)
+    handleMiddleClick(nil, link, text, button)
 end)
 
--- Provide function to send scan messages to Scan tab if it exists
+-- Provide scan messaging
 
-local function getScanChatFrame()
+local function getScanFrame()
     for i = 1, NUM_CHAT_WINDOWS do
         local name = GetChatWindowInfo(i)
         if name == "Scan" then
@@ -231,7 +230,7 @@ local function getScanChatFrame()
 end
 
 local function sendScanMessage(msg, r, g, b)
-    local scanFrame = getScanChatFrame()
+    local scanFrame = getScanFrame()
     if scanFrame then
         scanFrame:AddMessage(msg, r or 1, g or 1, b or 1)
     else
