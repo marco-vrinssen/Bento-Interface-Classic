@@ -1,4 +1,4 @@
-## Interface: 11500
+## Interface: 40402
 ## Title: Bento Interface Classic
 ## Notes: Simple and efficient user interface enhancements.
 ## Version: 1.0

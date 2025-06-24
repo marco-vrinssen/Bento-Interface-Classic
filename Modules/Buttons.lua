@@ -46,6 +46,10 @@ local function positionActionBars()
     MainMenuBarMaxLevelBar:Hide()
     MainMenuBarOverlayFrame:Hide()
     
+    if MainMenuBarTextureExtender then
+        MainMenuBarTextureExtender:Hide()
+    end
+
     SlidingActionBarTexture0:Hide()
     SlidingActionBarTexture0.Show = SlidingActionBarTexture0.Hide
 
