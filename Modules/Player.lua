@@ -279,7 +279,7 @@ local petBackground = CreateFrame("Frame", nil, petContainer, "BackdropTemplate"
 petBackground:SetPoint("TOPLEFT", petContainer, "TOPLEFT", 2, -2)
 petBackground:SetPoint("BOTTOMRIGHT", petContainer, "BOTTOMRIGHT", -2, 2)
 petBackground:SetBackdrop({ bgFile = BG })
-petBackground:SetBackdropColor(unpack(BLACK_RGB))
+petBackground:SetBackdropColor(unpack(GREY_RGB))
 petBackground:SetFrameLevel(petContainer:GetFrameLevel() - 1)
 
 -- Configure pet frame positioning
