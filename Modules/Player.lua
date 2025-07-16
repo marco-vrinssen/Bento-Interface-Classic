@@ -51,6 +51,7 @@ local function updateElements()
         PlayerPVPIconHitArea,
         PlayerPVPTimerText,
         PlayerPVPIcon,
+        PlayerFrameAlternateManaBar,
     }
     
     for _, element in ipairs(hiddenElements) do

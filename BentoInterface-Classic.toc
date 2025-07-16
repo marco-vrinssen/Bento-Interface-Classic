@@ -13,7 +13,8 @@ Modules/Buttons.lua
 Modules/CastBar.lua
 Modules/Chat.lua
 Modules/Items.lua
-Modules/MicroMenu.lua
+Modules/LFGButton.lua
+Modules/MenuButtons.lua
 Modules/MiniMap.lua
 Modules/NamePlates.lua
 Modules/Player.lua
