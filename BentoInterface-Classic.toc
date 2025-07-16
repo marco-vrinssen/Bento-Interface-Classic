@@ -12,7 +12,6 @@ Modules/Bags.lua
 Modules/Buttons.lua
 Modules/CastBar.lua
 Modules/Chat.lua
-Modules/Items.lua
 Modules/LFGButton.lua
 Modules/MenuButtons.lua
 Modules/MiniMap.lua
