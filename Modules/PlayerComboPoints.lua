@@ -1,54 +1,60 @@
--- Restrict to rogue and druid classes only
+-- Restrict addon to compatible classes
 
 local _, playerClass = UnitClass("player")
 if playerClass ~= "ROGUE" and playerClass ~= "DRUID" then
     return
 end
 
--- Initialize combo point display configuration
+-- Configure point display dimensions
 
-local comboFrameSize = 24
-local comboFrameMargin = 4
-local comboDisplayWidth = 5 * comboFrameSize + 4 * comboFrameMargin
+local POINT_SIZE = 24
+local POINT_SPACING = 4
+local MAX_POINTS = 5
+local CONTAINER_WIDTH = MAX_POINTS * POINT_SIZE + (MAX_POINTS - 1) * POINT_SPACING
 
-local comboMainFrame = CreateFrame("Frame", "ComboPointsFrame", UIParent)
-comboMainFrame:SetSize(comboDisplayWidth, comboFrameSize)
-comboMainFrame:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
-local comboPointFrames = {}
+-- Create main container frame
 
--- Create combo point frame with inactive styling
+local comboContainer = CreateFrame("Frame", "ComboPointsFrame", UIParent)
+comboContainer:SetSize(CONTAINER_WIDTH, POINT_SIZE)
+comboContainer:SetPoint("BOTTOM", CastingBarFrame, "TOP", 0, 4)
+local comboFrames = {}
 
-local function createComboPointFrame()
-    local frame = CreateFrame("Frame", nil, comboMainFrame, "BackdropTemplate")
-    frame:SetSize(comboFrameSize, comboFrameSize)
-    frame:SetBackdrop({
+-- Create individual combo point frames
+
+local function createComboFrame()
+    local comboFrame = CreateFrame("Frame", nil, comboContainer, "BackdropTemplate")
+    comboFrame:SetSize(POINT_SIZE, POINT_SIZE)
+    comboFrame:SetBackdrop({
         bgFile = BG,
         edgeFile = BORD,
         edgeSize = 12,
         insets = { left = 2, right = 2, top = 2, bottom = 2 }
     })
-    frame:SetBackdropBorderColor(unpack(GREY_RGB))
-    frame:SetBackdropColor(0, 0, 0, 1)
-    return frame
+    comboFrame:SetBackdropBorderColor(unpack(GREY_RGB))
+    comboFrame:SetBackdropColor(0, 0, 0, 1)
+    return comboFrame
 end
 
-for comboIndex = 1, 5 do
-    comboPointFrames[comboIndex] = createComboPointFrame()
-    comboPointFrames[comboIndex]:SetPoint(
+-- Position all combo point frames
+
+for frameIndex = 1, MAX_POINTS do
+    comboFrames[frameIndex] = createComboFrame()
+    comboFrames[frameIndex]:SetPoint(
         "LEFT",
-        comboMainFrame,
+        comboContainer,
         "LEFT",
-        (comboFrameSize + comboFrameMargin) * (comboIndex - 1),
+        (POINT_SIZE + POINT_SPACING) * (frameIndex - 1),
         0
     )
-    comboPointFrames[comboIndex]:SetBackdropColor(unpack(GREY_RGB))
+    comboFrames[frameIndex]:SetBackdropColor(unpack(GREY_RGB))
 end
 
--- Hide default combo point UI elements
 
-local function hideDefaultComboPoints()
-    for comboIndex = 1, 5 do
-        local defaultFrame = _G["ComboPoint" .. comboIndex]
+-- Disable default blizzard combo display
+
+local function hideBlizzardCombo()
+    for frameIndex = 1, MAX_POINTS do
+        local defaultFrame = _G["ComboPoint" .. frameIndex]
         if defaultFrame then
             defaultFrame:Hide()
             defaultFrame:SetScript("OnShow", function(self)
@@ -58,48 +64,52 @@ local function hideDefaultComboPoints()
     end
 end
 
--- Update combo point display based on current state
+-- Update combo point visual state
 
-local function updateComboDisplay()
-    local currentComboPoints = GetComboPoints("player", "target") or 0
-    if currentComboPoints > 0 then
-        comboMainFrame:Show()
-        for comboIndex = 1, 5 do
-            local isActive = comboIndex <= currentComboPoints
-            local frame = comboPointFrames[comboIndex]
-            if isActive then
-                frame:SetBackdrop({
+local function refreshComboDisplay()
+    local activePoints = GetComboPoints("player", "target") or 0
+    if activePoints > 0 then
+        comboContainer:Show()
+        for frameIndex = 1, MAX_POINTS do
+            local isActivePoint = frameIndex <= activePoints
+            local currentFrame = comboFrames[frameIndex]
+            if isActivePoint then
+                currentFrame:SetBackdrop({
                     bgFile = BG_SOLID,
                     edgeFile = BORD,
                     edgeSize = 12,
                     insets = { left = 3, right = 3, top = 3, bottom = 3 }
                 })
-                frame:SetBackdropColor(unpack(ORANGE_LIGHT_RGB))
+                currentFrame:SetBackdropColor(unpack(ORANGE_LIGHT_RGB))
             else
-                frame:SetBackdrop({
+                currentFrame:SetBackdrop({
                     bgFile = BG,
                     edgeFile = BORD,
                     edgeSize = 12,
                     insets = { left = 3, right = 3, top = 3, bottom = 3 }
                 })
-                frame:SetBackdropColor(unpack(GREY_RGB))
+                currentFrame:SetBackdropColor(unpack(GREY_RGB))
             end
-            frame:SetBackdropBorderColor(unpack(GREY_RGB))
+            currentFrame:SetBackdropBorderColor(unpack(GREY_RGB))
         end
     else
-        comboMainFrame:Hide()
+        comboContainer:Hide()
     end
 end
 
--- Register events to track combo point state changes
+-- Handle combo point state events
+
+local function onComboStateChanged(self, eventType, ...)
+    refreshComboDisplay()
+    if eventType == "PLAYER_ENTERING_WORLD" then
+        hideBlizzardCombo()
+    end
+end
+
+-- Register combo point tracking events
 
 local comboEventFrame = CreateFrame("Frame")
 comboEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 comboEventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 comboEventFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-comboEventFrame:SetScript("OnEvent", function(self, event, ...)
-    updateComboDisplay()
-    if event == "PLAYER_ENTERING_WORLD" then
-        hideDefaultComboPoints()
-    end
-end)
+comboEventFrame:SetScript("OnEvent", onComboStateChanged)
