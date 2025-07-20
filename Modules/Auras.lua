@@ -1,52 +1,48 @@
--- Style timer text for improved aura readability
-
-local function styleAuraTimerText(auraElement)
-  local durationText = _G[auraElement:GetName().."Duration"]
+-- Style timer text fonts and positioning
+local function styleTimerText(element)
+  local durationText = _G[element:GetName().."Duration"]
   if durationText then
     durationText:SetFont(FONT, 10, "OUTLINE")
     durationText:SetTextColor(1, 1, 1)
     durationText:ClearAllPoints()
-    durationText:SetPoint("BOTTOM", auraElement, "BOTTOM", 2, -14)
+    durationText:SetPoint("BOTTOM", element, "BOTTOM", 2, -14)
     durationText:SetTextColor(unpack(WHITE_RGB))
   end
 end
 
--- Apply border styling to aura buttons with dynamic color
-
-local function applyAuraBorderStyle(auraButton, borderColor)
-  if not auraButton.customBorder then
-    local borderFrame = CreateFrame("Frame", nil, auraButton, "BackdropTemplate")
-    borderFrame:SetPoint("TOPLEFT", auraButton, "TOPLEFT", -3, 3)
-    borderFrame:SetPoint("BOTTOMRIGHT", auraButton, "BOTTOMRIGHT", 3, -3)
+-- Apply bordered frames with dynamic colors
+local function styleBorder(button, borderColor)
+  if not button.customBorder then
+    local borderFrame = CreateFrame("Frame", nil, button, "BackdropTemplate")
+    borderFrame:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
+    borderFrame:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 3, -3)
     borderFrame:SetBackdrop({ edgeFile = BORD, edgeSize = 12 })
     borderFrame:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
-    borderFrame:SetFrameLevel(auraButton:GetFrameLevel() + 2)
-    auraButton.customBorder = borderFrame
+    borderFrame:SetFrameLevel(button:GetFrameLevel() + 2)
+    button.customBorder = borderFrame
   else
-    auraButton.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
+    button.customBorder:SetBackdropBorderColor(unpack(borderColor or GREY_RGB))
   end
 
-  local icon = _G[auraButton:GetName().."Icon"]
+  local icon = _G[button:GetName().."Icon"]
   if icon then
     icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
   end
 
-  local border = _G[auraButton:GetName().."Border"]
+  local border = _G[button:GetName().."Border"]
   if border then
     border:Hide()
   end
 end
 
--- Style buff buttons with grey borders
-
-local function styleBuffButtonGrey(buffButton)
-  applyAuraBorderStyle(buffButton, GREY_RGB)
+-- Style buff buttons
+local function styleBuffs(button)
+  styleBorder(button, GREY_RGB)
 end
 
--- Style debuff buttons with color by debuff type
-
-local function styleDebuffButtonByType(debuffButton)
-  local debuffType = select(5, UnitDebuff("player", debuffButton:GetID()))
+-- Style debuff buttons by type
+local function styleDebuffs(button)
+  local debuffType = select(5, UnitDebuff("player", button:GetID()))
   local color = RED_RGB
   if debuffType == "Poison" then
     color = GREEN_RGB
@@ -57,50 +53,44 @@ local function styleDebuffButtonByType(debuffButton)
   elseif debuffType == "Disease" then
     color = ORANGE_RGB
   end
-  applyAuraBorderStyle(debuffButton, color)
+  styleBorder(button, color)
 end
 
--- Style enchant buttons with blue borders
-
-local function styleEnchantButtonBlue(tempEnchant)
-  applyAuraBorderStyle(tempEnchant, BLUE_RGB)
-  local enchantBorder = _G[tempEnchant:GetName().."Border"]
+-- Style enchant buttons
+local function styleEnchants(enchant)
+  styleBorder(enchant, BLUE_RGB)
+  local enchantBorder = _G[enchant:GetName().."Border"]
   if enchantBorder then
     enchantBorder:Hide()
   end
 end
 
--- Hook duration updates for timer styling
-
-hooksecurefunc("AuraButton_UpdateDuration", function(auraElement)
-  if auraElement then
-    styleAuraTimerText(auraElement)
+-- Hook duration updates
+hooksecurefunc("AuraButton_UpdateDuration", function(element)
+  if element then
+    styleTimerText(element)
   end
 end)
 
--- Hook aura updates for border styling
-
+-- Hook aura updates
 hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
-  local auraButton = _G[buttonName..index]
-  if auraButton then
+  local button = _G[buttonName..index]
+  if button then
     if filter == "HARMFUL" then
-      styleDebuffButtonByType(auraButton)
+      styleDebuffs(button)
     else
-      styleBuffButtonGrey(auraButton)
+      styleBuffs(button)
     end
   end
 end)
 
--- Position auras near minimap for layout
-
-local function arrangeAuraLayoutMinimap()
+-- Position auras near minimap
+local function arrangeLayout()
   BuffFrame:ClearAllPoints()
-
   local anchor = Minimap
   local offsetX = -40
   local offsetY = 0
   local padding = 8
-
   local hasFirstAura = false
 
   for i = 1, 5 do
@@ -179,48 +169,45 @@ local function arrangeAuraLayoutMinimap()
   end
 end
 
--- Update all auras for visual consistency
-
-local function refreshAllAuraStyles()
+-- Refresh all aura styles
+local function refreshStyles()
   for i = 1, BUFF_MAX_DISPLAY do
     local buffButton = _G["BuffButton"..i]
     if buffButton then
-      styleAuraTimerText(buffButton)
-      styleBuffButtonGrey(buffButton)
+      styleTimerText(buffButton)
+      styleBuffs(buffButton)
     end
   end
 
   for i = 1, DEBUFF_MAX_DISPLAY do
     local debuffButton = _G["DebuffButton"..i]
     if debuffButton then
-      styleAuraTimerText(debuffButton)
-      styleDebuffButtonByType(debuffButton)
+      styleTimerText(debuffButton)
+      styleDebuffs(debuffButton)
     end
   end
 
   for i = 1, 5 do
     local tempEnchant = _G["TempEnchant"..i]
     if tempEnchant then
-      styleAuraTimerText(tempEnchant)
-      styleEnchantButtonBlue(tempEnchant)
+      styleTimerText(tempEnchant)
+      styleEnchants(tempEnchant)
     end
   end
 
-  arrangeAuraLayoutMinimap()
+  arrangeLayout()
 end
 
--- Handle aura events for styling
-
-local auraEventFrame = CreateFrame("Frame")
-auraEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-auraEventFrame:RegisterEvent("UNIT_AURA")
-auraEventFrame:SetScript("OnEvent", function(self, event, unit)
+-- Handle aura events
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("UNIT_AURA")
+eventFrame:SetScript("OnEvent", function(self, event, unit)
   if event == "UNIT_AURA" and unit ~= "player" then
     return
   end
-  refreshAllAuraStyles()
+  refreshStyles()
 end)
 
--- Hook anchor updates for layout
-
-hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeAuraLayoutMinimap)
+-- Hook anchor updates
+hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeLayout)
