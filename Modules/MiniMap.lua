@@ -100,14 +100,20 @@ mailIconBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 -- Configure mailDisplay to achieve styled mail icon
 
 local function configureMailDisplay()
-    MiniMapMailBorder:Hide()
-    MiniMapMailFrame:SetParent(Minimap)
-    MiniMapMailFrame:ClearAllPoints()
-    MiniMapMailFrame:SetSize(16, 16)
-    MiniMapMailFrame:SetPoint("RIGHT", timeDisplayBackdrop, "LEFT", -4, 0)
-    MiniMapMailIcon:ClearAllPoints()
-    MiniMapMailIcon:SetSize(18, 18)
-    MiniMapMailIcon:SetPoint("CENTER", MiniMapMailFrame, "CENTER", 0, 0)
+    if MiniMapMailBorder then
+        MiniMapMailBorder:Hide()
+    end
+    if MiniMapMailFrame then
+        MiniMapMailFrame:SetParent(Minimap)
+        MiniMapMailFrame:ClearAllPoints()
+        MiniMapMailFrame:SetSize(16, 16)
+        MiniMapMailFrame:SetPoint("RIGHT", timeDisplayBackdrop, "LEFT", -4, 0)
+    end
+    if MiniMapMailIcon then
+        MiniMapMailIcon:ClearAllPoints()
+        MiniMapMailIcon:SetSize(18, 18)
+        MiniMapMailIcon:SetPoint("CENTER", MiniMapMailFrame, "CENTER", 0, 0)
+    end
 end
 
 -- Register mailEvents to achieve automatic mail updates
@@ -136,15 +142,23 @@ battlefieldIconBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 -- Configure battlefieldDisplay to achieve styled battlefield icon
 
 local function configureBattlefieldDisplay()
-    MiniMapBattlefieldBorder:Hide()
-    BattlegroundShine:Hide()
-    MiniMapBattlefieldFrame:SetParent(Minimap)
-    MiniMapBattlefieldFrame:ClearAllPoints()
-    MiniMapBattlefieldFrame:SetSize(16, 16)
-    MiniMapBattlefieldFrame:SetPoint("LEFT", timeDisplayBackdrop, "RIGHT", 4, 0)
-    MiniMapBattlefieldIcon:ClearAllPoints()
-    MiniMapBattlefieldIcon:SetSize(16, 16)
-    MiniMapBattlefieldIcon:SetPoint("CENTER", MiniMapBattlefieldFrame, "CENTER", 0, 0)
+    if MiniMapBattlefieldBorder then
+        MiniMapBattlefieldBorder:Hide()
+    end
+    if BattlegroundShine then
+        BattlegroundShine:Hide()
+    end
+    if MiniMapBattlefieldFrame then
+        MiniMapBattlefieldFrame:SetParent(Minimap)
+        MiniMapBattlefieldFrame:ClearAllPoints()
+        MiniMapBattlefieldFrame:SetSize(16, 16)
+        MiniMapBattlefieldFrame:SetPoint("LEFT", timeDisplayBackdrop, "RIGHT", 4, 0)
+    end
+    if MiniMapBattlefieldIcon then
+        MiniMapBattlefieldIcon:ClearAllPoints()
+        MiniMapBattlefieldIcon:SetSize(16, 16)
+        MiniMapBattlefieldIcon:SetPoint("CENTER", MiniMapBattlefieldFrame, "CENTER", 0, 0)
+    end
 end
 
 -- Register battlefieldEvents to achieve automatic battlefield updates
@@ -175,15 +189,21 @@ trackingIconBackdrop:SetFrameLevel(Minimap:GetFrameLevel() + 2)
 -- Configure trackingDisplay to achieve styled tracking icon
 
 local function configureTrackingDisplay()
-    MiniMapTrackingBorder:Hide()
-    MiniMapTracking:SetParent(Minimap)
-    MiniMapTracking:ClearAllPoints()
-    MiniMapTracking:SetSize(16, 16)
-    MiniMapTracking:SetPoint("TOP", Minimap, "TOP", 0, 0)
-    MiniMapTrackingIcon:ClearAllPoints()
-    MiniMapTrackingIcon:SetSize(18, 18)
-    MiniMapTrackingIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-    MiniMapTrackingIcon:SetPoint("CENTER", MiniMapTracking, "CENTER", 0, 0)
+    if MiniMapTrackingBorder then
+        MiniMapTrackingBorder:Hide()
+    end
+    if MiniMapTracking then
+        MiniMapTracking:SetParent(Minimap)
+        MiniMapTracking:ClearAllPoints()
+        MiniMapTracking:SetSize(16, 16)
+        MiniMapTracking:SetPoint("TOP", Minimap, "TOP", 0, 0)
+    end
+    if MiniMapTrackingIcon then
+        MiniMapTrackingIcon:ClearAllPoints()
+        MiniMapTrackingIcon:SetSize(18, 18)
+        MiniMapTrackingIcon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
+        MiniMapTrackingIcon:SetPoint("CENTER", MiniMapTracking, "CENTER", 0, 0)
+    end
 end
 
 -- Register trackingEvents to achieve automatic tracking updates
