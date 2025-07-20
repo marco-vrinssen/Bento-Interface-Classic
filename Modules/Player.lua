@@ -290,14 +290,22 @@ local function configurePet()
 	PetFrame:SetPoint("CENTER", petContainer, "CENTER", 0, 0)
 	PetFrame:SetSize(petContainer:GetWidth(), petContainer:GetHeight())
     PetFrame:UnregisterEvent("UNIT_COMBAT")
-	PetAttackModeTexture:SetTexture(nil)
-    PetFrameTexture:Hide()
-    PetPortrait:Hide()
-    PetName:ClearAllPoints()
-    PetName:SetPoint("BOTTOMRIGHT", petContainer, "TOPRIGHT", -2, 2)
-    PetName:SetWidth(petContainer:GetWidth() - 4)
-    PetName:SetFont(FONT, 10, "OUTLINE")
-    PetName:SetTextColor(unpack(WHITE_RGB))
+    if PetAttackModeTexture then
+        PetAttackModeTexture:SetTexture(nil)
+    end
+    if PetFrameTexture then
+        PetFrameTexture:Hide()
+    end
+    if PetPortrait then
+        PetPortrait:Hide()
+    end
+    if PetName then
+        PetName:ClearAllPoints()
+        PetName:SetPoint("BOTTOMRIGHT", petContainer, "TOPRIGHT", -2, 2)
+        PetName:SetWidth(petContainer:GetWidth() - 4)
+        PetName:SetFont(FONT, 10, "OUTLINE")
+        PetName:SetTextColor(unpack(WHITE_RGB))
+    end
 	for i = 1, MAX_TARGET_BUFFS do
 		local petBuff = _G["PetFrameBuff" .. i]
 		if petBuff then
@@ -336,9 +344,11 @@ local function configurePetBars()
     PetFrameManaBarText:SetAlpha(0)
     PetFrameManaBarTextLeft:SetAlpha(0)
     PetFrameManaBarTextRight:SetAlpha(0)
-    PetFrameHappiness:ClearAllPoints()
-    PetFrameHappiness:SetPoint("RIGHT", petContainer, "LEFT", 0, 0)
-    PetFrameHappiness:SetSize(20, 20)
+    if PetFrameHappiness then
+        PetFrameHappiness:ClearAllPoints()
+        PetFrameHappiness:SetPoint("RIGHT", petContainer, "LEFT", 0, 0)
+        PetFrameHappiness:SetSize(20, 20)
+    end
 end
 
 local petResourceEvents = CreateFrame("Frame")
@@ -351,3 +361,90 @@ petResourceEvents:SetScript("OnEvent", function(self, event, unit)
         configurePetBars()
     end
 end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Hide Totem Frame Module
+-- This module completely hides the default totem frame
+
+local function HideTotemFrame()
+    if TotemFrame then
+        -- Hide the entire totem frame
+        TotemFrame:Hide()
+        TotemFrame:SetAlpha(0)
+        
+        -- Unregister all events to prevent it from showing
+        TotemFrame:UnregisterAllEvents()
+        
+        -- Make it non-interactive
+        TotemFrame:EnableMouse(false)
+        TotemFrame:SetMovable(false)
+        
+        -- Hide individual totem buttons if they exist
+        for i = 1, MAX_TOTEMS or 4 do
+            local totemButton = _G["TotemFrameTotem" .. i]
+            if totemButton then
+                totemButton:Hide()
+                totemButton:SetAlpha(0)
+                totemButton:EnableMouse(false)
+            end
+        end
+        
+        -- Override the show function to prevent it from ever showing
+        TotemFrame.Show = function() end
+    end
+end
+
+-- Create event frame to handle the hiding
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+frame:SetScript("OnEvent", function(self, event, ...)
+    if event == "ADDON_LOADED" then
+        local addonName = ...
+        if addonName == "BentoInterface-Classic" then
+            -- Try to hide immediately when our addon loads
+            HideTotemFrame()
+        end
+    elseif event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
+        -- Hide on login and world enter to ensure it stays hidden
+        HideTotemFrame()
+        
+        -- Also set up a delayed hide in case the frame loads later
+        C_Timer.After(1, HideTotemFrame)
+        C_Timer.After(3, HideTotemFrame)
+    end
+end)
+
+-- Additional safety measure: Hook into TotemFrame creation if it doesn't exist yet
+if not TotemFrame then
+    local originalCreateFrame = CreateFrame
+    CreateFrame = function(frameType, name, parent, template, ...)
+        local frame = originalCreateFrame(frameType, name, parent, template, ...)
+        
+        -- Check if this is the TotemFrame being created
+        if name == "TotemFrame" then
+            -- Hide it immediately after creation
+            C_Timer.After(0.1, HideTotemFrame)
+        end
+        
+        return frame
+    end
+end
+
+-- Immediate hide attempt in case TotemFrame already exists
+HideTotemFrame()
