@@ -1,4 +1,4 @@
--- Position actionBars with optimal layout to achieve proper ui alignment
+-- Position action bars optimally
 
 local function positionActionBars()
     MainMenuBar:SetWidth(512)
@@ -45,7 +45,7 @@ local function positionActionBars()
     MainMenuMaxLevelBar3:Hide()
     MainMenuBarMaxLevelBar:Hide()
     MainMenuBarOverlayFrame:Hide()
-    
+
     if MainMenuBarTextureExtender then
         MainMenuBarTextureExtender:Hide()
     end
@@ -60,15 +60,15 @@ local function positionActionBars()
     MainMenuBarPerformanceBarFrame.Show = MainMenuBarPerformanceBarFrame.Hide
 end
 
-local actionBarEventFrame = CreateFrame("Frame")
-actionBarEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-actionBarEventFrame:SetScript("OnEvent", positionActionBars)
+local barFrame = CreateFrame("Frame")
+barFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+barFrame:SetScript("OnEvent", positionActionBars)
 
--- Update buttonUsability with opacity to achieve visual feedback
+-- Update button usability opacity
 
-local function updateButtonUsability(self)
-    if not self or not self.action then 
-        return 
+local function updateUsability(self)
+    if not self or not self.action then
+        return
     end
 
     local isUsable = IsUsableAction(self.action)
@@ -78,11 +78,11 @@ local function updateButtonUsability(self)
     self.icon:SetAlpha(alpha)
 end
 
-hooksecurefunc("ActionButton_OnUpdate", updateButtonUsability)
+hooksecurefunc("ActionButton_OnUpdate", updateUsability)
 
--- Customize actionButtons with styling to achieve visual consistency
+-- Style action buttons visually
 
-local function styleActionButtons()
+local function styleButtons()
     local function hideTextures(button)
         if button then
             local normalTexture = _G[button:GetName() .. "NormalTexture"]
@@ -90,10 +90,10 @@ local function styleActionButtons()
                 normalTexture:SetAlpha(0)
                 normalTexture:SetTexture(nil)
             end
-            local floatingBG = _G[button:GetName() .. "FloatingBG"]
-            if floatingBG then
-                floatingBG:SetAlpha(0)
-                floatingBG:SetTexture(nil)
+            local floatingTexture = _G[button:GetName() .. "FloatingBG"]
+            if floatingTexture then
+                floatingTexture:SetAlpha(0)
+                floatingTexture:SetTexture(nil)
             end
         end
     end
@@ -135,14 +135,14 @@ local function styleActionButtons()
     end
 
     for i = 1, 12 do
-        local buttonList = {
+        local buttons = {
             _G["ActionButton" .. i],
             _G["MultiBarBottomLeftButton" .. i],
             _G["MultiBarBottomRightButton" .. i],
             _G["MultiBarRightButton" .. i],
             _G["MultiBarLeftButton" .. i]
         }
-        for _, button in ipairs(buttonList) do
+        for _, button in ipairs(buttons) do
             hideTextures(button)
             addBorder(button)
             styleFonts(button)
@@ -150,21 +150,23 @@ local function styleActionButtons()
     end
 end
 
-local buttonEventFrame = CreateFrame("Frame")
-buttonEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-buttonEventFrame:SetScript("OnEvent", styleActionButtons)
+local buttonFrame = CreateFrame("Frame")
+buttonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+buttonFrame:SetScript("OnEvent", styleButtons)
 
--- Style stanceButtons with borders to achieve visual uniformity
+-- Hide stance textures
 
 local function hideStanceTextures(button)
-    for numTextures = 1, 3 do
-        local normalTexture = _G[button:GetName() .. "NormalTexture" .. numTextures]
-        if normalTexture then
-            normalTexture:SetAlpha(0)
-            normalTexture:SetTexture(nil)
+    for count = 1, 3 do
+        local texture = _G[button:GetName() .. "NormalTexture" .. count]
+        if texture then
+            texture:SetAlpha(0)
+            texture:SetTexture(nil)
         end
     end
 end
+
+-- Add stance borders
 
 local function addStanceBorder(button)
     if not button.customBorder then
@@ -176,38 +178,38 @@ local function addStanceBorder(button)
         backdrop:SetFrameLevel(button:GetFrameLevel() + 2)
         button.customBorder = backdrop
     end
-    
+
     local icon = _G[button:GetName() .. "Icon"]
     if icon then
         icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     end
 end
 
--- Position stanceButtons with multiBar to achieve proper alignment
+-- Position stance buttons
 
 local function positionStanceButtons()
     if InCombatLockdown() then return end
 
-    local previousButton
-    local anchorButton = MultiBarBottomLeft:IsShown() and MultiBarBottomLeftButton1 or ActionButton1
+    local previous
+    local anchor = MultiBarBottomLeft:IsShown() and MultiBarBottomLeftButton1 or ActionButton1
 
-    for numStances = 1, NUM_STANCE_SLOTS do
-        local stanceButton = _G["StanceButton" .. numStances]
-        
-        stanceButton:ClearAllPoints()
+    for slot = 1, NUM_STANCE_SLOTS do
+        local button = _G["StanceButton" .. slot]
 
-        if not previousButton then
-            stanceButton:SetPoint("BOTTOMLEFT", anchorButton, "TOPLEFT", 0, 8)
+        button:ClearAllPoints()
+
+        if not previous then
+            button:SetPoint("BOTTOMLEFT", anchor, "TOPLEFT", 0, 8)
         else
-            stanceButton:SetPoint("LEFT", previousButton, "RIGHT", 8, 0)
+            button:SetPoint("LEFT", previous, "RIGHT", 8, 0)
         end
 
-        stanceButton:SetScale(0.9)
-        
-        hideStanceTextures(stanceButton)
-        addStanceBorder(stanceButton)
+        button:SetScale(0.9)
 
-        previousButton = stanceButton
+        hideStanceTextures(button)
+        addStanceBorder(button)
+
+        previous = button
     end
 
     StanceBarLeft:SetAlpha(0)
@@ -227,27 +229,29 @@ stanceFrame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
 stanceFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 stanceFrame:SetScript("OnEvent", positionStanceButtons)
 
--- Style petButtons with borders to achieve unified appearance
+-- Hide pet textures
 
 local function hidePetTextures(button)
-    local petTexture1 = _G[button:GetName() .. "NormalTexture"]
-    if petTexture1 then
-        petTexture1:SetAlpha(0)
-        petTexture1:SetTexture(nil)
+    local texture1 = _G[button:GetName() .. "NormalTexture"]
+    if texture1 then
+        texture1:SetAlpha(0)
+        texture1:SetTexture(nil)
     end
-    
-    local petTexture2 = _G[button:GetName() .. "NormalTexture2"]
-    if petTexture2 then
-        petTexture2:SetAlpha(0)
-        petTexture2:SetTexture(nil)
+
+    local texture2 = _G[button:GetName() .. "NormalTexture2"]
+    if texture2 then
+        texture2:SetAlpha(0)
+        texture2:SetTexture(nil)
     end
-    
-    local autoCastable = _G[button:GetName() .. "AutoCastable"]
-    if autoCastable then
-        autoCastable:SetAlpha(0)
-        autoCastable:Hide()
+
+    local castable = _G[button:GetName() .. "AutoCastable"]
+    if castable then
+        castable:SetAlpha(0)
+        castable:Hide()
     end
 end
+
+-- Add pet borders
 
 local function addPetBorder(button)
     if not button.customBorder then
@@ -259,32 +263,34 @@ local function addPetBorder(button)
         backdrop:SetFrameLevel(button:GetFrameLevel() + 2)
         button.customBorder = backdrop
     end
-    
+
     local icon = _G[button:GetName() .. "Icon"]
     if icon then
         icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     end
 end
 
+-- Position pet buttons
+
 local function positionPetButtons()
-    local previousButton
+    local previous
 
-    for numStances = 1, 10 do
-        local petButton = _G["PetActionButton" .. numStances]
-        petButton:ClearAllPoints()
+    for slot = 1, 10 do
+        local button = _G["PetActionButton" .. slot]
+        button:ClearAllPoints()
 
-        if not previousButton then
-            petButton:SetPoint("BOTTOMLEFT", MultiBarBottomLeft, "TOPLEFT", 0, 6)
+        if not previous then
+            button:SetPoint("BOTTOMLEFT", MultiBarBottomLeft, "TOPLEFT", 0, 6)
         else
-            petButton:SetPoint("LEFT", previousButton, "RIGHT", 6, 0)
+            button:SetPoint("LEFT", previous, "RIGHT", 6, 0)
         end
 
-        petButton:SetScale(0.9)
+        button:SetScale(0.9)
 
-        hidePetTextures(petButton)
-        addPetBorder(petButton)
+        hidePetTextures(button)
+        addPetBorder(button)
 
-        previousButton = petButton
+        previous = button
     end
 end
 
@@ -294,7 +300,7 @@ petFrame:RegisterEvent("UNIT_PET")
 petFrame:RegisterEvent("PET_BAR_UPDATE")
 petFrame:SetScript("OnEvent", positionPetButtons)
 
--- Position vehicleButton with portrait to achieve proper placement
+-- Position vehicle button
 
 local function positionVehicleButton()
     MainMenuBarVehicleLeaveButton:SetSize(24, 24)
