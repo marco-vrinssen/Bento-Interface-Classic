@@ -1,6 +1,6 @@
--- Update questie nameplate settings to integrate with BentoInterface
+-- Configure questie nameplate positioning
 
-local function updateNameplateSettings()
+local function configureQuestieSettings()
     if not IsAddOnLoaded("Questie") then
         return
     end
@@ -12,8 +12,8 @@ local function updateNameplateSettings()
     Questie.db.profile.nameplateTargetFrameScale = 1.5
 end
 
--- Register positioning event handler for world enter
+-- Register questie positioning events
 
-local questieEventFrame = CreateFrame("Frame")
-questieEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-questieEventFrame:SetScript("OnEvent", updateNameplateSettings)
+local questieEvents = CreateFrame("Frame")
+questieEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+questieEvents:SetScript("OnEvent", configureQuestieSettings)
