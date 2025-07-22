@@ -1,5 +1,4 @@
 -- Hide interface elements
-
 local function hideElement(element)
     if element then
         element:Hide()
@@ -7,7 +6,7 @@ local function hideElement(element)
     end
 end
 
-local function hideChilds(parentFrame, childNames)
+local function hideChildren(parentFrame, childNames)
     for _, childName in ipairs(childNames) do
         local childElement = _G[parentFrame:GetName() .. childName] or parentFrame[childName]
         hideElement(childElement)
@@ -22,8 +21,7 @@ local function hideTextures(frame)
     end
 end
 
--- Style chat tabs
-
+-- Style chat tab appearance
 local function styleTab(chatFrame)
     local chatTab = _G[chatFrame:GetName() .. "Tab"]
     local tabText = _G[chatFrame:GetName() .. "TabText"]
@@ -46,8 +44,7 @@ local function styleTab(chatFrame)
     end
 end
 
--- Create editbox backdrop
-
+-- Create editbox backdrop styling
 local function addBackdrop(editBox)
     if editBox and not editBox.customBackdrop then
         local backdrop = CreateFrame("Frame", nil, editBox, "BackdropTemplate")
@@ -66,6 +63,7 @@ local function addBackdrop(editBox)
     end
 end
 
+-- Position minimize button
 local function positionMinimize(chatFrame)
     local minimizeButton = _G[chatFrame:GetName() .. "MinimizeButton"]
     if minimizeButton then
@@ -74,18 +72,17 @@ local function positionMinimize(chatFrame)
     end
 end
 
--- Style chat frames
-
+-- Style chat frames complete
 local function styleFrame(chatFrame)
     hideTextures(chatFrame)
 
-    local elementsToHide = {
+    local ELEMENTS_TO_HIDE = {
         "ButtonFrame", "EditBoxLeft", "EditBoxMid", "EditBoxRight",
         "EditBoxHeaderSuffix", "TabUpButton", "TabDownButton",
         "TabBottomButton", "TabMinimizeButton"
     }
 
-    hideChilds(chatFrame, elementsToHide)
+    hideChildren(chatFrame, ELEMENTS_TO_HIDE)
     styleTab(chatFrame)
     positionMinimize(chatFrame)
 
@@ -95,6 +92,7 @@ local function styleFrame(chatFrame)
     end
 end
 
+-- Align editbox headers
 local function alignHeaders()
     for i = 1, NUM_CHAT_WINDOWS do
         local editBox = _G["ChatFrame" .. i .. "EditBox"]
@@ -106,24 +104,23 @@ local function alignHeaders()
     end
 end
 
--- Hook tab scrolling
-
-local function hookTabScroll(frameID)
-    local chatTab = _G["ChatFrame" .. frameID .. "Tab"]
+-- Hook tab click scrolling
+local function hookTabScroll(frameId)
+    local chatTab = _G["ChatFrame" .. frameId .. "Tab"]
     if not chatTab.scrollHooked then
-        chatTab:HookScript("OnClick", function() _G["ChatFrame" .. frameID]:ScrollToBottom() end)
+        chatTab:HookScript("OnClick", function() _G["ChatFrame" .. frameId]:ScrollToBottom() end)
         chatTab.scrollHooked = true
     end
 end
 
+-- Update scroll hooks
 local function updateScrolling()
     for i = 1, NUM_CHAT_WINDOWS do
         hookTabScroll(i)
     end
 end
 
--- Update all frames
-
+-- Update all chat frames
 local function updateFrames()
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame" .. i]
@@ -139,8 +136,7 @@ local function updateFrames()
     alignHeaders()
 end
 
--- Enable class colors
-
+-- Enable class name colors
 local function enableClassColors()
     SetCVar("chatClassColorOverride", "0")
 
@@ -154,21 +150,21 @@ local function enableClassColors()
 
     local channels = { GetChannelList() }
     for i = 1, #channels, 3 do
-        local channelID = channels[i]
-        if channelID then
-            SetChatColorNameByClass("CHANNEL" .. channelID, true)
+        local channelId = channels[i]
+        if channelId then
+            SetChatColorNameByClass("CHANNEL" .. channelId, true)
         end
     end
 end
 
+-- Recolor whisper messages
 local function recolorWhispers(self, event, message, sender, ...)
     if event == "CHAT_MSG_WHISPER" then
         return false, PINK_LIGHT_LUA .. message .. "|r", sender, ...
     end
 end
 
--- Handle frame events
-
+-- Handle frame update events
 local function onFrameEvent()
     updateFrames()
     updateScrolling()
@@ -176,7 +172,6 @@ local function onFrameEvent()
 end
 
 -- Register event handlers
-
 local eventHandler = CreateFrame("Frame")
 eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventHandler:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS")
@@ -186,6 +181,7 @@ eventHandler:SetScript("OnEvent", onFrameEvent)
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", recolorWhispers)
 
+-- Handle temporary window creation
 hooksecurefunc("FCF_OpenTemporaryWindow", function()
     local currentFrame = FCF_GetCurrentChatFrame()
     if currentFrame then
@@ -195,8 +191,7 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
     end
 end)
 
--- Provide scan messaging
-
+-- Find scan message frame
 local function getScanFrame()
     for i = 1, NUM_CHAT_WINDOWS do
         local name = GetChatWindowInfo(i)
@@ -207,11 +202,12 @@ local function getScanFrame()
     return nil
 end
 
-local function sendScanMessage(msg, r, g, b)
+-- Send scan message output
+local function sendScanMessage(message, red, green, blue)
     local scanFrame = getScanFrame()
     if scanFrame then
-        scanFrame:AddMessage(msg, r or 1, g or 1, b or 1)
+        scanFrame:AddMessage(message, red or 1, green or 1, blue or 1)
     else
-        DEFAULT_CHAT_FRAME:AddMessage(msg, r or 1, g or 1, b or 1)
+        DEFAULT_CHAT_FRAME:AddMessage(message, red or 1, green or 1, blue or 1)
     end
 end

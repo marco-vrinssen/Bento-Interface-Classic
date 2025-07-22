@@ -1,5 +1,4 @@
 -- Position action bars optimally
-
 local function positionActionBars()
     MainMenuBar:SetWidth(512)
     MainMenuBar:ClearAllPoints()
@@ -60,12 +59,12 @@ local function positionActionBars()
     MainMenuBarPerformanceBarFrame.Show = MainMenuBarPerformanceBarFrame.Hide
 end
 
-local barFrame = CreateFrame("Frame")
-barFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-barFrame:SetScript("OnEvent", positionActionBars)
+-- Register action bar positioning
+local actionFrame = CreateFrame("Frame")
+actionFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+actionFrame:SetScript("OnEvent", positionActionBars)
 
--- Update button usability opacity
-
+-- Update button opacity based on usability
 local function updateUsability(self)
     if not self or not self.action then
         return
@@ -73,15 +72,13 @@ local function updateUsability(self)
 
     local isUsable = IsUsableAction(self.action)
     local inRange = IsActionInRange(self.action)
-
     local alpha = (not isUsable or inRange == false) and 0.9 or 1.0
     self.icon:SetAlpha(alpha)
 end
 
 hooksecurefunc("ActionButton_OnUpdate", updateUsability)
 
--- Style action buttons visually
-
+-- Apply visual styling to action buttons
 local function styleButtons()
     local function hideTextures(button)
         if button then
@@ -150,12 +147,12 @@ local function styleButtons()
     end
 end
 
+-- Register button styling
 local buttonFrame = CreateFrame("Frame")
 buttonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 buttonFrame:SetScript("OnEvent", styleButtons)
 
--- Hide stance textures
-
+-- Remove stance button textures
 local function hideStanceTextures(button)
     for count = 1, 3 do
         local texture = _G[button:GetName() .. "NormalTexture" .. count]
@@ -166,8 +163,7 @@ local function hideStanceTextures(button)
     end
 end
 
--- Add stance borders
-
+-- Add borders to stance buttons
 local function addStanceBorder(button)
     if not button.customBorder then
         local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
@@ -185,17 +181,17 @@ local function addStanceBorder(button)
     end
 end
 
--- Position stance buttons
-
+-- Position stance buttons dynamically
 local function positionStanceButtons()
-    if InCombatLockdown() then return end
+    if InCombatLockdown() then
+        return
+    end
 
     local previous
     local anchor = MultiBarBottomLeft:IsShown() and MultiBarBottomLeftButton1 or ActionButton1
 
     for slot = 1, NUM_STANCE_SLOTS do
         local button = _G["StanceButton" .. slot]
-
         button:ClearAllPoints()
 
         if not previous then
@@ -205,10 +201,8 @@ local function positionStanceButtons()
         end
 
         button:SetScale(0.9)
-
         hideStanceTextures(button)
         addStanceBorder(button)
-
         previous = button
     end
 
@@ -220,6 +214,7 @@ local function positionStanceButtons()
     StanceBarRight:SetTexture(nil)
 end
 
+-- Register stance button events
 local stanceFrame = CreateFrame("Frame")
 stanceFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 stanceFrame:RegisterEvent("UPDATE_STEALTH")
@@ -229,19 +224,18 @@ stanceFrame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
 stanceFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 stanceFrame:SetScript("OnEvent", positionStanceButtons)
 
--- Hide pet textures
-
+-- Remove pet button textures
 local function hidePetTextures(button)
-    local texture1 = _G[button:GetName() .. "NormalTexture"]
-    if texture1 then
-        texture1:SetAlpha(0)
-        texture1:SetTexture(nil)
+    local normalTexture = _G[button:GetName() .. "NormalTexture"]
+    if normalTexture then
+        normalTexture:SetAlpha(0)
+        normalTexture:SetTexture(nil)
     end
 
-    local texture2 = _G[button:GetName() .. "NormalTexture2"]
-    if texture2 then
-        texture2:SetAlpha(0)
-        texture2:SetTexture(nil)
+    local normalTexture2 = _G[button:GetName() .. "NormalTexture2"]
+    if normalTexture2 then
+        normalTexture2:SetAlpha(0)
+        normalTexture2:SetTexture(nil)
     end
 
     local castable = _G[button:GetName() .. "AutoCastable"]
@@ -251,8 +245,7 @@ local function hidePetTextures(button)
     end
 end
 
--- Add pet borders
-
+-- Add borders to pet buttons
 local function addPetBorder(button)
     if not button.customBorder then
         local backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
@@ -270,8 +263,7 @@ local function addPetBorder(button)
     end
 end
 
--- Position pet buttons
-
+-- Position pet action buttons
 local function positionPetButtons()
     local previous
 
@@ -286,22 +278,20 @@ local function positionPetButtons()
         end
 
         button:SetScale(0.9)
-
         hidePetTextures(button)
         addPetBorder(button)
-
         previous = button
     end
 end
 
+-- Register pet button events
 local petFrame = CreateFrame("Frame")
 petFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 petFrame:RegisterEvent("UNIT_PET")
 petFrame:RegisterEvent("PET_BAR_UPDATE")
 petFrame:SetScript("OnEvent", positionPetButtons)
 
--- Position vehicle button
-
+-- Position vehicle exit button
 local function positionVehicleButton()
     MainMenuBarVehicleLeaveButton:SetSize(24, 24)
     MainMenuBarVehicleLeaveButton:ClearAllPoints()

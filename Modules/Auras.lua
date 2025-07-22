@@ -1,4 +1,4 @@
--- Style timer text fonts and positioning
+-- Style timer text with outline font
 local function styleTimerText(element)
   local durationText = _G[element:GetName().."Duration"]
   if durationText then
@@ -10,8 +10,8 @@ local function styleTimerText(element)
   end
 end
 
--- Apply bordered frames with dynamic colors
-local function styleBorder(button, borderColor)
+-- Create bordered frames with color coding
+local function createBorder(button, borderColor)
   if not button.customBorder then
     local borderFrame = CreateFrame("Frame", nil, button, "BackdropTemplate")
     borderFrame:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
@@ -35,12 +35,12 @@ local function styleBorder(button, borderColor)
   end
 end
 
--- Style buff buttons
+-- Style buff with grey border
 local function styleBuffs(button)
-  styleBorder(button, GREY_RGB)
+  createBorder(button, GREY_RGB)
 end
 
--- Style debuff buttons by type
+-- Style debuffs with type colored borders
 local function styleDebuffs(button)
   local debuffType = select(5, UnitDebuff("player", button:GetID()))
   local color = RED_RGB
@@ -53,26 +53,26 @@ local function styleDebuffs(button)
   elseif debuffType == "Disease" then
     color = ORANGE_RGB
   end
-  styleBorder(button, color)
+  createBorder(button, color)
 end
 
--- Style enchant buttons
+-- Style enchants with blue border
 local function styleEnchants(enchant)
-  styleBorder(enchant, BLUE_RGB)
+  createBorder(enchant, BLUE_RGB)
   local enchantBorder = _G[enchant:GetName().."Border"]
   if enchantBorder then
     enchantBorder:Hide()
   end
 end
 
--- Hook duration updates
+-- Hook duration updates for timer styling
 hooksecurefunc("AuraButton_UpdateDuration", function(element)
   if element then
     styleTimerText(element)
   end
 end)
 
--- Hook aura updates
+-- Hook aura updates for border styling
 hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   local button = _G[buttonName..index]
   if button then
@@ -84,7 +84,7 @@ hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
   end
 end)
 
--- Position auras near minimap
+-- Position auras near minimap anchor
 local function arrangeLayout()
   BuffFrame:ClearAllPoints()
   local anchor = Minimap
@@ -169,7 +169,7 @@ local function arrangeLayout()
   end
 end
 
--- Refresh all aura styles
+-- Refresh all aura styles and positioning
 local function refreshStyles()
   for i = 1, BUFF_MAX_DISPLAY do
     local buffButton = _G["BuffButton"..i]
@@ -198,7 +198,7 @@ local function refreshStyles()
   arrangeLayout()
 end
 
--- Handle aura events
+-- Handle aura events for refreshing
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("UNIT_AURA")
@@ -209,5 +209,5 @@ eventFrame:SetScript("OnEvent", function(self, event, unit)
   refreshStyles()
 end)
 
--- Hook anchor updates
+-- Hook anchor updates for layout
 hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", arrangeLayout)
