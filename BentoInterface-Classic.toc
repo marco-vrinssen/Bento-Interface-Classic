@@ -5,21 +5,20 @@
 ## Author: MIYANKO
 ## SavedVariables: BentoInterfaceClassicDB
 
-Modules/Tokens.lua
-
+Modules/Styles.lua
+Modules/AddonSupport.lua
+Modules/ActionButtons.lua
 Modules/Auras.lua
 Modules/Bags.lua
-Modules/Buttons.lua
 Modules/CastBar.lua
 Modules/Chat.lua
 Modules/LFGButton.lua
 Modules/MenuButtons.lua
 Modules/MiniMap.lua
 Modules/NamePlates.lua
-Modules/Player.lua
+Modules/PlayerFrame.lua
 Modules/PlayerComboPoints.lua
 Modules/PlayerDruidMana.lua
-Modules/Questie.lua
 Modules/RaidFrames.lua
 Modules/StatusBars.lua
 Modules/Target.lua
